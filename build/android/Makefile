@@ -103,11 +103,12 @@ GMP_TIMESTAMP = $(GMP_DIR)/timestamp
 GMP_TIMESTAMP_INT = $(ROOT)/deps/gmp_timestamp
 GMP_URL_HTTP = https://gmplib.org/download/gmp/gmp-$(GMP_VERSION).tar.bz2
 
+FREETYPE_VERSION = 2.6.2
 FREETYPE_DIR = $(ROOT)/deps/freetype2-android/
 FREETYPE_LIB = $(FREETYPE_DIR)/Android/obj/local/$(TARGET_ABI)/libfreetype2-static.a
 FREETYPE_TIMESTAMP = $(FREETYPE_DIR)timestamp
 FREETYPE_TIMESTAMP_INT = $(ROOT)/deps/freetype_timestamp
-FREETYPE_URL_GIT = https://github.com/cdave1/freetype2-android
+FREETYPE_URL_GIT = http://download.savannah.gnu.org/releases/freetype/freetype-$(FREETYPE_VERSION).tar.bz2
 
 ICONV_VERSION = 1.14
 ICONV_DIR = $(ROOT)/deps/libiconv/
@@ -380,11 +381,14 @@ $(FREETYPE_TIMESTAMP) : freetype_download
 	fi
 
 freetype_download :
-	@if [ ! -d ${FREETYPE_DIR} ] ; then                                        \
-		echo "freetype sources missing, downloading...";                       \
-		mkdir -p ${ROOT}/deps;                                                 \
-		cd deps;                                                               \
-		git clone ${FREETYPE_URL_GIT} || exit 1;                               \
+	@if [ ! -d "${FREETYPE_DIR}" ] ; then                                           \
+		echo "gmp sources missing, downloading...";                        \
+		mkdir -p ${ROOT}/deps;                                             \
+		cd deps;                                                           \
+		wget ${FREETYPE_URL_HTTP} || exit 1;                                    \
+		tar -xjf gmp-${FREETYPE_VERSION}.tar.bz2 || exit 1;                     \
+		rm gmp-${FREETYPE_VERSION}.tar.bz2;                                     \
+		ln -s gmp-${FREETYPE_VERSION} gmp;                                      \
 	fi
 
 freetype : $(FREETYPE_LIB)
