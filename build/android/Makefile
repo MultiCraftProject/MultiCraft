@@ -382,13 +382,13 @@ $(FREETYPE_TIMESTAMP) : freetype_download
 
 freetype_download :
 	@if [ ! -d "${FREETYPE_DIR}" ] ; then                                           \
-		echo "gmp sources missing, downloading...";                        \
+		echo "freetype sources missing, downloading...";                        \
 		mkdir -p ${ROOT}/deps;                                             \
 		cd deps;                                                           \
 		wget ${FREETYPE_URL_HTTP} || exit 1;                                    \
-		tar -xjf gmp-${FREETYPE_VERSION}.tar.bz2 || exit 1;                     \
-		rm gmp-${FREETYPE_VERSION}.tar.bz2;                                     \
-		ln -s gmp-${FREETYPE_VERSION} gmp;                                      \
+		tar -xjf freetype_-${FREETYPE_VERSION}.tar.bz2 || exit 1;                     \
+		rm freetype-${FREETYPE_VERSION}.tar.bz2;                                     \
+		ln -s freetype-${FREETYPE_VERSION} freetype;                                      \
 	fi
 
 freetype : $(FREETYPE_LIB)
@@ -408,7 +408,12 @@ $(FREETYPE_LIB) : $(FREETYPE_TIMESTAMP)
 	mkdir -p ${FREETYPE_DIR};                                                  \
 	export PATH=$$PATH:${SDKFOLDER}/platform-tools:${ANDROID_NDK};             \
 	echo "changed timestamp for freetype detected building...";                \
-	cd ${FREETYPE_DIR}/Android/jni;                                            \
+	mkdir -p deps/freetype-${FREETYPE_VERSION}/Android;                                                \
+        mkdir -p deps/freetype-${FREETYPE_VERSION}/Android/jni;   \
+	cp ${ROOT}/freetype/jni/Android.mk deps/freetype-${FREETYPE_VERSION}/Android/jni/Android.mk;            \
+	cp ${ROOT}/freetype/jni/Application.mk deps/freetype-${FREETYPE_VERSION}/Android/jni/Application.mk;            \
+	cp ${ROOT}/freetype/jni/module.mk deps/freetype-${FREETYPE_VERSION}/Android/jni/module.mk;            \
+	cd deps/freetype-${FREETYPE_VERSION}/Android/jni;                                            \
 	ndk-build NDEBUG=${NDEBUG} NDK_MODULE_PATH=${NDK_MODULE_PATH}              \
 	APP_PLATFORM=${APP_PLATFORM} APP_ABI=${TARGET_ABI}                         \
 	TARGET_CFLAGS+="${TARGET_CFLAGS_ADDON}"                                    \
