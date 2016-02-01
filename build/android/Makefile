@@ -349,7 +349,6 @@ leveldb_download :
 		git clone ${LEVELDB_URL_GIT} || exit 1;                                \
 	fi
 
-
 leveldb : $(LEVELDB_LIB)
 ifeq ($(HAVE_LEVELDB),1)
 $(LEVELDB_LIB): $(LEVELDB_TIMESTAMP)
