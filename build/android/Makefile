@@ -67,12 +67,12 @@ OPENAL_TIMESTAMP = $(OPENAL_DIR)/timestamp
 OPENAL_TIMESTAMP_INT = $(ROOT)/deps/openal_timestamp
 OPENAL_URL_GIT = https://github.com/apportable/openal-soft
 
-OGG_DIR = $(ROOT)/deps/libvorbis-libogg-android/
-OGG_LIB = $(OGG_DIR)libs/$(TARGET_ABI)/libogg.so
-VORBIS_LIB = $(OGG_DIR)libs/$(TARGET_ABI)/libogg.so
+OGG_VERSION = 1.3.2
+OGG_DIR = $(ROOT)/deps/libogg-$(OGG_VERSION)
+OGG_LIB = $(OGG_DIR)/src/.libs/libogg.a
 OGG_TIMESTAMP = $(OGG_DIR)timestamp
 OGG_TIMESTAMP_INT = $(ROOT)/deps/ogg_timestamp
-OGG_URL_GIT = https://github.com/vincentjames501/libvorbis-libogg-android
+OGG_URL_HTTP = http://downloads.xiph.org/releases/ogg/libogg-$(OGG_VERSION).tar.gz
 
 IRRLICHT_REVISION = 5122
 IRRLICHT_DIR = $(ROOT)/deps/irrlicht/
@@ -102,7 +102,6 @@ GMP_LIB = $(GMP_DIR)/usr/lib/libgmp.so
 GMP_TIMESTAMP = $(GMP_DIR)/timestamp
 GMP_TIMESTAMP_INT = $(ROOT)/deps/gmp_timestamp
 GMP_URL_HTTP = https://gmplib.org/download/gmp/gmp-$(GMP_VERSION).tar.bz2
-
 
 FREETYPE_VERSION = 2.6.2
 FREETYPE_DIR = $(ROOT)/deps/freetype-$(FREETYPE_VERSION)
@@ -233,44 +232,56 @@ $(OGG_TIMESTAMP) : ogg_download
 	fi
 
 ogg_download :
-	@if [ ! -d ${OGG_DIR} ] ; then                                             \
-		echo "ogg sources missing, downloading...";                            \
-		mkdir -p ${ROOT}/deps;                                                 \
-		cd ${ROOT}/deps ;                                                      \
-		git clone ${OGG_URL_GIT}|| exit 1;                                     \
-		cd libvorbis-libogg-android ;                                          \
-		patch -p1 < ../../libvorbis-libogg-fpu.patch || exit 1;                \
-		sed -i 's-:-?-' jni/Application.mk;                                    \
+	@if [ ! -d "${OGG_DIR}" ] ; then                                           \
+		echo "ogg sources missing, downloading...";                        \
+		mkdir -p ${ROOT}/deps;                                             \
+		cd deps;                                                           \
+		wget ${OGG_URL_HTTP} || exit 1;                                    \
+		tar -xzf libogg-${OGG_VERSION}.tar.gz || exit 1;                   \
+		rm libogg-${OGG_VERSION}.tar.gz;                               \
+		ln -s libogg-${OGG_VERSION} libogg;                          \
+		cd ${OGG_DIR};                                                   \
 	fi
 
 ogg : $(OGG_LIB)
 
-$(OGG_LIB): $(OGG_TIMESTAMP)
-	+ @REFRESH=0;                                                                \
+$(OGG_LIB) : $(OGG_TIMESTAMP)
+	+ @REFRESH=0;                                                              \
 	if [ ! -e ${OGG_TIMESTAMP_INT} ] ; then                                    \
-		echo "${OGG_TIMESTAMP_INT} doesn't exist";                             \
+		REFRESH=1;                                                             \
+	fi;                                                                        \
+	if [ ! -e ${OGG_LIB} ] ; then                                              \
 		REFRESH=1;                                                             \
 	fi;                                                                        \
 	if [ ${OGG_TIMESTAMP} -nt ${OGG_TIMESTAMP_INT} ] ; then                    \
 		REFRESH=1;                                                             \
 	fi;                                                                        \
 	if [ $$REFRESH -ne 0 ] ; then                                              \
+	mkdir -p ${OGG_DIR};                                                       \
 	export PATH=$$PATH:${SDKFOLDER}/platform-tools:${ANDROID_NDK};             \
 	echo "changed timestamp for ogg detected building...";                     \
-	cd ${OGG_DIR};                                                             \
-	ndk-build NDEBUG=${NDEBUG} NDK_MODULE_PATH=${NDK_MODULE_PATH}              \
-	APP_ABI=${TARGET_ABI} APP_PLATFORM=${APP_PLATFORM}                         \
-	TARGET_CFLAGS+="${TARGET_CFLAGS_ADDON}"                                    \
-	TARGET_LDFLAGS+="${TARGET_LDFLAGS_ADDON}"                                  \
-	TARGET_CXXFLAGS+="${TARGET_CXXFLAGS_ADDON}" || exit 1;                     \
+	cd deps/libogg-${OGG_VERSION};                                                \
+	export CROSS_PREFIX=${CROSS_PREFIX};                                       \
+	export TOOLCHAIN=/tmp/ndk-${TARGET_HOST}-ogg;                              \
+	${ANDROID_NDK}/build/tools/make-standalone-toolchain.sh                    \
+	--toolchain=${TARGET_TOOLCHAIN}${COMPILER_VERSION}                         \
+	--install-dir=$${TOOLCHAIN};                                               \
+	export PATH="$${TOOLCHAIN}/bin:$${PATH}";                                  \
+#	export CC=${CROSS_PREFIX}gcc;                                              \
+	export CXX=${CROSS_PREFIX}g++;                                             \
+	export TARGET_OS=OS_ANDROID_CROSSCOMPILE;                                  \
+	./configure || exit 1;                                                     \
+	$(MAKE) -s || exit 1;                                                      \
 	touch ${OGG_TIMESTAMP};                                                    \
 	touch ${OGG_TIMESTAMP_INT};                                                \
+	$(RM) -rf $${TOOLCHAIN};                                                   \
 	else                                                                       \
-		echo "nothing to be done for libogg/libvorbis";                        \
+		echo "nothing to be done for ogg";                                 \
 	fi
 
 clean_ogg :
-	$(RM) -rf ${OGG_DIR}
+	$(RM) -rf ${OGG_DIR} \
+	$(RM) -rf $(ROOT)/deps/libogg
 
 $(OPENSSL_TIMESTAMP) : openssl_download
 	@LAST_MODIF=$$(find ${OPENSSL_DIR} -type f -printf '%T@ %p\n' | sort -n | tail -1 | cut -f2- -d" "); \
@@ -384,21 +395,13 @@ $(FREETYPE_TIMESTAMP) : freetype_download
 freetype_download :
 
 	@if [ ! -d "${FREETYPE_DIR}" ] ; then                                           \
-
 		echo "freetype sources missing, downloading...";                        \
-
-		mkdir -p ${ROOT}/deps;                                             \
-
-		cd deps;                                                           \
-
+		mkdir -p ${ROOT}/deps;                                                  \
+		cd deps;                                                                \
 		wget ${FREETYPE_URL_HTTP} || exit 1;                                    \
-
-		tar -xjf freetype-${FREETYPE_VERSION}.tar.bz2 || exit 1;                     \
-
-		rm freetype-${FREETYPE_VERSION}.tar.bz2;                                     \
-
-		ln -s freetype-${FREETYPE_VERSION} freetype;                                      \
-
+		tar -xjf freetype-${FREETYPE_VERSION}.tar.bz2 || exit 1;                \
+		rm freetype-${FREETYPE_VERSION}.tar.bz2;                                \
+		ln -s freetype-${FREETYPE_VERSION} freetype;                            \
 	fi
 
 freetype : $(FREETYPE_LIB)
@@ -406,13 +409,13 @@ freetype : $(FREETYPE_LIB)
 $(FREETYPE_LIB) : $(FREETYPE_TIMESTAMP)
 	+ @REFRESH=0;                                                              \
 	if [ ! -e ${FREETYPE_TIMESTAMP_INT} ] ; then                               \
-		REFRESH=1;                                                             \
+		REFRESH=1;                                                         \
 	fi;                                                                        \
 	if [ ! -e ${FREETYPE_LIB} ] ; then                                         \
-		REFRESH=1;                                                             \
+		REFRESH=1;                                                         \
 	fi;                                                                        \
 	if [ ${FREETYPE_TIMESTAMP} -nt ${FREETYPE_TIMESTAMP_INT} ] ; then          \
-		REFRESH=1;                                                             \
+		REFRESH=1;                                                         \
 	fi;                                                                        \
 	if [ $$REFRESH -ne 0 ] ; then                                              \
 	mkdir -p ${FREETYPE_DIR};                                                  \
@@ -430,13 +433,13 @@ $(FREETYPE_LIB) : $(FREETYPE_TIMESTAMP)
 	export TARGET_OS=OS_ANDROID_CROSSCOMPILE;                                  \
 #	${TARGET_CFLAGS_ADDON}";                                                   \
 #	export CFLAGS="$${CFLAGS} ${TARGET_CFLAGS_ADDON}";                         \
-	./configure --prefix=/usr || exit 1;    						   \
+	./configure --prefix=/usr || exit 1;    				   \
 	$(MAKE) -s || exit 1;                                                      \
 	touch ${FREETYPE_TIMESTAMP};                                               \
 	touch ${FREETYPE_TIMESTAMP_INT};                                           \
 	$(RM) -rf $${TOOLCHAIN};                                                   \
 	else                                                                       \
-		echo "nothing to be done for freetype";                                \
+		echo "nothing to be done for freetype";                            \
 	fi
 
 clean_freetype :
