@@ -351,7 +351,7 @@ leveldb_download :
 
 
 leveldb : $(LEVELDB_LIB)
-ifeq ($(HAVE_LEVELDB),0)
+ifeq ($(HAVE_LEVELDB),1)
 $(LEVELDB_LIB): $(LEVELDB_TIMESTAMP)
 	@REFRESH=0;                                                                \
 	if [ ! -e ${LEVELDB_TIMESTAMP_INT} ] ; then                                \
