@@ -38,7 +38,7 @@ TARGET_CXXFLAGS_ADDON = $(TARGET_CFLAGS_ADDON)
 TARGET_ARCH = armv7
 CROSS_PREFIX = arm-linux-androideabi-
 COMPILER_VERSION = 4.9
-HAVE_LEVELDB = 1
+HAVE_LEVELDB = 0
 
 ################################################################################
 # toolchain config for x86
@@ -73,6 +73,13 @@ OGG_LIB = $(OGG_DIR)/src/.libs/libogg.a
 OGG_TIMESTAMP = $(OGG_DIR)timestamp
 OGG_TIMESTAMP_INT = $(ROOT)/deps/ogg_timestamp
 OGG_URL_HTTP = http://downloads.xiph.org/releases/ogg/libogg-$(OGG_VERSION).tar.gz
+
+VORBIS_VERSION = 1.3.5
+VORBIS_DIR = $(ROOT)/deps/libvorbis-$(VORBIS_VERSION)
+VORBIS_LIB = $(VORBIS_DIR)/src/.libs/libvorbis.a
+VORBIS_TIMESTAMP = $(VORBIS_DIR)timestamp
+VORBIS_TIMESTAMP_INT = $(ROOT)/deps/vorbis_timestamp
+VORBIS_URL_HTTP = http://downloads.xiph.org/releases/vorbis/libvorbis-$(VORBIS_VERSION).tar.gz
 
 IRRLICHT_REVISION = 5122
 IRRLICHT_DIR = $(ROOT)/deps/irrlicht/
@@ -248,19 +255,19 @@ ogg : $(OGG_LIB)
 $(OGG_LIB) : $(OGG_TIMESTAMP)
 	+ @REFRESH=0;                                                              \
 	if [ ! -e ${OGG_TIMESTAMP_INT} ] ; then                                    \
-		REFRESH=1;                                                             \
+		REFRESH=1;                                                         \
 	fi;                                                                        \
 	if [ ! -e ${OGG_LIB} ] ; then                                              \
-		REFRESH=1;                                                             \
+		REFRESH=1;                                                         \
 	fi;                                                                        \
 	if [ ${OGG_TIMESTAMP} -nt ${OGG_TIMESTAMP_INT} ] ; then                    \
-		REFRESH=1;                                                             \
+		REFRESH=1;                                                         \
 	fi;                                                                        \
 	if [ $$REFRESH -ne 0 ] ; then                                              \
 	mkdir -p ${OGG_DIR};                                                       \
 	export PATH=$$PATH:${SDKFOLDER}/platform-tools:${ANDROID_NDK};             \
 	echo "changed timestamp for ogg detected building...";                     \
-	cd deps/libogg-${OGG_VERSION};                                                \
+	cd deps/libogg-${OGG_VERSION};                                             \
 	export CROSS_PREFIX=${CROSS_PREFIX};                                       \
 	export TOOLCHAIN=/tmp/ndk-${TARGET_HOST}-ogg;                              \
 	${ANDROID_NDK}/build/tools/make-standalone-toolchain.sh                    \
@@ -272,6 +279,7 @@ $(OGG_LIB) : $(OGG_TIMESTAMP)
 	export TARGET_OS=OS_ANDROID_CROSSCOMPILE;                                  \
 	./configure || exit 1;                                                     \
 	$(MAKE) -s || exit 1;                                                      \
+	$(MAKE) install || exit 1;                                                 \
 	touch ${OGG_TIMESTAMP};                                                    \
 	touch ${OGG_TIMESTAMP_INT};                                                \
 	$(RM) -rf $${TOOLCHAIN};                                                   \
@@ -282,6 +290,64 @@ $(OGG_LIB) : $(OGG_TIMESTAMP)
 clean_ogg :
 	$(RM) -rf ${OGG_DIR} \
 	$(RM) -rf $(ROOT)/deps/libogg
+
+$(VORBIS_TIMESTAMP) : vorbis_download
+	@LAST_MODIF=$$(find ${VORBIS_DIR} -type f -printf '%T@ %p\n' | sort -n | tail -1 | cut -f2- -d" "); \
+	if [ $$(basename $$LAST_MODIF) != "timestamp" ] ; then                     \
+		touch ${VORBIS_TIMESTAMP};                                             \
+	fi
+
+vorbis_download :
+	@if [ ! -d "${VORBIS_DIR}" ] ; then                                        \
+		echo "vorbis sources missing, downloading...";                         \
+		mkdir -p ${ROOT}/deps;                                                 \
+		cd deps;                                                               \
+		wget ${VORBIS_URL_HTTP} || exit 1;                                     \
+		tar -xzf libvorbis-${VORBIS_VERSION}.tar.gz || exit 1;                 \
+		rm libvorbis-${VORBIS_VERSION}.tar.gz;                                 \
+		ln -s libvorbis-${VORBIS_VERSION} libvorbis;                           \
+		cd ${VORBIS_DIR};                                                      \
+	fi
+
+vorbis : $(VORBIS_LIB)
+
+$(VORBIS_LIB) : $(VORBIS_TIMESTAMP)
+	+ @REFRESH=0;                                                              \
+	if [ ! -e ${VORBIS_TIMESTAMP_INT} ] ; then                                 \
+		REFRESH=1;                                                             \
+	fi;                                                                        \
+	if [ ! -e ${VORBIS_LIB} ] ; then                                           \
+		REFRESH=1;                                                             \
+	fi;                                                                        \
+	if [ ${VORBIS_TIMESTAMP} -nt ${VORBIS_TIMESTAMP_INT} ] ; then              \
+		REFRESH=1;                                                             \
+	fi;                                                                        \
+	if [ $$REFRESH -ne 0 ] ; then                                              \
+	mkdir -p ${VORBIS_DIR};                                                    \
+	export PATH=$$PATH:${SDKFOLDER}/platform-tools:${ANDROID_NDK};             \
+	echo "changed timestamp for vorbis detected building...";                  \
+	cd deps/libvorbis-${VORBIS_VERSION};                                       \
+	export CROSS_PREFIX=${CROSS_PREFIX};                                       \
+	export TOOLCHAIN=/tmp/ndk-${TARGET_HOST}-vorbis;                           \
+	${ANDROID_NDK}/build/tools/make-standalone-toolchain.sh                    \
+	--toolchain=${TARGET_TOOLCHAIN}${COMPILER_VERSION}                         \
+	--install-dir=$${TOOLCHAIN};                                               \
+	export PATH="$${TOOLCHAIN}/bin:$${PATH}";                                  \
+#	export CC=${CROSS_PREFIX}gcc;                                              \
+	export CXX=${CROSS_PREFIX}g++;                                             \
+	export TARGET_OS=OS_ANDROID_CROSSCOMPILE;                                  \
+	./configure || exit 1;                                                     \
+	$(MAKE) -s || exit 1;                                                      \
+	touch ${VORBIS_TIMESTAMP};                                                 \
+	touch ${VORBIS_TIMESTAMP_INT};                                             \
+	$(RM) -rf $${TOOLCHAIN};                                                   \
+	else                                                                       \
+		echo "nothing to be done for vorbis";                                  \
+	fi
+
+clean_vorbis :
+	$(RM) -rf ${VORBIS_DIR} \
+	$(RM) -rf $(ROOT)/deps/libvorbis
 
 $(OPENSSL_TIMESTAMP) : openssl_download
 	@LAST_MODIF=$$(find ${OPENSSL_DIR} -type f -printf '%T@ %p\n' | sort -n | tail -1 | cut -f2- -d" "); \
@@ -804,7 +870,7 @@ envpaths :
 clean_all :
 	@$(MAKE) clean_apk;                                                        \
 	$(MAKE) clean_assets clean_iconv clean_irrlicht clean_leveldb clean_curl clean_openssl \
-	clean_openal clean_ogg clean_gmp clean_manifest;                           \
+	clean_openal clean_ogg clean_vorbis clean_gmp clean_manifest;              \
 	sleep 1;                                                                   \
 	$(RM) -r gen libs obj deps bin Debug and_env
 
