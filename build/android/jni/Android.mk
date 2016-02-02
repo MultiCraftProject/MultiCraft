@@ -36,13 +36,13 @@ include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := ogg
-LOCAL_SRC_FILES :=/deps/libogg/src/.libs/libogg.so
-include $(PREBUILT_SHARED_LIBRARY)
+LOCAL_SRC_FILES := deps/libogg/src/.libs/libogg.a
+include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := vorbis
-LOCAL_SRC_FILES := /deps/libvorbis/src/.libs/libvorbis.so
-include $(PREBUILT_SHARED_LIBRARY)
+LOCAL_SRC_FILES := deps/libvorbis/lib/.libs/libvorbis.a
+include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := gmp
@@ -358,8 +358,8 @@ LOCAL_SRC_FILES += \
 # JSONCPP
 LOCAL_SRC_FILES += jni/src/json/jsoncpp.cpp
 
-LOCAL_SHARED_LIBRARIES := iconv openal ogg vorbis gmp
-LOCAL_STATIC_LIBRARIES := Irrlicht freetype curl ssl crypto android_native_app_glue $(PROFILER_LIBS)
+LOCAL_SHARED_LIBRARIES := iconv openal gmp
+LOCAL_STATIC_LIBRARIES := Irrlicht ogg vorbis freetype curl ssl crypto android_native_app_glue $(PROFILER_LIBS)
 
 ifeq ($(HAVE_LEVELDB), 1)
 	LOCAL_STATIC_LIBRARIES += LevelDB

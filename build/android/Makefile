@@ -70,33 +70,33 @@ OPENAL_URL_GIT = https://github.com/apportable/openal-soft
 OGG_VERSION = 1.3.2
 OGG_DIR = $(ROOT)/deps/libogg-$(OGG_VERSION)
 OGG_LIB = $(OGG_DIR)/src/.libs/libogg.a
-OGG_TIMESTAMP = $(OGG_DIR)timestamp
+OGG_TIMESTAMP = $(OGG_DIR)/timestamp
 OGG_TIMESTAMP_INT = $(ROOT)/deps/ogg_timestamp
 OGG_URL_HTTP = http://downloads.xiph.org/releases/ogg/libogg-$(OGG_VERSION).tar.gz
 
 VORBIS_VERSION = 1.3.5
 VORBIS_DIR = $(ROOT)/deps/libvorbis-$(VORBIS_VERSION)
 VORBIS_LIB = $(VORBIS_DIR)/src/.libs/libvorbis.a
-VORBIS_TIMESTAMP = $(VORBIS_DIR)timestamp
+VORBIS_TIMESTAMP = $(VORBIS_DIR)/timestamp
 VORBIS_TIMESTAMP_INT = $(ROOT)/deps/vorbis_timestamp
 VORBIS_URL_HTTP = http://downloads.xiph.org/releases/vorbis/libvorbis-$(VORBIS_VERSION).tar.gz
 
 IRRLICHT_REVISION = 5122
 IRRLICHT_DIR = $(ROOT)/deps/irrlicht/
 IRRLICHT_LIB = $(IRRLICHT_DIR)lib/Android/libIrrlicht.a
-IRRLICHT_TIMESTAMP = $(IRRLICHT_DIR)timestamp
+IRRLICHT_TIMESTAMP = $(IRRLICHT_DIR)/timestamp
 IRRLICHT_TIMESTAMP_INT = $(ROOT)/deps/irrlicht_timestamp
 IRRLICHT_URL_SVN = http://svn.code.sf.net/p/irrlicht/code/branches/ogl-es@$(IRRLICHT_REVISION)
 
-OPENSSL_VERSION = 1.0.2e
+OPENSSL_VERSION = 1.0.2f
 OPENSSL_BASEDIR = openssl-$(OPENSSL_VERSION)
 OPENSSL_DIR = $(ROOT)/deps/$(OPENSSL_BASEDIR)/
 OPENSSL_LIB = $(OPENSSL_DIR)/libssl.so.1.0.0
-OPENSSL_TIMESTAMP = $(OPENSSL_DIR)timestamp
+OPENSSL_TIMESTAMP = $(OPENSSL_DIR)/timestamp
 OPENSSL_TIMESTAMP_INT = $(ROOT)/deps/openssl_timestamp
 OPENSSL_URL = http://www.openssl.org/source/openssl-$(OPENSSL_VERSION).tar.gz
 
-CURL_VERSION = 7.46.0
+CURL_VERSION = 7.47.0
 CURL_DIR = $(ROOT)/deps/curl-$(CURL_VERSION)
 CURL_LIB = $(CURL_DIR)/lib/.libs/libcurl.a
 CURL_TIMESTAMP = $(CURL_DIR)/timestamp
@@ -113,14 +113,14 @@ GMP_URL_HTTP = https://gmplib.org/download/gmp/gmp-$(GMP_VERSION).tar.bz2
 FREETYPE_VERSION = 2.6.2
 FREETYPE_DIR = $(ROOT)/deps/freetype-$(FREETYPE_VERSION)
 FREETYPE_LIB = $(FREETYPE_DIR)/objs/.libs/libfreetype.a
-FREETYPE_TIMESTAMP = $(FREETYPE_DIR)timestamp
+FREETYPE_TIMESTAMP = $(FREETYPE_DIR)/timestamp
 FREETYPE_TIMESTAMP_INT = $(ROOT)/deps/freetype_timestamp
 FREETYPE_URL_HTTP = http://download.savannah.gnu.org/releases/freetype/freetype-$(FREETYPE_VERSION).tar.bz2
 
 ICONV_VERSION = 1.14
 ICONV_DIR = $(ROOT)/deps/libiconv/
 ICONV_LIB = $(ICONV_DIR)/lib/.libs/libiconv.so
-ICONV_TIMESTAMP = $(ICONV_DIR)timestamp
+ICONV_TIMESTAMP = $(ICONV_DIR)/timestamp
 ICONV_TIMESTAMP_INT = $(ROOT)/deps/iconv_timestamp
 ICONV_URL_HTTP = http://ftp.gnu.org/pub/gnu/libiconv/libiconv-$(ICONV_VERSION).tar.gz
 
@@ -146,7 +146,7 @@ endif
 	$(ASSETS_TIMESTAMP) $(LEVELDB_TIMESTAMP) \
 	$(OPENAL_TIMESTAMP) $(OGG_TIMESTAMP) \
 	$(IRRLICHT_TIMESTAMP) $(CURL_TIMESTAMP) \
-	$(OPENSSL_TIMESTAMP) \
+	$(OPENSSL_TIMESTAMP) $(VORBIS_TIMESTAMP)\
 	$(ROOT)/jni/src/android_version.h \
 	$(ROOT)/jni/src/android_version_githash.h
 
