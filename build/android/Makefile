@@ -5,7 +5,7 @@ OS := $(shell uname)
 # compile with GPROF
 # GPROF = 1
 
-# build for build platform
+# build for build platform  
 APP_PLATFORM = android-16
 
 # paths used for timestaps, dependencys, tree config and libs
@@ -67,19 +67,12 @@ OPENAL_TIMESTAMP = $(OPENAL_DIR)/timestamp
 OPENAL_TIMESTAMP_INT = $(ROOT)/deps/openal_timestamp
 OPENAL_URL_GIT = https://github.com/apportable/openal-soft
 
-OGG_VERSION = 1.3.2
-OGG_DIR = $(ROOT)/deps/libogg-$(OGG_VERSION)
-OGG_LIB = $(OGG_DIR)/src/.libs/libogg.a
-OGG_TIMESTAMP = $(OGG_DIR)/timestamp
+OGG_DIR = $(ROOT)/deps/libvorbis-libogg-android/
+OGG_LIB = $(OGG_DIR)libs/$(TARGET_ABI)/libogg.so
+VORBIS_LIB = $(OGG_DIR)libs/$(TARGET_ABI)/libvorbis.so
+OGG_TIMESTAMP = $(OGG_DIR)timestamp
 OGG_TIMESTAMP_INT = $(ROOT)/deps/ogg_timestamp
-OGG_URL_HTTP = http://downloads.xiph.org/releases/ogg/libogg-$(OGG_VERSION).tar.gz
-
-VORBIS_VERSION = 1.3.5
-VORBIS_DIR = $(ROOT)/deps/libvorbis-$(VORBIS_VERSION)
-VORBIS_LIB = $(VORBIS_DIR)/src/.libs/libvorbis.a
-VORBIS_TIMESTAMP = $(VORBIS_DIR)/timestamp
-VORBIS_TIMESTAMP_INT = $(ROOT)/deps/vorbis_timestamp
-VORBIS_URL_HTTP = http://downloads.xiph.org/releases/vorbis/libvorbis-$(VORBIS_VERSION).tar.gz
+OGG_URL_GIT = https://github.com/vincentjames501/libvorbis-libogg-android
 
 IRRLICHT_REVISION = 5122
 IRRLICHT_DIR = $(ROOT)/deps/irrlicht/
@@ -146,7 +139,7 @@ endif
 	$(ASSETS_TIMESTAMP) $(LEVELDB_TIMESTAMP) \
 	$(OPENAL_TIMESTAMP) $(OGG_TIMESTAMP) \
 	$(IRRLICHT_TIMESTAMP) $(CURL_TIMESTAMP) \
-	$(OPENSSL_TIMESTAMP) $(VORBIS_TIMESTAMP)\
+	$(OPENSSL_TIMESTAMP) \
 	$(ROOT)/jni/src/android_version.h \
 	$(ROOT)/jni/src/android_version_githash.h
 
@@ -239,115 +232,44 @@ $(OGG_TIMESTAMP) : ogg_download
 	fi
 
 ogg_download :
-	@if [ ! -d "${OGG_DIR}" ] ; then                                           \
-		echo "ogg sources missing, downloading...";                        \
-		mkdir -p ${ROOT}/deps;                                             \
-		cd deps;                                                           \
-		wget ${OGG_URL_HTTP} || exit 1;                                    \
-		tar -xzf libogg-${OGG_VERSION}.tar.gz || exit 1;                   \
-		rm libogg-${OGG_VERSION}.tar.gz;                               \
-		ln -s libogg-${OGG_VERSION} libogg;                          \
-		cd ${OGG_DIR};                                                   \
+	@if [ ! -d ${OGG_DIR} ] ; then                                             \
+		echo "ogg sources missing, downloading...";                            \
+		mkdir -p ${ROOT}/deps;                                                 \
+		cd ${ROOT}/deps ;                                                      \
+		git clone ${OGG_URL_GIT}|| exit 1;                                     \
+		cd libvorbis-libogg-android ;                                          \
+		patch -p1 < ../../libvorbis-libogg-fpu.patch || exit 1;                \
+		sed -i 's-:-?-' jni/Application.mk;                                    \
 	fi
 
 ogg : $(OGG_LIB)
 
-$(OGG_LIB) : $(OGG_TIMESTAMP)
-	+ @REFRESH=0;                                                              \
+$(OGG_LIB): $(OGG_TIMESTAMP)
+	+ @REFRESH=0;                                                                \
 	if [ ! -e ${OGG_TIMESTAMP_INT} ] ; then                                    \
-		REFRESH=1;                                                         \
-	fi;                                                                        \
-	if [ ! -e ${OGG_LIB} ] ; then                                              \
-		REFRESH=1;                                                         \
+		echo "${OGG_TIMESTAMP_INT} doesn't exist";                             \
+		REFRESH=1;                                                             \
 	fi;                                                                        \
 	if [ ${OGG_TIMESTAMP} -nt ${OGG_TIMESTAMP_INT} ] ; then                    \
-		REFRESH=1;                                                         \
+		REFRESH=1;                                                             \
 	fi;                                                                        \
 	if [ $$REFRESH -ne 0 ] ; then                                              \
-	mkdir -p ${OGG_DIR};                                                       \
 	export PATH=$$PATH:${SDKFOLDER}/platform-tools:${ANDROID_NDK};             \
 	echo "changed timestamp for ogg detected building...";                     \
-	cd deps/libogg-${OGG_VERSION};                                             \
-	export CROSS_PREFIX=${CROSS_PREFIX};                                       \
-	export TOOLCHAIN=/tmp/ndk-${TARGET_HOST}-ogg;                              \
-	${ANDROID_NDK}/build/tools/make-standalone-toolchain.sh                    \
-	--toolchain=${TARGET_TOOLCHAIN}${COMPILER_VERSION}                         \
-	--install-dir=$${TOOLCHAIN};                                               \
-	export PATH="$${TOOLCHAIN}/bin:$${PATH}";                                  \
-#	export CC=${CROSS_PREFIX}gcc;                                              \
-	export CXX=${CROSS_PREFIX}g++;                                             \
-	export TARGET_OS=OS_ANDROID_CROSSCOMPILE;                                  \
-	./configure || exit 1;                                                     \
-	$(MAKE) -s || exit 1;                                                      \
-	$(MAKE) install || exit 1;                                                 \
+	cd ${OGG_DIR};                                                             \
+	ndk-build NDEBUG=${NDEBUG} NDK_MODULE_PATH=${NDK_MODULE_PATH}              \
+	APP_ABI=${TARGET_ABI} APP_PLATFORM=${APP_PLATFORM}                         \
+	TARGET_CFLAGS+="${TARGET_CFLAGS_ADDON}"                                    \
+	TARGET_LDFLAGS+="${TARGET_LDFLAGS_ADDON}"                                  \
+	TARGET_CXXFLAGS+="${TARGET_CXXFLAGS_ADDON}" || exit 1;                     \
 	touch ${OGG_TIMESTAMP};                                                    \
 	touch ${OGG_TIMESTAMP_INT};                                                \
-	$(RM) -rf $${TOOLCHAIN};                                                   \
 	else                                                                       \
-		echo "nothing to be done for ogg";                                 \
+		echo "nothing to be done for libogg/libvorbis";                    \
 	fi
 
 clean_ogg :
-	$(RM) -rf ${OGG_DIR} \
-	$(RM) -rf $(ROOT)/deps/libogg
-
-$(VORBIS_TIMESTAMP) : vorbis_download
-	@LAST_MODIF=$$(find ${VORBIS_DIR} -type f -printf '%T@ %p\n' | sort -n | tail -1 | cut -f2- -d" "); \
-	if [ $$(basename $$LAST_MODIF) != "timestamp" ] ; then                     \
-		touch ${VORBIS_TIMESTAMP};                                             \
-	fi
-
-vorbis_download :
-	@if [ ! -d "${VORBIS_DIR}" ] ; then                                        \
-		echo "vorbis sources missing, downloading...";                         \
-		mkdir -p ${ROOT}/deps;                                                 \
-		cd deps;                                                               \
-		wget ${VORBIS_URL_HTTP} || exit 1;                                     \
-		tar -xzf libvorbis-${VORBIS_VERSION}.tar.gz || exit 1;                 \
-		rm libvorbis-${VORBIS_VERSION}.tar.gz;                                 \
-		ln -s libvorbis-${VORBIS_VERSION} libvorbis;                           \
-		cd ${VORBIS_DIR};                                                      \
-	fi
-
-vorbis : $(VORBIS_LIB)
-
-$(VORBIS_LIB) : $(VORBIS_TIMESTAMP)
-	+ @REFRESH=0;                                                              \
-	if [ ! -e ${VORBIS_TIMESTAMP_INT} ] ; then                                 \
-		REFRESH=1;                                                             \
-	fi;                                                                        \
-	if [ ! -e ${VORBIS_LIB} ] ; then                                           \
-		REFRESH=1;                                                             \
-	fi;                                                                        \
-	if [ ${VORBIS_TIMESTAMP} -nt ${VORBIS_TIMESTAMP_INT} ] ; then              \
-		REFRESH=1;                                                             \
-	fi;                                                                        \
-	if [ $$REFRESH -ne 0 ] ; then                                              \
-	mkdir -p ${VORBIS_DIR};                                                    \
-	export PATH=$$PATH:${SDKFOLDER}/platform-tools:${ANDROID_NDK};             \
-	echo "changed timestamp for vorbis detected building...";                  \
-	cd deps/libvorbis-${VORBIS_VERSION};                                       \
-	export CROSS_PREFIX=${CROSS_PREFIX};                                       \
-	export TOOLCHAIN=/tmp/ndk-${TARGET_HOST}-vorbis;                           \
-	${ANDROID_NDK}/build/tools/make-standalone-toolchain.sh                    \
-	--toolchain=${TARGET_TOOLCHAIN}${COMPILER_VERSION}                         \
-	--install-dir=$${TOOLCHAIN};                                               \
-	export PATH="$${TOOLCHAIN}/bin:$${PATH}";                                  \
-#	export CC=${CROSS_PREFIX}gcc;                                              \
-	export CXX=${CROSS_PREFIX}g++;                                             \
-	export TARGET_OS=OS_ANDROID_CROSSCOMPILE;                                  \
-	./configure || exit 1;                                                     \
-	$(MAKE) -s || exit 1;                                                      \
-	touch ${VORBIS_TIMESTAMP};                                                 \
-	touch ${VORBIS_TIMESTAMP_INT};                                             \
-	$(RM) -rf $${TOOLCHAIN};                                                   \
-	else                                                                       \
-		echo "nothing to be done for vorbis";                                  \
-	fi
-
-clean_vorbis :
-	$(RM) -rf ${VORBIS_DIR} \
-	$(RM) -rf $(ROOT)/deps/libvorbis
+	$(RM) -rf ${OGG_DIR}
 
 $(OPENSSL_TIMESTAMP) : openssl_download
 	@LAST_MODIF=$$(find ${OPENSSL_DIR} -type f -printf '%T@ %p\n' | sort -n | tail -1 | cut -f2- -d" "); \
@@ -870,7 +792,7 @@ envpaths :
 clean_all :
 	@$(MAKE) clean_apk;                                                        \
 	$(MAKE) clean_assets clean_iconv clean_irrlicht clean_leveldb clean_curl clean_openssl \
-	clean_openal clean_ogg clean_vorbis clean_gmp clean_manifest;              \
+	clean_openal clean_ogg clean_gmp clean_manifest;                           \
 	sleep 1;                                                                   \
 	$(RM) -r gen libs obj deps bin Debug and_env
 
