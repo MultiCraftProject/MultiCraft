@@ -225,6 +225,7 @@ $(OPENAL_LIB) : $(OPENAL_TIMESTAMP)
 	--toolchain=${TARGET_TOOLCHAIN}${COMPILER_VERSION}                         \
 	--install-dir=$${TOOLCHAIN};                                               \
 	export PATH="$${TOOLCHAIN}/bin:$${PATH}";                                  \
+	export CC=${CROSS_PREFIX}gcc;                                              \
 	export CXX=${CROSS_PREFIX}g++;                                             \
 	export TARGET_OS=OS_ANDROID_CROSSCOMPILE;                                  \
 	cmake .. || exit 1;                                                        \
@@ -432,8 +433,9 @@ $(FREETYPE_LIB) : $(FREETYPE_TIMESTAMP)
 	--install-dir=$${TOOLCHAIN};                                               \
 	export PATH="$${TOOLCHAIN}/bin:$${PATH}";                                  \
 	export CXX=${CROSS_PREFIX}g++;                                             \
+	export CC=${CROSS_PREFIX}gcc;                                              \
 	export TARGET_OS=OS_ANDROID_CROSSCOMPILE;                                  \
-	./configure --prefix=/usr || exit 1;                                       \
+	./configure --host=${TARGET_HOST} --prefix=/usr || exit 1;                 \
 	$(MAKE) -s || exit 1;                                                      \
 	touch ${FREETYPE_TIMESTAMP};                                               \
 	touch ${FREETYPE_TIMESTAMP_INT};                                           \
