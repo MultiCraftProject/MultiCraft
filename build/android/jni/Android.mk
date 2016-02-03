@@ -30,8 +30,8 @@ LOCAL_SRC_FILES := deps/libiconv/lib/.libs/libiconv.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := openal
-LOCAL_SRC_FILES := deps/openal-soft/libs/$(TARGET_LIBDIR)/libopenal.so
+LOCAL_MODULE := openal 
+LOCAL_SRC_FILES := deps/openal/build/libopenal.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -105,7 +105,7 @@ LOCAL_C_INCLUDES :=                               \
 		deps/libiconv/include                     \
 		deps/freetype/include                     \
 		deps/curl/include                         \
-		deps/openal-soft/jni/OpenAL/include       \
+		deps/openal/include                       \
 		deps/libvorbis-libogg-android/jni/include \
 		deps/gmp/usr/include                      \
 		deps/leveldb/include                      \

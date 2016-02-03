@@ -61,11 +61,12 @@ LEVELDB_TIMESTAMP = $(LEVELDB_DIR)/timestamp
 LEVELDB_TIMESTAMP_INT = $(ROOT)/deps/leveldb_timestamp
 LEVELDB_URL_GIT = https://github.com/google/leveldb
 
-OPENAL_DIR = $(ROOT)/deps/openal-soft/
-OPENAL_LIB = $(OPENAL_DIR)libs/$(TARGET_ABI)/libopenal.so
+OPENAL_VERSION = 1.17.2
+OPENAL_DIR = $(ROOT)/deps/openal-soft-$(OPENAL_VERSION)
+OPENAL_LIB = $(OPENAL_DIR)/build/libopenal.so
 OPENAL_TIMESTAMP = $(OPENAL_DIR)/timestamp
 OPENAL_TIMESTAMP_INT = $(ROOT)/deps/openal_timestamp
-OPENAL_URL_GIT = https://github.com/apportable/openal-soft
+OPENAL_URL_HTTP = http://kcat.strangesoft.net/openal-releases/openal-soft-$(OPENAL_VERSION).tar.bz2
 
 OGG_DIR = $(ROOT)/deps/libvorbis-libogg-android/
 OGG_LIB = $(OGG_DIR)libs/$(TARGET_ABI)/libogg.so
@@ -186,40 +187,54 @@ $(PATHCFGFILE) :
 $(OPENAL_TIMESTAMP) : openal_download
 	@LAST_MODIF=$$(find ${OPENAL_DIR} -type f -printf '%T@ %p\n' | sort -n | tail -1 | cut -f2- -d" "); \
 	if [ $$(basename $$LAST_MODIF) != "timestamp" ] ; then                     \
-		touch ${OPENAL_TIMESTAMP};                                            \
+		touch ${OPENAL_TIMESTAMP};                                             \
 	fi
 
 openal_download :
-	@if [ ! -d ${OPENAL_DIR} ] ; then                                          \
+	@if [ ! -d "${OPENAL_DIR}" ] ; then                                        \
 		echo "openal sources missing, downloading...";                         \
 		mkdir -p ${ROOT}/deps;                                                 \
-		cd ${ROOT}/deps ;                                                      \
-		git clone ${OPENAL_URL_GIT} || exit 1;                                 \
+		cd deps;                                                               \
+		wget ${OPENAL_URL_HTTP} || exit 1;                                     \
+		tar -xjf openal-soft-${OPENAL_VERSION}.tar.bz2 || exit 1;              \
+		rm openal-soft-${OPENAL_VERSION}.tar.bz2;                              \
+		ln -s openal-soft-${OPENAL_VERSION} openal;                            \
 	fi
 
 openal : $(OPENAL_LIB)
 
-$(OPENAL_LIB): $(OPENAL_TIMESTAMP)
-	+ @REFRESH=0;                                                                \
+$(OPENAL_LIB) : $(OPENAL_TIMESTAMP)
+	+ @REFRESH=0;                                                              \
 	if [ ! -e ${OPENAL_TIMESTAMP_INT} ] ; then                                 \
-		REFRESH=1;                                                             \
+		REFRESH=1;                                                         \
+	fi;                                                                        \
+	if [ ! -e ${OPENAL_LIB} ] ; then                                           \
+		REFRESH=1;                                                         \
 	fi;                                                                        \
 	if [ ${OPENAL_TIMESTAMP} -nt ${OPENAL_TIMESTAMP_INT} ] ; then              \
-		REFRESH=1;                                                             \
+		REFRESH=1;                                                         \
 	fi;                                                                        \
 	if [ $$REFRESH -ne 0 ] ; then                                              \
+	mkdir -p ${OPENAL_DIR};                                                    \
 	export PATH=$$PATH:${SDKFOLDER}/platform-tools:${ANDROID_NDK};             \
 	echo "changed timestamp for openal detected building...";                  \
-	cd ${OPENAL_DIR};                                                          \
-	ndk-build NDEBUG=${NDEBUG} NDK_MODULE_PATH=${NDK_MODULE_PATH}              \
-	APP_ABI=${TARGET_ABI} TARGET_ARCH_ABI=${TARGET_ABI}                        \
-	APP_PLATFORM=${APP_PLATFORM} TARGET_CFLAGS+="${TARGET_CFLAGS_ADDON}"       \
-	TARGET_LDFLAGS+="${TARGET_LDFLAGS_ADDON}"                                  \
-	TARGET_CXXFLAGS+="${TARGET_CXXFLAGS_ADDON}" || exit 1;                     \
+	cd deps/openal-soft-${OPENAL_VERSION}/build;                                     \
+	export CROSS_PREFIX=${CROSS_PREFIX};                                       \
+	export TOOLCHAIN=/tmp/ndk-${TARGET_HOST}-openal;                           \
+	${ANDROID_NDK}/build/tools/make-standalone-toolchain.sh                    \
+	--toolchain=${TARGET_TOOLCHAIN}${COMPILER_VERSION}                         \
+	--install-dir=$${TOOLCHAIN};                                               \
+	export PATH="$${TOOLCHAIN}/bin:$${PATH}";                                  \
+#	export CC=${CROSS_PREFIX}gcc;                                              \
+	export CXX=${CROSS_PREFIX}g++;                                             \
+	export TARGET_OS=OS_ANDROID_CROSSCOMPILE;                                  \
+	cmake .. || exit 1;                           				   \
+	$(MAKE) -s || exit 1;                                                      \
 	touch ${OPENAL_TIMESTAMP};                                                 \
 	touch ${OPENAL_TIMESTAMP_INT};                                             \
+	$(RM) -rf $${TOOLCHAIN};                                                   \
 	else                                                                       \
-		echo "nothing to be done for openal";                                  \
+		echo "nothing to be done for openal";                              \
 	fi
 
 clean_openal :
