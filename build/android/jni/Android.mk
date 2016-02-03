@@ -372,3 +372,6 @@ ifdef GPROF
 $(call import-module,android-ndk-profiler)
 endif
 $(call import-module,android/native_app_glue)
+=======
+12345fghgdfgh
+>>>>>>> 03e6c3ed1222053f6d1a8c080da11530acaac09a

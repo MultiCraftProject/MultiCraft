@@ -869,3 +869,6 @@ clean_manifest :
 	rm -rf ${ROOT}/AndroidManifest.xml
 
 clean : clean_apk clean_assets
+=======
+12345gfhgdf
+>>>>>>> 03e6c3ed1222053f6d1a8c080da11530acaac09a
