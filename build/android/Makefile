@@ -5,7 +5,7 @@ OS := $(shell uname)
 # compile with GPROF
 # GPROF = 1
 
-# build for build platform  
+# build for build platform
 APP_PLATFORM = android-16
 
 # paths used for timestaps, dependencys, tree config and libs
