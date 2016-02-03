@@ -109,7 +109,8 @@ FREETYPE_DIR = $(ROOT)/deps/freetype-$(FREETYPE_VERSION)
 FREETYPE_LIB = $(FREETYPE_DIR)/objs/.libs/libfreetype.a
 FREETYPE_TIMESTAMP = $(FREETYPE_DIR)/timestamp
 FREETYPE_TIMESTAMP_INT = $(ROOT)/deps/freetype_timestamp
-FREETYPE_URL_HTTP = http://download.savannah.gnu.org/releases/freetype/freetype-$(FREETYPE_VERSION).tar.bz2
+FREETYPE_URL_HTTP = http://sourceforge.net/projects/freetype/files/freetype2/2.6.2/freetype-$(FREETYPE_VERSION).tar.bz2
+#http://download.savannah.gnu.org/releases/freetype/freetype-$(FREETYPE_VERSION).tar.bz2
 
 ICONV_VERSION = 1.14
 ICONV_DIR = $(ROOT)/deps/libiconv/
@@ -435,7 +436,9 @@ $(FREETYPE_LIB) : $(FREETYPE_TIMESTAMP)
 	export CXX=${CROSS_PREFIX}g++;                                             \
 	export CC=${CROSS_PREFIX}gcc;                                              \
 	export TARGET_OS=OS_ANDROID_CROSSCOMPILE;                                  \
-	./configure --host=${TARGET_HOST} --prefix=/usr || exit 1;                 \
+	export LIBGMP_LDFLAGS="-avoid-version";                                    \
+	export LIBGMPXX_LDFLAGS="-avoid-version";                                  \
+	./configure  --host=${TARGET_HOST}-androideabi --without-zlib --prefix=/usr || exit 1; \
 	$(MAKE) -s || exit 1;                                                      \
 	touch ${FREETYPE_TIMESTAMP};                                               \
 	touch ${FREETYPE_TIMESTAMP_INT};                                           \
