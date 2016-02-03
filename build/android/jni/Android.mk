@@ -371,4 +371,5 @@ include $(BUILD_SHARED_LIBRARY)
 ifdef GPROF
 $(call import-module,android-ndk-profiler)
 endif
+
 $(call import-module,android/native_app_glue)
