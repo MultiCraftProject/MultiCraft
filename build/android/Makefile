@@ -854,3 +854,4 @@ clean_manifest :
 	rm -rf ${ROOT}/AndroidManifest.xml
 
 clean : clean_apk clean_assets
+
