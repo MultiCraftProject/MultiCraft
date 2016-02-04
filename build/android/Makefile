@@ -104,12 +104,11 @@ GMP_TIMESTAMP = $(GMP_DIR)/timestamp
 GMP_TIMESTAMP_INT = $(ROOT)/deps/gmp_timestamp
 GMP_URL_HTTP = https://gmplib.org/download/gmp/gmp-$(GMP_VERSION).tar.bz2
 
-FREETYPE_VERSION = 2.6.2
-FREETYPE_DIR = $(ROOT)/deps/freetype-$(FREETYPE_VERSION)
-FREETYPE_LIB = $(FREETYPE_DIR)/objs/.libs/libfreetype.a
-FREETYPE_TIMESTAMP = $(FREETYPE_DIR)/timestamp
+FREETYPE_DIR = $(ROOT)/deps/freetype2-android/
+FREETYPE_LIB = $(FREETYPE_DIR)/Android/obj/local/$(TARGET_ABI)/libfreetype2-static.a
+FREETYPE_TIMESTAMP = $(FREETYPE_DIR)timestamp
 FREETYPE_TIMESTAMP_INT = $(ROOT)/deps/freetype_timestamp
-FREETYPE_URL_HTTP = http://sourceforge.net/projects/freetype/files/freetype2/2.6.2/freetype-$(FREETYPE_VERSION).tar.bz2
+FREETYPE_URL_GIT = https://github.com/cdave1/freetype2-android
 #http://download.savannah.gnu.org/releases/freetype/freetype-$(FREETYPE_VERSION).tar.bz2
 
 ICONV_VERSION = 1.14
@@ -398,21 +397,17 @@ $(FREETYPE_TIMESTAMP) : freetype_download
 	fi
 
 freetype_download :
-
-	@if [ ! -d "${FREETYPE_DIR}" ] ; then                                       \
-		echo "freetype sources missing, downloading...";                        \
-		mkdir -p ${ROOT}/deps;                                                  \
-		cd deps;                                                                \
-		wget ${FREETYPE_URL_HTTP} || exit 1;                                    \
-		tar -xjf freetype-${FREETYPE_VERSION}.tar.bz2 || exit 1;                \
-		rm freetype-${FREETYPE_VERSION}.tar.bz2;                                \
-		ln -s freetype-${FREETYPE_VERSION} freetype;                            \
+	@if [ ! -d ${FREETYPE_DIR} ] ; then                                        \
+		echo "freetype sources missing, downloading...";                       \
+		mkdir -p ${ROOT}/deps;                                                 \
+		cd deps;                                                               \
+		git clone ${FREETYPE_URL_GIT} || exit 1;                               \
 	fi
 
 freetype : $(FREETYPE_LIB)
 
 $(FREETYPE_LIB) : $(FREETYPE_TIMESTAMP)
-	+ @REFRESH=0;                                                              \
+	+ @REFRESH=0;                                                                \
 	if [ ! -e ${FREETYPE_TIMESTAMP_INT} ] ; then                               \
 		REFRESH=1;                                                             \
 	fi;                                                                        \
@@ -426,30 +421,20 @@ $(FREETYPE_LIB) : $(FREETYPE_TIMESTAMP)
 	mkdir -p ${FREETYPE_DIR};                                                  \
 	export PATH=$$PATH:${SDKFOLDER}/platform-tools:${ANDROID_NDK};             \
 	echo "changed timestamp for freetype detected building...";                \
-	cd deps/freetype-${FREETYPE_VERSION};                                      \
-	export CROSS_PREFIX=${CROSS_PREFIX};                                       \
-	export TOOLCHAIN=/tmp/ndk-${TARGET_HOST}-freetype;                         \
-	${ANDROID_NDK}/build/tools/make-standalone-toolchain.sh                    \
-	--toolchain=${TARGET_TOOLCHAIN}${COMPILER_VERSION}                         \
-	--install-dir=$${TOOLCHAIN};                                               \
-	export PATH="$${TOOLCHAIN}/bin:$${PATH}";                                  \
-	export CXX=${CROSS_PREFIX}g++;                                             \
-	export CC=${CROSS_PREFIX}gcc;                                              \
-	export TARGET_OS=OS_ANDROID_CROSSCOMPILE;                                  \
-	export LIBGMP_LDFLAGS="-avoid-version";                                    \
-	export LIBGMPXX_LDFLAGS="-avoid-version";                                  \
-	./configure  --host=${TARGET_HOST}-androideabi --without-zlib --prefix=/usr || exit 1; \
-	$(MAKE) -s || exit 1;                                                      \
+	cd ${FREETYPE_DIR}/Android/jni;                                            \
+	ndk-build NDEBUG=${NDEBUG} NDK_MODULE_PATH=${NDK_MODULE_PATH}              \
+	APP_PLATFORM=${APP_PLATFORM} APP_ABI=${TARGET_ABI}                         \
+	TARGET_CFLAGS+="${TARGET_CFLAGS_ADDON}"                                    \
+	TARGET_LDFLAGS+="${TARGET_LDFLAGS_ADDON}"                                  \
+	TARGET_CXXFLAGS+="${TARGET_CXXFLAGS_ADDON}" || exit 1;                     \
 	touch ${FREETYPE_TIMESTAMP};                                               \
 	touch ${FREETYPE_TIMESTAMP_INT};                                           \
-	$(RM) -rf $${TOOLCHAIN};                                                   \
 	else                                                                       \
 		echo "nothing to be done for freetype";                                \
 	fi
 
 clean_freetype :
 	$(RM) -rf ${FREETYPE_DIR}
-
 
 $(ICONV_TIMESTAMP) : iconv_download
 	@LAST_MODIF=$$(find ${ICONV_DIR} -type f -printf '%T@ %p\n' | sort -n | tail -1 | cut -f2- -d" "); \
