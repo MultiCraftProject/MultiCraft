@@ -7,7 +7,7 @@ LOCAL_MODULE := Irrlicht
 LOCAL_SRC_FILES := deps/irrlicht/lib/Android/libIrrlicht.a
 include $(PREBUILT_STATIC_LIBRARY)
 
-ifeq ($(HAVE_LEVELDB), 1)
+ifeq ($(HAVE_LEVELDB), 1)  
 	include $(CLEAR_VARS)
 	LOCAL_MODULE := LevelDB
 	LOCAL_SRC_FILES := deps/leveldb/libleveldb.a
@@ -31,7 +31,7 @@ include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := openal
-LOCAL_SRC_FILES := deps/openal-soft/libs/$(TARGET_LIBDIR)/libopenal.so
+LOCAL_SRC_FILES := deps/openal/build/libopenal.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -105,7 +105,7 @@ LOCAL_C_INCLUDES :=                               \
 		deps/libiconv/include                     \
 		deps/freetype2-android/include            \
 		deps/curl/include                         \
-		deps/openal-soft/jni/OpenAL/include       \
+		deps/openal/include                       \
 		deps/libvorbis-libogg-android/jni/include \
 		deps/gmp/usr/include                      \
 		deps/leveldb/include                      \
