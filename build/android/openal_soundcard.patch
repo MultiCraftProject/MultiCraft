@@ -1,0 +1,11 @@
+--- /Alc/backends/oss.c.orig	2016-01-25 05:12:39.000000000 +0200
++++ /Alc/backends/oss.c	2016-02-08 09:38:49.036128913 +0200
+@@ -40,7 +40,7 @@
+ 
+ #include "backends/base.h"
+ 
+-#include <sys/soundcard.h>
++#include <linux/soundcard.h>
+ 
+ /*
+  * The OSS documentation talks about SOUND_MIXER_READ, but the header
