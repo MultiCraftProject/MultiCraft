@@ -1,0 +1,11 @@
+--- /XCompile-Android.txt.orig	2016-01-25 05:12:39.000000000 +0200
++++ /XCompile-Android.txt	2016-02-09 09:02:58.000000000 +0200
+@@ -14,7 +14,7 @@
+ SET(CMAKE_RC_COMPILER "${HOST}-windres")
+ 
+ # here is the target environment located
+-SET(CMAKE_FIND_ROOT_PATH "SET THIS TO THE NDK TOOLCHAIN'S INSTALL PATH")
++SET(CMAKE_FIND_ROOT_PATH "${TOOLCHAIN}")
+ 
+ # here is where stuff gets installed to
+ SET(CMAKE_INSTALL_PREFIX "${CMAKE_FIND_ROOT_PATH}" CACHE STRING "Install path prefix, prepended onto install directories." FORCE)
