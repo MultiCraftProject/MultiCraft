@@ -848,7 +848,7 @@ clean_assets :
 	@$(RM) -r assets
 
 apk: $(PATHCFGFILE) assets $(ICONV_LIB) $(IRRLICHT_LIB) $(CURL_LIB) $(GMP_LIB) $(LEVELDB_TARGET)       \
-	$(OPENAL_LIB) $(OGG_LIB) $(VORBIS_LIB) prep_srcdir $(ROOT)/jni/src/android_version.h     \
+	$(OPENAL_LIB) $(VORBIS_LIB) prep_srcdir $(ROOT)/jni/src/android_version.h     \
 	$(ROOT)/jni/src/android_version_githash.h sqlite3_download
 	@export NDEBUG=$$NDEBUG; $(MAKE) manifest;                                 \
 	export PATH=$$PATH:${SDKFOLDER}/platform-tools:${ANDROID_NDK};             \
