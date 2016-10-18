@@ -208,6 +208,7 @@ void initializePathsAndroid()
 			"getExternalStorageDirectory");
 	path_user    = path_storage + DIR_DELIM + "Android/data/mobi.MultiCraft/Files";
 	path_share   = path_user;
+	path_locale  = path_user + DIR_DELIM + "locale";
 }
 
 void showInputDialog(const std::string& acceptButton, const  std::string& hint,
