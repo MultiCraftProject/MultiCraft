@@ -839,19 +839,19 @@ assets : $(ASSETS_TIMESTAMP)
 	cp -r ${PROJ_ROOT}/fonts/retrovillenc.ttf ${APP_ROOT}/assets/MultiCraft/fonts/; \
 	cp -r ${PROJ_ROOT}/games ${APP_ROOT}/assets/MultiCraft;                    \
 	mkdir -p ${APP_ROOT}/assets/MultiCraft/locale;                              \
-	PREV_WD=$$(pwd)
-	cd ${PROJ_ROOT}/po;                                                        \
+	pushd ${PROJ_ROOT}/po;                                                     \
 	for lang in *; do                                                          \
 		[ $${#lang} -ne 2 ] && continue;                                       \
 		MOPATH=${APP_ROOT}/assets/MultiCraft/locale/$$lang/LC_MESSAGES;        \
 		mkdir -p $$MOPATH;                                                     \
-		cd $$lang;                                                             \
+		pushd $$lang;                                                          \
 		for fn in *.po; do                                                     \
 			newfn=$${fn/.po/.mo};                                              \
 			msgfmt -o $$MOPATH/$$newfn $$fn;                                   \
 		done;                                                                  \
-		cd ..;                                                                 \
+		popd;                                                                  \
 	done;                                                                      \
+	popd;                                                                      \
 	cp -r ${PROJ_ROOT}/textures ${APP_ROOT}/assets/MultiCraft;                 \
 	cp -r ${PROJ_ROOT}/worlds ${APP_ROOT}/assets/MultiCraft;                   \
 	cd ${APP_ROOT}/assets ||  exit 1;                                          \
