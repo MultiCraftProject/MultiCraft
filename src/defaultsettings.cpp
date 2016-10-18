@@ -334,7 +334,18 @@ void set_default_settings(Settings *settings)
 
 	settings->setDefault("high_precision_fpu", "true");
 
+#ifdef __ANDROID__
+	// Auto-detect language on Android
+	// FIXME: this code should be in init_gettext() ideally
+	char lang[3] = {0};
+	AConfiguration_getLanguage(porting::app_global->config, lang);
+	if (!lang[0])
+		errorstream << "Language auto-detection failed!" << std::endl;
+	settings->setDefault("language", lang);
+#else
 	settings->setDefault("language", "");
+#endif
+
 	settings->setDefault("mainmenu_last_selected_world", "1");
 
 #ifdef __ANDROID__
