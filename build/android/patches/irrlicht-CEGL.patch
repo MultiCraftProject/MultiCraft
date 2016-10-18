@@ -1,5 +1,5 @@
---- irrlicht/source/Irrlicht/CEGLManager.cpp.orig	2015-08-29 15:43:09.000000000 +0300
-+++ irrlicht/source/Irrlicht/CEGLManager.cpp	2016-10-17 23:43:12.963361978 +0300
+--- irrlicht/source/Irrlicht/CEGLManager.cpp.orig	2016-10-19 01:33:56.172685940 +0200
++++ irrlicht/source/Irrlicht/CEGLManager.cpp	2016-10-19 01:34:18.678805241 +0200
 @@ -9,6 +9,10 @@
  #include "irrString.h"
  #include "os.h"
