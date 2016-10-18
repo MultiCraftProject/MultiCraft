@@ -2138,8 +2138,8 @@ ServerMap::ServerMap(std::string savedir, IGameDef *gamedef, EmergeManager *emer
 	Settings conf;
 	bool succeeded = conf.readConfigFile(conf_path.c_str());
 	if (!succeeded || !conf.exists("backend")) {
-		// fall back to sqlite3
-		conf.set("backend", "sqlite3");
+		// fall back to leveldb
+		conf.set("backend", "leveldb");
 	}
 	std::string backend = conf.get("backend");
 	dbase = createDatabase(backend, savedir, conf);
