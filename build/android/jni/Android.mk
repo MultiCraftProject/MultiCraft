@@ -28,6 +28,11 @@ LOCAL_SRC_FILES := deps/libiconv/lib/.libs/libiconv.a
 include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
+LOCAL_MODULE := intl
+LOCAL_SRC_FILES := deps/libintl/libintl.a
+include $(PREBUILT_STATIC_LIBRARY)
+
+include $(CLEAR_VARS)
 LOCAL_MODULE := openal
 LOCAL_SRC_FILES := deps/openal-soft/android/obj/local/$(APP_ABI)/libopenal.a
 include $(PREBUILT_STATIC_LIBRARY)
@@ -42,22 +47,6 @@ LOCAL_MODULE := LuaJIT
 LOCAL_SRC_FILES := deps/luajit/src/libluajit.a
 include $(PREBUILT_STATIC_LIBRARY)
 
-#include $(CLEAR_VARS)
-#LOCAL_MODULE := GNUIntl
-#LOCAL_SRC_FILES := deps/gnuintl/obj/local/$(APP_ABI)/libgnuintl.so
-#LOCAL_CFLAGS := -DHAVE_CONFIG_H
-#LOCAL_CFLAGS += -DDEPENDS_ON_LIBICONV=1
-#LOCAL_CFLAGS += -Drelocate=libintl_relocate
-#LOCAL_CFLAGS += -Dset_relocation_prefix=libintl_set_relocation_prefix
-#LOCAL_CFLAGS += -DNO_XMALLOC
-#LOCAL_CFLAGS += -DIN_LIBRARY
-#LOCAL_CFLAGS += -DENABLE_RELOCATABLE=1
-#LOCAL_CFLAGS += -DIN_LIBINTL
-#LOCAL_CFLAGS += -DBUILDING_DLL
-#LOCAL_CFLAGS += -DBUILDING_LIBINTL
-#LOCAL_CFLAGS += -DLOCALE_ALIAS_PATH=\"/sdcard/Android/data/mobi.MultiCraft/files\"
-#include $(PREBUILT_SHARED_LIBRARY)
-
 include $(CLEAR_VARS)
 LOCAL_MODULE := multicraft
 
@@ -70,6 +59,7 @@ LOCAL_CFLAGS := -D_IRR_ANDROID_PLATFORM_ \
 		-DUSE_CURL=1                     \
 		-DUSE_SOUND=1                    \
 		-DUSE_FREETYPE=1                 \
+		-DUSE_GETTEXT=1                  \
 		-DUSE_LEVELDB=1                  \
 		$(GPROF_DEF)                     \
 		-pipe -fstrict-aliasing
@@ -106,6 +96,7 @@ LOCAL_C_INCLUDES := \
 		jni/src/gmp                               \
 		deps/irrlicht/include                     \
 		deps/libiconv/include                     \
+		deps/libintl                              \
 		deps/freetype/include                     \
 		deps/curl/include                         \
 		deps/openal-soft/include                  \
@@ -113,8 +104,6 @@ LOCAL_C_INCLUDES := \
 		deps/sqlite/                              \
 		deps/leveldb/include                      \
 		deps/luajit/src                           \
-#		deps/gnuintl/jni/include                  \
-#		deps/gnuintl/jni/src
 
 LOCAL_SRC_FILES := \
 		jni/src/ban.cpp                           \
@@ -310,8 +299,7 @@ LOCAL_SRC_FILES += \
 # JSONCPP
 LOCAL_SRC_FILES += jni/src/json/jsoncpp.cpp
 
-LOCAL_STATIC_LIBRARIES := Irrlicht LevelDB freetype curl iconv LuaJIT openal vorbis android_native_app_glue $(PROFILER_LIBS)
-#LOCAL_SHARED_LIBRARIES := GNUIntl
+LOCAL_STATIC_LIBRARIES := Irrlicht LevelDB freetype curl iconv intl LuaJIT openal vorbis android_native_app_glue $(PROFILER_LIBS)
 
 LOCAL_LDLIBS := -lEGL -lGLESv1_CM -lGLESv2 -landroid -lOpenSLES
 
