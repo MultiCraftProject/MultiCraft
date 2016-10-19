@@ -555,13 +555,14 @@ $(INTL_LIB) : $(INTL_TIMESTAMP)
 	cd ..;                                                                     \
 	touch ${INTL_TIMESTAMP};                                                   \
 	touch ${INTL_TIMESTAMP_INT};                                               \
-	rm -rf ${TOOLCHAIN};                                                       \
+	rm -rf $${TOOLCHAIN};                                                       \
 	else                                                                       \
 		echo "nothing to be done for intl";                                    \
 	fi
 
 clean_intl :
-	$(RM) -rf ${INTL_DIR}
+	find ${INTL_DIR} -type f -name '*.a' -o -name '*.o' -delete; \
+	touch ${INTL_TIMESTAMP}
 
 #Note: Texturehack patch is required for gpu's not supporting color format
 #      correctly. Known bad GPU:
