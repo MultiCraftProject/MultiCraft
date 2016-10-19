@@ -49,7 +49,7 @@ CROSS_PREFIX = arm-linux-androideabi-
 
 ################################################################################
 
-ASSETS_TIMESTAMP = deps/assets_timestamp
+ASSETS_TIMESTAMP = $(ANDR_ROOT)/deps/assets_timestamp
 
 LEVELDB_URL = https://github.com/google/leveldb/archive/v$(LEVELDB_VER).zip
 LEVELDB_VER = 1.19
@@ -752,12 +752,12 @@ clean_sqlite3:
 
 $(ASSETS_TIMESTAMP) : $(IRRLICHT_LIB)
 	@mkdir -p ${ANDR_ROOT}/deps;                                                \
-	for DIRNAME in {builtin,client,doc,fonts,games,mods,po,textures}; do        \
-		LAST_MODIF=$$(find ${PROJ_ROOT}/${DIRNAME} -type f -printf '%T@ %p\n' | sort -n | tail -1 | cut -f2- -d" "); \
+	for DIRNAME in {builtin,client,doc,fonts,games,po,textures}; do        \
+		LAST_MODIF=$$(find ${PROJ_ROOT}/$$DIRNAME -type f -printf '%T@ %p\n' | sort -n | tail -1 | cut -f2- -d" "); \
 		if [ $$(basename $$LAST_MODIF) != "timestamp" ]; then               \
-			touch ${PROJ_ROOT}/${DIRNAME}/timestamp;                    \
+			touch ${PROJ_ROOT}/$$DIRNAME/timestamp;                    \
 			touch ${ASSETS_TIMESTAMP};                                  \
-			echo ${DIRNAME} changed $$LAST_MODIF;                       \
+			echo $$DIRNAME changed $$LAST_MODIF;                       \
 		fi;                                                                 \
 	done;                                                                       \
 	LAST_MODIF=$$(find ${IRRLICHT_DIR}/media -type f -printf '%T@ %p\n' | sort -n | tail -1 | cut -f2- -d" "); \
@@ -826,11 +826,16 @@ clean_luajit:
 
 assets : $(ASSETS_TIMESTAMP)
 	@REFRESH=0;                                                                \
-	if [ ! -e ${ASSETS_TIMESTAMP} ] ; then                                     \
-		REFRESH=1;                                                         \
+	if [ ! -e ${ASSETS_TIMESTAMP}.old ] ; then                                 \
+		REFRESH=1;                                                             \
 	fi;                                                                        \
-	if [ ${ASSETS_TIMESTAMP} -nt ${ASSETS_TIMESTAMP} ] ; then                  \
-		REFRESH=1;                                                         \
+	if [ ${ASSETS_TIMESTAMP} -nt ${ASSETS_TIMESTAMP}.old ] ; then          \
+		REFRESH=1;                                                             \
+	fi;                                                                        \
+	if [ ! -e ${APP_ROOT}/assets ] ; then                                      \
+		REFRESH=1;                                                             \
+	fi;                                                                        \
+	if [ $$REFRESH -ne 0 ] ; then                                              \
 	echo "assets changed, refreshing...";                                      \
 	$(MAKE) clean_assets;                                                      \
 	mkdir -p ${APP_ROOT}/assets/MultiCraft;                                    \
@@ -838,7 +843,7 @@ assets : $(ASSETS_TIMESTAMP)
 	mkdir ${APP_ROOT}/assets/MultiCraft/fonts;                                 \
 	cp -r ${PROJ_ROOT}/fonts/retrovillenc.ttf ${APP_ROOT}/assets/MultiCraft/fonts/; \
 	cp -r ${PROJ_ROOT}/games ${APP_ROOT}/assets/MultiCraft;                    \
-	mkdir -p ${APP_ROOT}/assets/MultiCraft/locale;                              \
+	mkdir -p ${APP_ROOT}/assets/MultiCraft/locale;                             \
 	pushd ${PROJ_ROOT}/po;                                                     \
 	for lang in *; do                                                          \
 		[ $${#lang} -ne 2 ] && continue;                                       \
@@ -861,18 +866,18 @@ assets : $(ASSETS_TIMESTAMP)
 	find . -type d -path "*.git" -exec rm -rf {} \; ;                          \
 	find . -type d -path "*.svn" -exec rm -rf {} \; ;                          \
 	find . -type f -path "*.gitignore" -exec rm -rf {} \; ;                    \
-	ls -R | grep ":$$" | sed -e 's/:$$//' -e 's/\.//' -e 's/^\///' > "index.txt"; \
-	find -L MultiCraft > filelist.txt;                                         \
+	cd MultiCraft;                                                             \
+	ls -R | grep ":$$" | sed -e 's/:$$//' -e 's/\.//' -e 's/^\///' > ../index.txt; \
+	find -L . | cut -c 3- > ../filelist.txt;                                   \
 	echo "Creating Files.zip";                                                 \
-	zip -r Files.zip MultiCraft;                                               \
-	touch ${ASSETS_TIMESTAMP};                                                 \
-	touch ${ASSETS_TIMESTAMP_INT};                                             \
+	zip -r ../Files.zip *;                                                     \
+	cp ${ASSETS_TIMESTAMP} ${ASSETS_TIMESTAMP}.old;                            \
 	else                                                                       \
 		echo "nothing to be done for assets";                                  \
 	fi
 
 clean_assets :
-	@$(RM) -r assets
+	@$(RM) -r ${APP_ROOT}/assets
 
 # $(MPIR_LIB)
 apk: local.properties $(ICONV_LIB) $(IRRLICHT_LIB) $(CURL_LIB) $(LEVELDB_LIB) $(LUAJIT_LIB) \
