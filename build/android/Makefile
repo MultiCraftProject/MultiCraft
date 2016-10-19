@@ -869,6 +869,11 @@ assets : $(ASSETS_TIMESTAMP)
 	cd MultiCraft;                                                             \
 	ls -R | grep ":$$" | sed -e 's/:$$//' -e 's/\.//' -e 's/^\///' > ../index.txt; \
 	find -L . | cut -c 3- > ../filelist.txt;                                   \
+	echo "Creating worlds.zip";                                                \
+	zip -r ../worlds.zip worlds;                                               \
+	echo "Creating games.zip";                                                 \
+	zip -r ../games.zip games;                                                 \
+	rm -r worlds games;                                                        \
 	echo "Creating Files.zip";                                                 \
 	zip -r ../Files.zip *;                                                     \
 	cp ${ASSETS_TIMESTAMP} ${ASSETS_TIMESTAMP}.old;                            \
