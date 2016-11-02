@@ -394,12 +394,12 @@ touch_gui_button_id TouchScreenGUI::getButtonID(s32 x, s32 y)
 	return after_last_element_id;
 }
 
-touch_gui_button_id TouchScreenGUI::getButtonID(int eventID)
+touch_gui_button_id TouchScreenGUI::getButtonID(size_t eventID)
 {
 	for (unsigned int i = 0; i < after_last_element_id; i++) {
 		button_info* btn = &m_buttons[i];
 
-		std::vector<int>::iterator id =
+		std::vector<size_t>::iterator id =
 				std::find(btn->ids.begin(),btn->ids.end(), eventID);
 
 		if (id != btn->ids.end())
@@ -436,9 +436,9 @@ bool TouchScreenGUI::isHUDButton(const SEvent &event)
 	return false;
 }
 
-bool TouchScreenGUI::isReleaseHUDButton(int eventID)
+bool TouchScreenGUI::isReleaseHUDButton(size_t eventID)
 {
-	std::map<int,irr::EKEY_CODE>::iterator iter = m_hud_ids.find(eventID);
+	std::map<size_t,irr::EKEY_CODE>::iterator iter = m_hud_ids.find(eventID);
 
 	if (iter != m_hud_ids.end()) {
 		SEvent* translated = new SEvent();
@@ -457,7 +457,7 @@ bool TouchScreenGUI::isReleaseHUDButton(int eventID)
 }
 
 void TouchScreenGUI::handleButtonEvent(touch_gui_button_id button,
-		int eventID, bool action)
+		size_t eventID, bool action)
 {
 	button_info* btn = &m_buttons[button];
 	SEvent* translated = new SEvent();
@@ -484,7 +484,7 @@ void TouchScreenGUI::handleButtonEvent(touch_gui_button_id button,
 	/* remove event */
 	if ((!action) || (btn->immediate_release)) {
 
-		std::vector<int>::iterator pos =
+		std::vector<size_t>::iterator pos =
 				std::find(btn->ids.begin(),btn->ids.end(), eventID);
 		/* has to be in touch list */
 		assert(pos != btn->ids.end());
@@ -500,7 +500,7 @@ void TouchScreenGUI::handleButtonEvent(touch_gui_button_id button,
 }
 
 
-void TouchScreenGUI::handleReleaseEvent(int evt_id)
+void TouchScreenGUI::handleReleaseEvent(size_t evt_id)
 {
 	touch_gui_button_id button = getButtonID(evt_id);
 
@@ -611,7 +611,7 @@ void TouchScreenGUI::translateEvent(const SEvent &event)
 		toadd.Y  = event.TouchInput.Y;
 		m_known_ids.push_back(toadd);
 
-		int eventID = event.TouchInput.ID;
+		size_t eventID = event.TouchInput.ID;
 
 		touch_gui_button_id button =
 				getButtonID(event.TouchInput.X, event.TouchInput.Y);
@@ -636,7 +636,7 @@ void TouchScreenGUI::translateEvent(const SEvent &event)
 			}
 		}
 
-		m_pointerpos[event.TouchInput.ID] = v2s32(event.TouchInput.X, event.TouchInput.Y);
+		storePointerPos(event.TouchInput.ID, v2s32(event.TouchInput.X, event.TouchInput.Y));
 	}
 	else if (event.TouchInput.Event == ETIE_LEFT_UP) {
 		verbosestream << "Up event for pointerid: " << event.TouchInput.ID << std::endl;
@@ -644,9 +644,9 @@ void TouchScreenGUI::translateEvent(const SEvent &event)
 	}
 	else {
 		assert(event.TouchInput.Event == ETIE_MOVED);
-		int move_idx = event.TouchInput.ID;
+		size_t move_idx = event.TouchInput.ID;
 
-		if (m_pointerpos[event.TouchInput.ID] ==
+		if (loadPointerPos(event.TouchInput.ID) ==
 				v2s32(event.TouchInput.X, event.TouchInput.Y)) {
 			return;
 		}
@@ -655,11 +655,12 @@ void TouchScreenGUI::translateEvent(const SEvent &event)
 			if ((event.TouchInput.ID == m_move_id) &&
 				(!m_move_sent_as_mouse_event || !g_settings->getBool("touchtarget"))) {
 
+				v2s32 old_pos = loadPointerPos(event.TouchInput.ID);
 				double distance = sqrt(
-						(m_pointerpos[event.TouchInput.ID].X - event.TouchInput.X) *
-						(m_pointerpos[event.TouchInput.ID].X - event.TouchInput.X) +
-						(m_pointerpos[event.TouchInput.ID].Y - event.TouchInput.Y) *
-						(m_pointerpos[event.TouchInput.ID].Y - event.TouchInput.Y));
+						(old_pos.X - event.TouchInput.X) *
+						(old_pos.X - event.TouchInput.X) +
+						(old_pos.Y - event.TouchInput.Y) *
+						(old_pos.Y - event.TouchInput.Y));
 
 				if ((distance > g_settings->getU16("touchscreen_threshold")) ||
 						(m_move_has_really_moved)) {
@@ -668,8 +669,8 @@ void TouchScreenGUI::translateEvent(const SEvent &event)
 					s32 Y = event.TouchInput.Y;
 
 					// update camera_yaw and camera_pitch
-					s32 dx = X - m_pointerpos[event.TouchInput.ID].X;
-					s32 dy = Y - m_pointerpos[event.TouchInput.ID].Y;
+					s32 dx = X - loadPointerPos(event.TouchInput.ID).X;
+					s32 dy = Y - loadPointerPos(event.TouchInput.ID).Y;
 
 					/* adapt to similar behaviour as pc screen */
 					double d         = g_settings->getFloat("mouse_sensitivity");
@@ -690,7 +691,7 @@ void TouchScreenGUI::translateEvent(const SEvent &event)
 							->getSceneManager()
 							->getSceneCollisionManager()
 							->getRayFromScreenCoordinates(v2s32(X, Y));
-					m_pointerpos[event.TouchInput.ID] = v2s32(X, Y);
+					storePointerPos(event.TouchInput.ID, v2s32(X, Y));
 				}
 			}
 			else if ((event.TouchInput.ID == m_move_id) &&
@@ -714,7 +715,7 @@ void TouchScreenGUI::handleChangedButton(const SEvent &event)
 		if (m_buttons[i].ids.empty()) {
 			continue;
 		}
-		for (std::vector<int>::iterator iter = m_buttons[i].ids.begin();
+		for (std::vector<size_t>::iterator iter = m_buttons[i].ids.begin();
 				iter != m_buttons[i].ids.end(); ++iter) {
 
 			if (event.TouchInput.ID == *iter) {
@@ -916,4 +917,17 @@ void TouchScreenGUI::show()
 		return;
 
 	Toggle(true);
+}
+
+inline void TouchScreenGUI::storePointerPos(size_t ID, v2s32 pos)
+{
+	m_pointerpos[ID] = pos;
+}
+
+inline v2s32 TouchScreenGUI::loadPointerPos(size_t ID)
+{
+	std::map<size_t, v2s32>::const_iterator it = m_pointerpos.find(ID);
+	if (it == m_pointerpos.cend())
+		return v2s32(0, 0);
+	return it->second;
 }
