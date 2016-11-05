@@ -387,7 +387,7 @@ bool Thread::bindToProcessor(unsigned int proc_number)
 	return pthread_processor_bind_np(PTHREAD_BIND_ADVISORY_NP,
 			&answer, proc_number, getThreadHandle()) == 0;
 
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) || defined(__IOS__)
 
 	struct thread_affinity_policy tapol;
 

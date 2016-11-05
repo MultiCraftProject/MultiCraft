@@ -138,7 +138,11 @@ FileLogOutput file_log_output;
 
 static OptionList allowed_options;
 
+#ifdef __IOS__
+int real_main(int argc, char *argv[])
+#else
 int main(int argc, char *argv[])
+#endif
 {
 	int retval;
 
@@ -168,6 +172,9 @@ int main(int argc, char *argv[])
 #ifdef __ANDROID__
 	porting::initAndroid();
 	porting::initializePathsAndroid();
+#elif defined(__IOS__)
+	porting::initializePathsiOS();
+	porting::copyAssets();
 #else
 	porting::initializePaths();
 #endif
@@ -426,7 +433,7 @@ static void setup_log_params(const Settings &cmd_args)
 
 static bool create_userdata_path()
 {
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
 	if (fs::PathExists(porting::path_user))
 		return true;
 #endif

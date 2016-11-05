@@ -1128,7 +1128,7 @@ static inline void create_formspec_menu(GUIFormSpecMenu **cur_formspec,
 	}
 }
 
-#ifdef __ANDROID__
+#ifdef HAVE_TOUCHSCREENGUI
 #define SIZE_TAG "size[11,5.5]"
 #else
 #define SIZE_TAG "size[11,5.5,true]" // Fixed size on desktop
@@ -1162,7 +1162,7 @@ static void show_pause_menu(GUIFormSpecMenu **cur_formspec,
 		bool singleplayermode)
 {
 
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !defined(__IOS__)
 	float ypos = singleplayermode ? 0.5 : 0.1;
 #else
 	float ypos = 1.0;
@@ -1173,7 +1173,7 @@ static void show_pause_menu(GUIFormSpecMenu **cur_formspec,
 		<< "bgcolor[#00000060;true]"
 		<< "button_exit[3.5," << (ypos++) << ";4,0.5;btn_continue;"
 		<< strgettext("Continue") << "]";
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !defined(__IOS__)
 	if (!singleplayermode) {
 		os << "button_exit[3.5," << (ypos++) << ";4,0.5;btn_change_password;"
 		   << strgettext("Change Password") << "]";
@@ -1185,9 +1185,11 @@ static void show_pause_menu(GUIFormSpecMenu **cur_formspec,
 #endif
 	os		<< "button_exit[3.5," << (ypos++) << ";4,0.5;btn_exit_menu;"
 			<< strgettext("Save and Exit") << "]";
+#ifndef __IOS__
 	os		<< "button_exit[3.5," << (ypos++) << ";4,0.5;btn_exit_os;"
-			<< strgettext("Close game")   << "]"
-			<< "\n;]";
+			<< strgettext("Close game")   << "]";
+#endif
+	os		<< "\n;]";
 
 	/* Create menu */
 	/* Note: FormspecFormSource and LocalFormspecHandler  *
@@ -1685,8 +1687,10 @@ private:
 	f32  m_cache_mouse_sensitivity;
 	f32  m_repeat_right_click_time;
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
 	bool m_cache_hold_aux1;
+#endif
+#ifdef __ANDROID__
 	bool m_android_chat_open;
 #endif
 };
@@ -1729,7 +1733,7 @@ Game::Game() :
 
 	readSettings();
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
 	m_cache_hold_aux1 = false;	// This is initialised properly later
 #endif
 
@@ -1853,7 +1857,7 @@ void Game::run()
 
 	set_light_table(g_settings->getFloat("display_gamma"));
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
 	m_cache_hold_aux1 = g_settings->getBool("fast_move")
 			&& client->checkPrivilege("fast");
 #endif
@@ -2059,7 +2063,7 @@ bool Game::autoMigrateSingleplayerWorld(const std::string map_dir)
 {
 	const std::string new_backend = "leveldb";
 
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !defined(__IOS__)
 	infostream << "Auto-migration disabled on this platform..." << std::endl;
 	return false;
 #endif
@@ -2674,7 +2678,7 @@ void Game::processUserInput(VolatileRunFlags *flags,
 			|| noMenuActive() == false
 			|| guienv->hasFocus(gui_chat_console)) {
 		input->clear();
-#ifdef HAVE_TOUCHSCREENGUI
+#if defined(HAVE_TOUCHSCREENGUI) && !defined(__IOS__)
 		g_touchscreengui->hide();
 #endif
 	}
@@ -2947,7 +2951,7 @@ void Game::toggleFast(float *statustext_time)
 	if (fast_move && !has_fast_privs)
 		statustext += L" (note: no 'fast' privilege)";
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
 	m_cache_hold_aux1 = fast_move && has_fast_privs;
 #endif
 }
@@ -3138,7 +3142,7 @@ void Game::decreaseViewRange(float *statustext_time)
 
 void Game::toggleFullViewRange(float *statustext_time)
 {
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
 	static const wchar_t *msg[] = {
 		L"Disabled far viewing range",
 		L"Enabled far viewing range"
@@ -3162,7 +3166,7 @@ void Game::updateCameraDirection(CameraOrientation *cam,
 {
 	if ((device->isWindowActive() && noMenuActive()) || random_input) {
 
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !defined(__IOS__)
 		if (!random_input) {
 			// Mac OSX gets upset if this is set every frame
 			if (device->getCursorControl()->isVisible())
@@ -3179,7 +3183,7 @@ void Game::updateCameraDirection(CameraOrientation *cam,
 				(driver->getScreenSize().Height / 2));
 	} else {
 
-#ifndef ANDROID
+#if !defined(__ANDROID__) && !defined(__IOS__)
 		// Mac OSX gets upset if this is set every frame
 		if (device->getCursorControl()->isVisible() == false)
 			device->getCursorControl()->setVisible(true);
@@ -3250,7 +3254,7 @@ void Game::updatePlayerControl(const CameraOrientation &cam)
 			( (u32)(input->getRightState()                                       & 0x1) << 8
 		);
 
-#ifdef ANDROID
+#if defined(__ANDROID__) || defined(__IOS__)
 	/* For Android, simulate holding down AUX1 (fast move) if the user has
 	 * the fast_move setting toggled on. If there is an aux1 key defined for
 	 * Android then its meaning is inverted (i.e. holding aux1 means walk and
@@ -4034,7 +4038,7 @@ void Game::updateFrame(ProfilerGraph *graph, RunStats *stats,
 
 	if (draw_control->range_all) {
 		runData->fog_range = 100000 * BS;
-		#ifdef __ANDROID__
+		#if defined(__ANDROID__) || defined(__IOS__)
 				runData->fog_range = 0.9 * draw_control->wanted_range * 4 * BS;
 		#endif
 	} else {
@@ -4398,7 +4402,7 @@ void Game::updateGui(float *statustext_time, const RunStats &stats,
 	if (!statustext.empty()) {
 		s32 status_width  = guitext_status->getTextWidth();
 		s32 status_height = guitext_status->getTextHeight();
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
 		s32 status_y = screensize.Y - 320 * g_settings->getFloat("hud_scaling");
 #else
 		s32 status_y = screensize.Y - 150;

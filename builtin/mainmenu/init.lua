@@ -25,6 +25,7 @@ mt_color_dark_green = "#003300"
 local menupath = core.get_mainmenu_path()
 local basepath = core.get_builtin_path()
 defaulttexturedir = core.get_texturepath_share() .. DIR_DELIM .. "base" .. DIR_DELIM
+local use_simple_menu = (PLATFORM == "Android" or PLATFORM == "iOS")
 
 dofile(basepath .. DIR_DELIM .. "common" .. DIR_DELIM .. "async_event.lua")
 dofile(basepath .. DIR_DELIM .. "common" .. DIR_DELIM .. "filterlist.lua")
@@ -40,7 +41,7 @@ dofile(menupath .. DIR_DELIM .. "dlg_create_world.lua")
 dofile(menupath .. DIR_DELIM .. "dlg_delete_world.lua")
 --dofile(menupath .. DIR_DELIM .. "dlg_rename_modpack.lua")
 dofile(menupath .. DIR_DELIM .. "dlg_config_world.lua")
-if PLATFORM ~= "Android" then
+if not use_simple_menu then
 	dofile(menupath .. DIR_DELIM .. "modmgr.lua")
 --	dofile(menupath .. DIR_DELIM .. "store.lua")
 	dofile(menupath .. DIR_DELIM .. "dlg_settings_advanced.lua")
@@ -53,7 +54,7 @@ tabs.credits = dofile(menupath .. DIR_DELIM .. "tab_credits.lua")
 tabs.singleplayer = dofile(menupath .. DIR_DELIM .. "tab_singleplayer.lua")
 tabs.multiplayer = dofile(menupath .. DIR_DELIM .. "tab_multiplayer.lua")
 tabs.server = dofile(menupath .. DIR_DELIM .. "tab_server.lua")
-if PLATFORM ~= "Android" then
+if not use_simple_menu then
 	tabs.settings = dofile(menupath .. DIR_DELIM .. "tab_settings.lua")
 	tabs.texturepacks = dofile(menupath .. DIR_DELIM .. "tab_texturepacks.lua")
 end
@@ -99,7 +100,7 @@ local function init_globals()
 	tv_main:add(tabs.multiplayer)
 	tv_main:add(tabs.server)
 
-	if PLATFORM ~= "Android" then
+	if not use_simple_menu then
 		tv_main:add(tabs.settings)
 		tv_main:add(tabs.texturepacks)
 	end
