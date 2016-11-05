@@ -23,6 +23,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "config.h"
 #include "constants.h"
 #include "porting.h"
+#import "SDVersion.h"
 
 void set_default_settings(Settings *settings)
 {
@@ -334,21 +335,10 @@ void set_default_settings(Settings *settings)
 
 	settings->setDefault("high_precision_fpu", "true");
 
-#ifdef __ANDROID__
-	// Auto-detect language on Android
-	// FIXME: this code should be in init_gettext() ideally
-	char lang[3] = {0};
-	AConfiguration_getLanguage(porting::app_global->config, lang);
-	if (!lang[0])
-		errorstream << "Language auto-detection failed!" << std::endl;
-	settings->setDefault("language", lang);
-#else
 	settings->setDefault("language", "");
-#endif
-
 	settings->setDefault("mainmenu_last_selected_world", "1");
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
 	settings->setDefault("screenW", "0");
 	settings->setDefault("screenH", "0");
 	settings->setDefault("enable_shaders", "false");
@@ -356,32 +346,38 @@ void set_default_settings(Settings *settings)
 	settings->setDefault("video_driver", "ogles1");
 	settings->setDefault("touchtarget", "false");
 	settings->setDefault("touchscreen_threshold", "20");
-	settings->setDefault("smooth_lighting", "false");
-	settings->setDefault("emergequeue_limit_diskonly", "8");
-	settings->setDefault("emergequeue_limit_generate", "8");
 	settings->setDefault("max_block_generate_distance", "3");
-//	settings->setDefault("enable_3d_clouds", "false");
-	settings->setDefault("fps_max", "35");
 	settings->setDefault("pause_fps_max", "5");
-	settings->setDefault("sqlite_synchronous", "0");
-	settings->setDefault("gui_scaling", "1.2");
 	settings->setDefault("doubletap_jump", "true");
-	settings->setDefault("client_mapblock_limit", "250");
 	settings->setDefault("active_block_range", "1");
 	settings->setDefault("chunksize", "3");
 	settings->setDefault("gui_scaling_filter_txr2img", "false");
 	settings->setDefault("max_simultaneous_block_sends_per_client", "5");
 	settings->setDefault("abm_interval", "2.0");
-	settings->setDefault("selectionbox_width", "6");
 	settings->setDefault("cloud_radius", "6");
 	settings->setDefault("client_unload_unused_data_timeout", "120");
+#endif
 
+#ifdef __ANDROID__
+	settings->setDefault("fps_max", "35");
 	settings->setDefault("viewing_range", "30");
-	settings->setDefault("inventory_image_hack", "false");
+	settings->setDefault("smooth_lighting", "false");
+	settings->setDefault("client_mapblock_limit", "250");
+	settings->setDefault("selectionbox_width", "6");
+	settings->setDefault("emergequeue_limit_diskonly", "8");
+	settings->setDefault("emergequeue_limit_generate", "8");
 
-    // check for device with small screen
+	settings->setDefault("mono_font_path", "/system/fonts/DroidSansMono.ttf");
+	settings->setDefault("fallback_font_path", "/system/fonts/DroidSans.ttf");
+	
+	settings->setDefault("curl_verify_cert","false");
+	
+	//For other devices
+	settings->setDefault("gui_scaling", "1.2");
+	
+	// check for screen
 	float x_inches = ((double) porting::getDisplaySize().X /
-			(160 * porting::getDisplayDensity()));
+					  (160 * porting::getDisplayDensity()));
 	if (x_inches < 5) {
 		// all phones
 		settings->setDefault("hud_scaling", "0.6");
@@ -398,11 +394,52 @@ void set_default_settings(Settings *settings)
 		settings->setDefault("hud_scaling", "0.85");
 		settings->setDefault("mouse_sensitivity", "0.2");
 	}
-
-	settings->setDefault("mono_font_path", "/system/fonts/DroidSansMono.ttf");
-	settings->setDefault("fallback_font_path", "/system/fonts/DroidSans.ttf");
 	
-	settings->setDefault("curl_verify_cert","false");
+	// Auto-detect language on Android
+	// FIXME: this code should be in init_gettext() ideally
+	char lang[3] = {0};
+	AConfiguration_getLanguage(porting::app_global->config, lang);
+	if (!lang[0])
+		errorstream << "Language auto-detection failed!" << std::endl;
+	settings->setDefault("language", lang);
+
+#endif
+
+#ifdef __IOS__
+	settings->setDefault("fps_max", "35");
+	settings->setDefault("viewing_range", "50");
+	settings->setDefault("selectionbox_width", "3");
+	settings->setDefault("smooth_lighting", "true");
+
+	// For iPad =)
+	settings->setDefault("hud_scaling", "0.8");
+	settings->setDefault("gui_scaling", "1.2");
+	settings->setDefault("mouse_sensitivity", "0.15");
+	// 3.5" (old iPhone's)
+	if ([SDVersion deviceSize] == Screen3Dot5inch) {
+		settings->setDefault("hud_scaling", "0.4");
+		settings->setDefault("gui_scaling", "0.8");
+		settings->setDefault("mouse_sensitivity", "0.1");
+	};
+	// 4" (iPhone 5)
+	if ([SDVersion deviceSize] == Screen4inch) {
+		settings->setDefault("hud_scaling", "0.5");
+		settings->setDefault("gui_scaling", "0.9");
+		settings->setDefault("mouse_sensitivity", "0.15");
+	};
+	// 4.7" (iPhone)
+	if ([SDVersion deviceSize] == Screen4Dot7inch) {
+		settings->setDefault("hud_scaling", "0.6");
+		settings->setDefault("gui_scaling", "1.1");
+		settings->setDefault("mouse_sensitivity", "0.2");
+	}
+	// 5.5" (iPhone Plus)
+	if ([SDVersion deviceSize] == Screen5Dot5inch) {
+		settings->setDefault("hud_scaling", "0.7");
+		settings->setDefault("gui_scaling", "1.3");
+		settings->setDefault("mouse_sensitivity", "0.25");
+	};
+	
 #endif
 }
 

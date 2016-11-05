@@ -21,6 +21,8 @@
 tags
 !tags/
 gtags.files
+# OS X
+.DS_Store
 
 # GNU Patch reject file
 *.rej
@@ -72,3 +74,14 @@ build/android/local.properties
 build/android/.gradle
 timestamp
 
+## iOS build files
+build/iOS/MultiCraft/MultiCraft.xcodeproj/xcuserdata
+build/iOS/MultiCraft/MultiCraft.xcodeproj/project.xcworkspace
+build/iOS/MultiCraft/MultiCraft/Assets.xcassets/AppIcon.appiconset/*.png
+build/iOS/MultiCraft.xcworkspace
+build/iOS/Pods
+build/iOS/Podfile.lock
+build/iOS/deps/*
+!build/iOS/deps/*.sh
+build/iOS/assets.zip
+build/iOS/worlds.zip

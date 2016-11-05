@@ -22,6 +22,19 @@
 	#else
 		#define BUILD_TYPE "Debug"
 	#endif
+#elif defined (__IOS__)
+    #define PROJECT_NAME "MultiCraft"
+    #define PROJECT_NAME_C "MultiCraft"
+    #define STATIC_SHAREDIR ""
+    #define VERSION_MAJOR 1
+    #define VERSION_MINOR 1
+    #define VERSION_PATCH 4
+    #define VERSION_STRING "1.1.4"
+    #ifdef NDEBUG
+        #define BUILD_TYPE "Release"
+    #else
+        #define BUILD_TYPE "Debug"
+    #endif
 #else
 	#ifdef NDEBUG
 		#define BUILD_TYPE "Release"

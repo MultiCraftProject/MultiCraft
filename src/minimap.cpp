@@ -372,7 +372,7 @@ void Mapper::blitMinimapPixelsToImageSurface(
 
 		map_image->setPixel(x, data->map_size - z - 1, c);
 
-		u32 h = mmpixel->height;
+		const u32 h = 255; // full bright
 		heightmap_image->setPixel(x,data->map_size - z - 1,
 			video::SColor(255, h, h, h));
 	}
@@ -407,7 +407,12 @@ video::ITexture *Mapper::getMinimapTexture()
 		for (s16 y = 0; y < MINIMAP_MAX_SY; y++)
 		for (s16 x = 0; x < MINIMAP_MAX_SX; x++) {
 			video::SColor mask_col = minimap_mask->getPixel(x, y);
+#if IRRLICHT_VERSION_MAJOR == 1 && IRRLICHT_VERSION_MINOR >= 9
+			// Irrlicht 1.9 has some problem with alpha
+			if (mask_col.getRed() != 255)
+#else
 			if (!mask_col.getAlpha())
+#endif
 				minimap_image->setPixel(x, y, video::SColor(0,0,0,0));
 		}
 	}

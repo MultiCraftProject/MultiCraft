@@ -59,6 +59,7 @@ typedef enum {
 //	camera_id,
 	range_id,
 	empty_id,
+	escape_id,
 	after_last_element_id
 } touch_gui_button_id;
 

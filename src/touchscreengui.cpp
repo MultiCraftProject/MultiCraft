@@ -61,7 +61,8 @@ const char* touchgui_button_imagenames[] = {
 	"chat.png",
 //	"camera.png",
 	"rangeview.png",
-	"empty.png"
+	"empty.png",
+	"escape.png",
 };
 
 static irr::EKEY_CODE id2keycode(touch_gui_button_id id)
@@ -133,6 +134,8 @@ static irr::EKEY_CODE id2keycode(touch_gui_button_id id)
 		case empty_id:
 			key = "forward";
 			break;
+		case escape_id:
+			return irr::KEY_ESCAPE;
 	}
 	assert(key != "");
 	return keyname_to_keycode(g_settings->get("keymap_" + key).c_str());
@@ -362,12 +365,20 @@ void TouchScreenGUI::init(ISimpleTextureSource* tsrc)
 			L"minimap", false, SLOW_BUTTON_REPEAT);
 
 	/* init chat button */
+#ifdef __IOS__
+	initButton(escape_id,
+				rect<s32>(m_screensize.X / 2 + (button_size * 0.375), 0,
+				m_screensize.X / 2 + (button_size * 1.125),
+				(button_size * 0.75)),
+		L"Exit", false, SLOW_BUTTON_REPEAT);
+#else
 	initButton(chat_id,
 					rect<s32>(m_screensize.X / 2 + (button_size * 0.375), 0,
 					m_screensize.X / 2 + (button_size * 1.125),
 					(button_size * 0.75)),
 			L"Chat", false, SLOW_BUTTON_REPEAT);
-	
+#endif
+
 		/* init camera button 
 	initButton(camera_id,
 			rect<s32>(0, 0,

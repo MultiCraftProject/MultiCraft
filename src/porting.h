@@ -324,10 +324,10 @@ inline const char *getPlatformName()
 		defined(__NetBSD__) || defined(__OpenBSD__)
 	"BSD"
 #elif defined(__APPLE__) && defined(__MACH__)
-	#if TARGET_OS_MAC
-		"OSX"
-	#elif TARGET_OS_IPHONE
+	#if TARGET_OS_IPHONE
 		"iOS"
+	#elif TARGET_OS_MAC
+		"OSX"
 	#else
 		"Apple"
 	#endif
@@ -367,6 +367,10 @@ bool secure_rand_fill_buf(void *buf, size_t len);
 
 #ifdef __ANDROID__
 #include "porting_android.h"
+#endif
+
+#ifdef __IOS__
+#include "porting_ios.h"
 #endif
 
 #endif // PORTING_HEADER

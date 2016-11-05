@@ -494,7 +494,7 @@ void ClientLauncher::main_menu(MainMenuData *menudata)
 	infostream << "Waited for other menus" << std::endl;
 
 	// Cursor can be non-visible when coming from the game
-#ifndef ANDROID
+#if !defined(ANDROID) && !defined(__IOS__)
 	device->getCursorControl()->setVisible(true);
 #endif
 

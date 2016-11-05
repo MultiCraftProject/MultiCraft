@@ -38,7 +38,7 @@ local function get_formspec(tabview, name, tabdata)
 		core.formspec_escape(core.setting_get("name")) .. "]" ..
 		"pwdfield[0.55,4;3.5,0.5;te_passwd;]"
 
-	if PLATFORM ~= "Android" then
+	if PLATFORM ~= "Android" and PLATFORM ~= "iOS" then
 		retval = retval ..
 			"checkbox[0.25,1.15;cb_server_announce;" .. fgettext("Public") .. ";"
 		return retval

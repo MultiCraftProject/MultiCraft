@@ -484,7 +484,7 @@ void Hud::drawCrosshair()
 				core::rect<s32>(0, 0, size.X, size.Y),
 				0, crosshair_argb, true);
 	} else {
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
 		driver->draw2DLine(m_displaycenter - v2s32(35, 0),
 				m_displaycenter + v2s32(35, 0), crosshair_argb);
 		driver->draw2DLine(m_displaycenter - v2s32(0, 35),
