@@ -349,20 +349,20 @@ void set_default_settings(Settings *settings)
 	settings->setDefault("max_block_generate_distance", "3");
 	settings->setDefault("pause_fps_max", "5");
 	settings->setDefault("doubletap_jump", "true");
+	settings->setDefault("client_mapblock_limit", "250");
 	settings->setDefault("active_block_range", "1");
 	settings->setDefault("chunksize", "3");
 	settings->setDefault("gui_scaling_filter_txr2img", "false");
 	settings->setDefault("max_simultaneous_block_sends_per_client", "5");
 	settings->setDefault("abm_interval", "2.0");
 	settings->setDefault("cloud_radius", "6");
-	settings->setDefault("client_unload_unused_data_timeout", "120");
+	settings->setDefault("client_unload_unused_data_timeout", "60");
 #endif
 
 #ifdef __ANDROID__
 	settings->setDefault("fps_max", "35");
 	settings->setDefault("viewing_range", "30");
 	settings->setDefault("smooth_lighting", "false");
-	settings->setDefault("client_mapblock_limit", "250");
 	settings->setDefault("selectionbox_width", "6");
 	settings->setDefault("emergequeue_limit_diskonly", "8");
 	settings->setDefault("emergequeue_limit_generate", "8");
@@ -414,30 +414,30 @@ void set_default_settings(Settings *settings)
 	// For iPad =)
 	settings->setDefault("hud_scaling", "0.8");
 	settings->setDefault("gui_scaling", "1.2");
-	settings->setDefault("mouse_sensitivity", "0.15");
+	settings->setDefault("mouse_sensitivity", "0.2");
 	// 3.5" (old iPhone's)
 	if ([SDVersion deviceSize] == Screen3Dot5inch) {
 		settings->setDefault("hud_scaling", "0.4");
 		settings->setDefault("gui_scaling", "0.8");
-		settings->setDefault("mouse_sensitivity", "0.1");
+		settings->setDefault("mouse_sensitivity", "0.15");
 	};
 	// 4" (iPhone 5)
 	if ([SDVersion deviceSize] == Screen4inch) {
 		settings->setDefault("hud_scaling", "0.5");
 		settings->setDefault("gui_scaling", "0.9");
-		settings->setDefault("mouse_sensitivity", "0.15");
+		settings->setDefault("mouse_sensitivity", "0.2");
 	};
 	// 4.7" (iPhone)
 	if ([SDVersion deviceSize] == Screen4Dot7inch) {
 		settings->setDefault("hud_scaling", "0.6");
 		settings->setDefault("gui_scaling", "1.1");
-		settings->setDefault("mouse_sensitivity", "0.2");
+		settings->setDefault("mouse_sensitivity", "0.25");
 	}
 	// 5.5" (iPhone Plus)
 	if ([SDVersion deviceSize] == Screen5Dot5inch) {
 		settings->setDefault("hud_scaling", "0.7");
 		settings->setDefault("gui_scaling", "1.3");
-		settings->setDefault("mouse_sensitivity", "0.25");
+		settings->setDefault("mouse_sensitivity", "0.3");
 	};
 	
 #endif

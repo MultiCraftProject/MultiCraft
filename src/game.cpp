@@ -1128,7 +1128,7 @@ static inline void create_formspec_menu(GUIFormSpecMenu **cur_formspec,
 	}
 }
 
-#ifdef __ANDROID__
+#if !defined(__ANDROID__) && !defined(__IOS__)
 #define SIZE_TAG "size[11,5.5]"
 #else
 #define SIZE_TAG "size[11,5.5,true]" // Fixed size on desktop
@@ -1167,27 +1167,34 @@ static void show_pause_menu(GUIFormSpecMenu **cur_formspec,
 #else
 	float ypos = 1.0;
 #endif
+#ifdef __IOS__
+	float bsize = 3.5;
+#else
+	float bsize = 4.0;
+#endif
 	std::ostringstream os;
 
 	os << FORMSPEC_VERSION_STRING  << SIZE_TAG
 		<< "bgcolor[#00000060;true]"
-		<< "button_exit[3.5," << (ypos++) << ";4,0.5;btn_continue;"
+		<< "button_exit[3.5," << (ypos++) << ";" << bsize << ",0.5;btn_continue;"
 		<< strgettext("Continue") << "]";
 #if !defined(__ANDROID__) && !defined(__IOS__)
 	if (!singleplayermode) {
-		os << "button_exit[3.5," << (ypos++) << ";4,0.5;btn_change_password;"
-		   << strgettext("Change Password") << "]";
+	os		<< "button_exit[3.5," << (ypos++) << ";4,0.5;btn_change_password;"
+			<< strgettext("Change Password") << "]";
 	}
 	os		<< "button_exit[3.5," << (ypos++) << ";4,0.5;btn_sound;"
 			<< strgettext("Sound Volume") << "]";
 	os		<< "button_exit[3.5," << (ypos++) << ";4,0.5;btn_key_config;"
 			<< strgettext("Change Keys")  << "]";
 #endif
-	os		<< "button_exit[3.5," << (ypos++) << ";4,0.5;btn_exit_menu;"
+	os		<< "button_exit[3.5," << (ypos++) << ";" << bsize << ",0.5;btn_exit_menu;"
 			<< strgettext("Save and Exit") << "]";
+#ifndef __IOS__
 	os		<< "button_exit[3.5," << (ypos++) << ";4,0.5;btn_exit_os;"
-			<< strgettext("Close game")   << "]"
-			<< "\n;]";
+			<< strgettext("Close game") << "]";
+#endif
+	os		<< "\n;]";
 
 	/* Create menu */
 	/* Note: FormspecFormSource and LocalFormspecHandler  *
@@ -1686,6 +1693,7 @@ private:
 	f32  m_repeat_right_click_time;
 
 #if defined(__ANDROID__) || defined(__IOS__)
+	bool show_minimap;
 	bool m_cache_hold_aux1;
 #endif
 #ifdef __ANDROID__
@@ -2214,7 +2222,11 @@ bool Game::createClient(const std::string &playername,
 	}
 
 	mapper = client->getMapper();
+//#ifdef __IOS__
+//	mapper->setMinimapMode(MINIMAP_MODE_SURFACE);
+//#else
 	mapper->setMinimapMode(MINIMAP_MODE_OFF);
+//#endif
 
 	return true;
 }
@@ -2464,6 +2476,8 @@ bool Game::getServerContent(bool *aborted)
 			std::stringstream message;
 			message.precision(3);
 			message << gettext("Media...");
+#ifndef __IOS__
+
 
 			if ((USE_CURL == 0) ||
 					(!g_settings->getBool("enable_remote_media_server"))) {
@@ -2477,7 +2491,7 @@ bool Game::getServerContent(bool *aborted)
 
 				message << " (" << cur << ' ' << cur_unit << ")";
 			}
-
+#endif
 			progress = 30 + client->mediaReceiveProgress() * 35 + 0.5;
 			draw_load_screen(utf8_to_wide(message.str()), device,
 					guienv, dtime, progress);

@@ -207,28 +207,6 @@
 		F8E6C7651DCA423C00F64426 /* mutex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C75E1DCA423C00F64426 /* mutex.cpp */; };
 		F8E6C7661DCA423C00F64426 /* semaphore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C7601DCA423C00F64426 /* semaphore.cpp */; };
 		F8E6C7671DCA423C00F64426 /* thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C7621DCA423C00F64426 /* thread.cpp */; };
-		F8E6C7801DCA426600F64426 /* test_areastore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C7691DCA426600F64426 /* test_areastore.cpp */; };
-		F8E6C7811DCA426600F64426 /* test_collision.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C76A1DCA426600F64426 /* test_collision.cpp */; };
-		F8E6C7821DCA426600F64426 /* test_compression.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C76B1DCA426600F64426 /* test_compression.cpp */; };
-		F8E6C7831DCA426600F64426 /* test_connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C76C1DCA426600F64426 /* test_connection.cpp */; };
-		F8E6C7841DCA426600F64426 /* test_filepath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C76D1DCA426600F64426 /* test_filepath.cpp */; };
-		F8E6C7851DCA426600F64426 /* test_inventory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C76E1DCA426600F64426 /* test_inventory.cpp */; };
-		F8E6C7861DCA426600F64426 /* test_mapnode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C76F1DCA426600F64426 /* test_mapnode.cpp */; };
-		F8E6C7871DCA426600F64426 /* test_nodedef.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C7701DCA426600F64426 /* test_nodedef.cpp */; };
-		F8E6C7881DCA426600F64426 /* test_noderesolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C7711DCA426600F64426 /* test_noderesolver.cpp */; };
-		F8E6C7891DCA426600F64426 /* test_noise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C7721DCA426600F64426 /* test_noise.cpp */; };
-		F8E6C78A1DCA426600F64426 /* test_objdef.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C7731DCA426600F64426 /* test_objdef.cpp */; };
-		F8E6C78B1DCA426600F64426 /* test_profiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C7741DCA426600F64426 /* test_profiler.cpp */; };
-		F8E6C78C1DCA426600F64426 /* test_random.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C7751DCA426600F64426 /* test_random.cpp */; };
-		F8E6C78D1DCA426600F64426 /* test_schematic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C7761DCA426600F64426 /* test_schematic.cpp */; };
-		F8E6C78E1DCA426600F64426 /* test_serialization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C7771DCA426600F64426 /* test_serialization.cpp */; };
-		F8E6C78F1DCA426600F64426 /* test_settings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C7781DCA426600F64426 /* test_settings.cpp */; };
-		F8E6C7901DCA426600F64426 /* test_socket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C7791DCA426600F64426 /* test_socket.cpp */; };
-		F8E6C7911DCA426600F64426 /* test_threading.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C77A1DCA426600F64426 /* test_threading.cpp */; };
-		F8E6C7921DCA426600F64426 /* test_utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C77B1DCA426600F64426 /* test_utilities.cpp */; };
-		F8E6C7931DCA426600F64426 /* test_voxelalgorithms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C77C1DCA426600F64426 /* test_voxelalgorithms.cpp */; };
-		F8E6C7941DCA426600F64426 /* test_voxelmanipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C77D1DCA426600F64426 /* test_voxelmanipulator.cpp */; };
-		F8E6C7951DCA426600F64426 /* test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C77E1DCA426600F64426 /* test.cpp */; };
 		F8E6C7B71DCA428800F64426 /* areastore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C7971DCA428800F64426 /* areastore.cpp */; };
 		F8E6C7B81DCA428800F64426 /* auth.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C7991DCA428800F64426 /* auth.cpp */; };
 		F8E6C7B91DCA428800F64426 /* base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C79B1DCA428800F64426 /* base64.cpp */; };
@@ -684,29 +662,6 @@
 		F8E6C7611DCA423C00F64426 /* semaphore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = semaphore.h; path = ../../../../src/threading/semaphore.h; sourceTree = "<group>"; };
 		F8E6C7621DCA423C00F64426 /* thread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = thread.cpp; path = ../../../../src/threading/thread.cpp; sourceTree = "<group>"; };
 		F8E6C7631DCA423C00F64426 /* thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = thread.h; path = ../../../../src/threading/thread.h; sourceTree = "<group>"; };
-		F8E6C7691DCA426600F64426 /* test_areastore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_areastore.cpp; path = ../../../../src/unittest/test_areastore.cpp; sourceTree = "<group>"; };
-		F8E6C76A1DCA426600F64426 /* test_collision.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_collision.cpp; path = ../../../../src/unittest/test_collision.cpp; sourceTree = "<group>"; };
-		F8E6C76B1DCA426600F64426 /* test_compression.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_compression.cpp; path = ../../../../src/unittest/test_compression.cpp; sourceTree = "<group>"; };
-		F8E6C76C1DCA426600F64426 /* test_connection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_connection.cpp; path = ../../../../src/unittest/test_connection.cpp; sourceTree = "<group>"; };
-		F8E6C76D1DCA426600F64426 /* test_filepath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_filepath.cpp; path = ../../../../src/unittest/test_filepath.cpp; sourceTree = "<group>"; };
-		F8E6C76E1DCA426600F64426 /* test_inventory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_inventory.cpp; path = ../../../../src/unittest/test_inventory.cpp; sourceTree = "<group>"; };
-		F8E6C76F1DCA426600F64426 /* test_mapnode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_mapnode.cpp; path = ../../../../src/unittest/test_mapnode.cpp; sourceTree = "<group>"; };
-		F8E6C7701DCA426600F64426 /* test_nodedef.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_nodedef.cpp; path = ../../../../src/unittest/test_nodedef.cpp; sourceTree = "<group>"; };
-		F8E6C7711DCA426600F64426 /* test_noderesolver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_noderesolver.cpp; path = ../../../../src/unittest/test_noderesolver.cpp; sourceTree = "<group>"; };
-		F8E6C7721DCA426600F64426 /* test_noise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_noise.cpp; path = ../../../../src/unittest/test_noise.cpp; sourceTree = "<group>"; };
-		F8E6C7731DCA426600F64426 /* test_objdef.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_objdef.cpp; path = ../../../../src/unittest/test_objdef.cpp; sourceTree = "<group>"; };
-		F8E6C7741DCA426600F64426 /* test_profiler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_profiler.cpp; path = ../../../../src/unittest/test_profiler.cpp; sourceTree = "<group>"; };
-		F8E6C7751DCA426600F64426 /* test_random.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_random.cpp; path = ../../../../src/unittest/test_random.cpp; sourceTree = "<group>"; };
-		F8E6C7761DCA426600F64426 /* test_schematic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_schematic.cpp; path = ../../../../src/unittest/test_schematic.cpp; sourceTree = "<group>"; };
-		F8E6C7771DCA426600F64426 /* test_serialization.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_serialization.cpp; path = ../../../../src/unittest/test_serialization.cpp; sourceTree = "<group>"; };
-		F8E6C7781DCA426600F64426 /* test_settings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_settings.cpp; path = ../../../../src/unittest/test_settings.cpp; sourceTree = "<group>"; };
-		F8E6C7791DCA426600F64426 /* test_socket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_socket.cpp; path = ../../../../src/unittest/test_socket.cpp; sourceTree = "<group>"; };
-		F8E6C77A1DCA426600F64426 /* test_threading.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_threading.cpp; path = ../../../../src/unittest/test_threading.cpp; sourceTree = "<group>"; };
-		F8E6C77B1DCA426600F64426 /* test_utilities.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_utilities.cpp; path = ../../../../src/unittest/test_utilities.cpp; sourceTree = "<group>"; };
-		F8E6C77C1DCA426600F64426 /* test_voxelalgorithms.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_voxelalgorithms.cpp; path = ../../../../src/unittest/test_voxelalgorithms.cpp; sourceTree = "<group>"; };
-		F8E6C77D1DCA426600F64426 /* test_voxelmanipulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_voxelmanipulator.cpp; path = ../../../../src/unittest/test_voxelmanipulator.cpp; sourceTree = "<group>"; };
-		F8E6C77E1DCA426600F64426 /* test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test.cpp; path = ../../../../src/unittest/test.cpp; sourceTree = "<group>"; };
-		F8E6C77F1DCA426600F64426 /* test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = test.h; path = ../../../../src/unittest/test.h; sourceTree = "<group>"; };
 		F8E6C7971DCA428800F64426 /* areastore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = areastore.cpp; path = ../../../../src/util/areastore.cpp; sourceTree = "<group>"; };
 		F8E6C7981DCA428800F64426 /* areastore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = areastore.h; path = ../../../../src/util/areastore.h; sourceTree = "<group>"; };
 		F8E6C7991DCA428800F64426 /* auth.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = auth.cpp; path = ../../../../src/util/auth.cpp; sourceTree = "<group>"; };
@@ -1090,7 +1045,6 @@
 				F8E6C5E81DCA3F9900F64426 /* touchscreengui.h */,
 				F8E6C5E91DCA3F9900F64426 /* treegen.cpp */,
 				F8E6C5EA1DCA3F9900F64426 /* treegen.h */,
-				F8E6C7681DCA424C00F64426 /* unittest */,
 				F8E6C5EB1DCA3F9900F64426 /* version.cpp */,
 				F8E6C7961DCA426900F64426 /* util */,
 				F8E6C5EC1DCA3F9900F64426 /* version.h */,
@@ -1346,36 +1300,6 @@
 			name = threading;
 			sourceTree = "<group>";
 		};
-		F8E6C7681DCA424C00F64426 /* unittest */ = {
-			isa = PBXGroup;
-			children = (
-				F8E6C7691DCA426600F64426 /* test_areastore.cpp */,
-				F8E6C76A1DCA426600F64426 /* test_collision.cpp */,
-				F8E6C76B1DCA426600F64426 /* test_compression.cpp */,
-				F8E6C76C1DCA426600F64426 /* test_connection.cpp */,
-				F8E6C76D1DCA426600F64426 /* test_filepath.cpp */,
-				F8E6C76E1DCA426600F64426 /* test_inventory.cpp */,
-				F8E6C76F1DCA426600F64426 /* test_mapnode.cpp */,
-				F8E6C7701DCA426600F64426 /* test_nodedef.cpp */,
-				F8E6C7711DCA426600F64426 /* test_noderesolver.cpp */,
-				F8E6C7721DCA426600F64426 /* test_noise.cpp */,
-				F8E6C7731DCA426600F64426 /* test_objdef.cpp */,
-				F8E6C7741DCA426600F64426 /* test_profiler.cpp */,
-				F8E6C7751DCA426600F64426 /* test_random.cpp */,
-				F8E6C7761DCA426600F64426 /* test_schematic.cpp */,
-				F8E6C7771DCA426600F64426 /* test_serialization.cpp */,
-				F8E6C7781DCA426600F64426 /* test_settings.cpp */,
-				F8E6C7791DCA426600F64426 /* test_socket.cpp */,
-				F8E6C77A1DCA426600F64426 /* test_threading.cpp */,
-				F8E6C77B1DCA426600F64426 /* test_utilities.cpp */,
-				F8E6C77C1DCA426600F64426 /* test_voxelalgorithms.cpp */,
-				F8E6C77D1DCA426600F64426 /* test_voxelmanipulator.cpp */,
-				F8E6C77E1DCA426600F64426 /* test.cpp */,
-				F8E6C77F1DCA426600F64426 /* test.h */,
-			);
-			name = unittest;
-			sourceTree = "<group>";
-		};
 		F8E6C7961DCA426900F64426 /* util */ = {
 			isa = PBXGroup;
 			children = (
@@ -1471,7 +1395,6 @@
 				TargetAttributes = {
 					F8E6C4D81DCA3B7900F64426 = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = G3ECY43N39;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -1572,7 +1495,6 @@
 				F8E6C65B1DCA3F9900F64426 /* subgame.cpp in Sources */,
 				F8E6C6351DCA3F9900F64426 /* mapgen_valleys.cpp in Sources */,
 				F8E6C6B41DCA40F300F64426 /* lapi.c in Sources */,
-				F8E6C7851DCA426600F64426 /* test_inventory.cpp in Sources */,
 				F8E6C6101DCA3F9900F64426 /* environment.cpp in Sources */,
 				F8E6C64E1DCA3F9900F64426 /* rollback_interface.cpp in Sources */,
 				F8E6C6301DCA3F9900F64426 /* mapgen_fractal.cpp in Sources */,
@@ -1589,8 +1511,6 @@
 				F8E6C6E01DCA413A00F64426 /* connection.cpp in Sources */,
 				F8E6C6701DCA403100F64426 /* tile.cpp in Sources */,
 				F8E6C6B81DCA40F300F64426 /* ldblib.c in Sources */,
-				F8E6C7871DCA426600F64426 /* test_nodedef.cpp in Sources */,
-				F8E6C7901DCA426600F64426 /* test_socket.cpp in Sources */,
 				F8E6C6CA1DCA40F300F64426 /* lstrlib.c in Sources */,
 				F8E6C6C11DCA40F300F64426 /* lmathlib.c in Sources */,
 				F8E6C7171DCA41EF00F64426 /* s_inventory.cpp in Sources */,
@@ -1609,22 +1529,17 @@
 				F8E6C7191DCA41EF00F64426 /* s_mainmenu.cpp in Sources */,
 				F8E6C6331DCA3F9900F64426 /* mapgen_v6.cpp in Sources */,
 				F8E6C6681DCA3FE200F64426 /* xCGUITTFont.cpp in Sources */,
-				F8E6C7931DCA426600F64426 /* test_voxelalgorithms.cpp in Sources */,
 				F8E6C6321DCA3F9900F64426 /* mapgen_v5.cpp in Sources */,
 				F8E6C6581DCA3F9900F64426 /* sound_openal.cpp in Sources */,
-				F8E6C7891DCA426600F64426 /* test_noise.cpp in Sources */,
 				F8E6C6401DCA3F9900F64426 /* nameidmapping.cpp in Sources */,
 				F8E6C6571DCA3F9900F64426 /* socket.cpp in Sources */,
 				F8E6C7C21DCA428800F64426 /* timetaker.cpp in Sources */,
 				F8E6C6211DCA3F9900F64426 /* hud.cpp in Sources */,
-				F8E6C7941DCA426600F64426 /* test_voxelmanipulator.cpp in Sources */,
 				F8E6C6DF1DCA413A00F64426 /* clientpackethandler.cpp in Sources */,
 				F8E6C6261DCA3F9900F64426 /* itemdef.cpp in Sources */,
-				F8E6C7921DCA426600F64426 /* test_utilities.cpp in Sources */,
 				F8E6C61B1DCA3F9900F64426 /* guiKeyChangeMenu.cpp in Sources */,
 				F8E6C6081DCA3F9900F64426 /* database-redis.cpp in Sources */,
 				F8E6C7671DCA423C00F64426 /* thread.cpp in Sources */,
-				F8E6C7881DCA426600F64426 /* test_noderesolver.cpp in Sources */,
 				F8E6C6481DCA3F9900F64426 /* pathfinder.cpp in Sources */,
 				F8E6C6531DCA3F9900F64426 /* serverobject.cpp in Sources */,
 				F8E6C65E1DCA3F9900F64426 /* touchscreengui.cpp in Sources */,
@@ -1634,7 +1549,6 @@
 				F8E6C6F61DCA41DB00F64426 /* c_content.cpp in Sources */,
 				F8E6C6BD1DCA40F300F64426 /* lgc.c in Sources */,
 				F8E6C6551DCA3F9900F64426 /* shader.cpp in Sources */,
-				F8E6C7841DCA426600F64426 /* test_filepath.cpp in Sources */,
 				F8E6C7491DCA420A00F64426 /* l_env.cpp in Sources */,
 				F8E6C6381DCA3F9900F64426 /* mapsector.cpp in Sources */,
 				F8E6C7B81DCA428800F64426 /* auth.cpp in Sources */,
@@ -1656,8 +1570,6 @@
 				F8E6C6B91DCA40F300F64426 /* ldebug.c in Sources */,
 				F8E6C6171DCA3F9900F64426 /* guiChatConsole.cpp in Sources */,
 				F8E6C71C1DCA41EF00F64426 /* s_player.cpp in Sources */,
-				F8E6C78F1DCA426600F64426 /* test_settings.cpp in Sources */,
-				F8E6C7831DCA426600F64426 /* test_connection.cpp in Sources */,
 				F8E6C6271DCA3F9900F64426 /* keycode.cpp in Sources */,
 				F8E6C62B1DCA3F9900F64426 /* main.cpp in Sources */,
 				F8E6C6191DCA3F9900F64426 /* guiFileSelectMenu.cpp in Sources */,
@@ -1670,7 +1582,6 @@
 				F8E6C6391DCA3F9900F64426 /* mesh.cpp in Sources */,
 				F8E6C6E21DCA413A00F64426 /* serveropcodes.cpp in Sources */,
 				F8E6C63E1DCA3F9900F64426 /* minimap.cpp in Sources */,
-				F8E6C7801DCA426600F64426 /* test_areastore.cpp in Sources */,
 				F8E6C6611DCA3F9900F64426 /* voxel.cpp in Sources */,
 				F8E6C63C1DCA3F9900F64426 /* mg_ore.cpp in Sources */,
 				F8E6C61A1DCA3F9900F64426 /* guiFormSpecMenu.cpp in Sources */,
@@ -1693,7 +1604,6 @@
 				F8E6C6241DCA3F9900F64426 /* inventory.cpp in Sources */,
 				F8E6C6C51DCA40F300F64426 /* lopcodes.c in Sources */,
 				F8E6C6621DCA3F9900F64426 /* voxelalgorithms.cpp in Sources */,
-				F8E6C78A1DCA426600F64426 /* test_objdef.cpp in Sources */,
 				F8E6C6361DCA3F9900F64426 /* mapgen.cpp in Sources */,
 				F8E6C7541DCA420A00F64426 /* l_rollback.cpp in Sources */,
 				F8E6C62D1DCA3F9900F64426 /* mapblock_mesh.cpp in Sources */,
@@ -1705,18 +1615,15 @@
 				F8E6C6631DCA3F9900F64426 /* wieldmesh.cpp in Sources */,
 				F8E6C6EC1DCA41A600F64426 /* scripting_game.cpp in Sources */,
 				F8E6C6071DCA3F9900F64426 /* database-leveldb.cpp in Sources */,
-				F8E6C7821DCA426600F64426 /* test_compression.cpp in Sources */,
 				F8E6C6D11DCA40F300F64426 /* print.c in Sources */,
 				F8E6C6421DCA3F9900F64426 /* nodemetadata.cpp in Sources */,
 				F8E6C6C91DCA40F300F64426 /* lstring.c in Sources */,
 				F8E6C6111DCA3F9900F64426 /* filecache.cpp in Sources */,
-				F8E6C7811DCA426600F64426 /* test_collision.cpp in Sources */,
 				F8E6C7BC1DCA428800F64426 /* pointedthing.cpp in Sources */,
 				F8E6C62A1DCA3F9900F64426 /* log.cpp in Sources */,
 				F8E6C74C1DCA420A00F64426 /* l_item.cpp in Sources */,
 				F8E6C6521DCA3F9900F64426 /* serverlist.cpp in Sources */,
 				F8E6C6231DCA3F9900F64426 /* intlGUIEditBox.cpp in Sources */,
-				F8E6C78B1DCA426600F64426 /* test_profiler.cpp in Sources */,
 				F8E6C5FB1DCA3F9900F64426 /* clientobject.cpp in Sources */,
 				F8E6C63A1DCA3F9900F64426 /* mg_biome.cpp in Sources */,
 				F8E6C7661DCA423C00F64426 /* semaphore.cpp in Sources */,
@@ -1726,7 +1633,6 @@
 				F8E6C7BA1DCA428800F64426 /* directiontables.cpp in Sources */,
 				F8E6C61C1DCA3F9900F64426 /* guiPasswordChange.cpp in Sources */,
 				F8E6C5FF1DCA3F9900F64426 /* content_cao.cpp in Sources */,
-				F8E6C78C1DCA426600F64426 /* test_random.cpp in Sources */,
 				F8E6C6561DCA3F9900F64426 /* sky.cpp in Sources */,
 				F8E6C64C1DCA3F9900F64426 /* profiler.cpp in Sources */,
 				F8E6C63D1DCA3F9900F64426 /* mg_schematic.cpp in Sources */,
@@ -1742,10 +1648,8 @@
 				F8E6C6411DCA3F9900F64426 /* nodedef.cpp in Sources */,
 				F8E6C6F81DCA41DB00F64426 /* c_internal.cpp in Sources */,
 				F8E6C60E1DCA3F9900F64426 /* dungeongen.cpp in Sources */,
-				F8E6C78E1DCA426600F64426 /* test_serialization.cpp in Sources */,
 				F8E6C71A1DCA41EF00F64426 /* s_node.cpp in Sources */,
 				F8E6C7521DCA420A00F64426 /* l_object.cpp in Sources */,
-				F8E6C7951DCA426600F64426 /* test.cpp in Sources */,
 				F8E6C60F1DCA3F9900F64426 /* emerge.cpp in Sources */,
 				F8E6C66F1DCA403100F64426 /* clientlauncher.cpp in Sources */,
 				F8E6C6041DCA3F9900F64426 /* convert_json.cpp in Sources */,
@@ -1757,9 +1661,7 @@
 				F8E6C60B1DCA3F9900F64426 /* debug.cpp in Sources */,
 				F8E6C64F1DCA3F9900F64426 /* rollback.cpp in Sources */,
 				F8E6C6C61DCA40F300F64426 /* loslib.c in Sources */,
-				F8E6C78D1DCA426600F64426 /* test_schematic.cpp in Sources */,
 				F8E6C6251DCA3F9900F64426 /* inventorymanager.cpp in Sources */,
-				F8E6C7861DCA426600F64426 /* test_mapnode.cpp in Sources */,
 				F8E6C60C1DCA3F9900F64426 /* defaultsettings.cpp in Sources */,
 				F8E6C63B1DCA3F9900F64426 /* mg_decoration.cpp in Sources */,
 				F8E6C64D1DCA3F9900F64426 /* quicktune.cpp in Sources */,
@@ -1789,7 +1691,6 @@
 				F8E6C6501DCA3F9900F64426 /* serialization.cpp in Sources */,
 				F8E6C6281DCA3F9900F64426 /* light.cpp in Sources */,
 				F8E6C60A1DCA3F9900F64426 /* database.cpp in Sources */,
-				F8E6C7911DCA426600F64426 /* test_threading.cpp in Sources */,
 				F8E6C6B71DCA40F300F64426 /* lcode.c in Sources */,
 				F8E6C6F91DCA41DB00F64426 /* c_types.cpp in Sources */,
 			);
@@ -1842,7 +1743,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
+				ENABLE_TESTABILITY = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_FAST_MATH = YES;
@@ -1920,7 +1821,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
-				DEVELOPMENT_TEAM = G3ECY43N39;
+				DEVELOPMENT_TEAM = R3RLJ9TW52;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -1961,7 +1862,7 @@
 					"-L${SRCROOT}/../deps/leveldb/lib",
 					"-L${SRCROOT}/../deps/freetype/lib",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = mobi.MultiCraft1;
+				PRODUCT_BUNDLE_IDENTIFIER = mobi.MultiCraft;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -1972,7 +1873,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
-				DEVELOPMENT_TEAM = G3ECY43N39;
+				DEVELOPMENT_TEAM = R3RLJ9TW52;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -2014,7 +1915,7 @@
 					"-L${SRCROOT}/../deps/leveldb/lib",
 					"-L${SRCROOT}/../deps/freetype/lib",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = mobi.MultiCraft1;
+				PRODUCT_BUNDLE_IDENTIFIER = mobi.MultiCraft;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

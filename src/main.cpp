@@ -205,7 +205,9 @@ int main(int argc, char *argv[])
 	if (!init_common(cmd_args, argc, argv))
 		return 1;
 
-#ifndef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
+// disable unit tests
+#else
 	// Run unit tests
 	if (cmd_args.getFlag("run-unittests")) {
 		return run_tests();

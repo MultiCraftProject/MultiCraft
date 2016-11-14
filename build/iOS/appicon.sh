@@ -3,7 +3,7 @@
 # Generates different AppIcon images with correct dimensions
 # (brew package: imagemagick)
 SIZES="76 120 152 167 180"
-SRCFILE=../android/src/main/res/drawable-xhdpi/ic_launcher.png
+SRCFILE=icon.png
 DSTDIR=MultiCraft/MultiCraft/Assets.xcassets/AppIcon.appiconset
 
 for sz in $SIZES; do
