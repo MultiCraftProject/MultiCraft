@@ -7,6 +7,7 @@ cd deps
 ./libvorbis.sh # depends on libogg
 ./leveldb.sh
 ./freetype.sh
+./luajit.sh
 
 echo
 echo "All libraries were built!"
