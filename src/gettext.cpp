@@ -234,7 +234,7 @@ void init_gettext(const char *path, const std::string &configured_language,
 	//errorstream << "Gettext debug: domainname = " << tdomain << "; codeset = "<< codeset << std::endl;
 #endif // defined(_WIN32)
 
-#if defined(__ANDROID__)
+#if defined(__ANDROID__) || defined(__IOS__)
 	// On Android we use libintl-lite, we need to load .mo files manually
 	if (!configured_language.empty()) {
 		std::string mopath = path;

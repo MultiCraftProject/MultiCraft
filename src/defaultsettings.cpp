@@ -439,7 +439,14 @@ void set_default_settings(Settings *settings)
 		settings->setDefault("gui_scaling", "1.3");
 		settings->setDefault("mouse_sensitivity", "0.3");
 	};
-	
+
+	// Auto-detect language on iOS
+	char lang[3] = {0};
+	NSString *syslang = [[NSLocale preferredLanguages] objectAtIndex:0];
+	[syslang getBytes:lang maxLength:2 usedLength:nil encoding:NSASCIIStringEncoding options:0 range:NSMakeRange(0, 2) remainingRange:nil];
+	if (!lang[0])
+		errorstream << "Language auto-detection failed!" << std::endl;
+	settings->setDefault("language", lang);
 #endif
 }
 

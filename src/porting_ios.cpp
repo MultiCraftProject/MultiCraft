@@ -13,6 +13,7 @@ namespace porting {
         path_user = std::string(buf);
 		ioswrap_paths(PATH_LIBRARY_SUPPORT, buf, sizeof(buf));
 		path_share = std::string(buf);
+		path_locale = std::string(buf) + "/locale";
         ioswrap_paths(PATH_LIBRARY_CACHE, buf, sizeof(buf));
         path_cache = std::string(buf);
     }

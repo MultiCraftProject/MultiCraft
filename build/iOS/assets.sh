@@ -15,6 +15,19 @@ mkdir -p $DEST/fonts
 cp ../../fonts/retrovillenc.ttf $DEST/fonts/ # no PNG fonts because freetype
 mkdir -p $DEST/games
 cp -r ../../games/default $DEST/games/default
+pushd ../../po
+for lang in *; do
+	[ ${#lang} -ne 2 ] && continue
+	mopath=$DEST/locale/$lang/LC_MESSAGES
+	mkdir -p $mopath
+	pushd $lang
+	for fn in *.po; do
+		# brew install gettext
+		/usr/local/Cellar/gettext/*/bin/msgfmt -o $mopath/${fn/.po/.mo} $fn
+	done
+	popd
+done
+popd
 
 find $DEST -type d -name '.git' -print0 | xargs -0 -- rm -r
 find $DEST -type f -name '.git*' -delete
