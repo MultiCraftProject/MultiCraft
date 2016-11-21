@@ -1,0 +1,26 @@
+--- source/Irrlicht/CIrrDeviceiOS.h.bak	2016-11-21 17:59:52.000000000 +0100
++++ source/Irrlicht/CIrrDeviceiOS.h	2016-11-21 18:06:06.000000000 +0100
+@@ -61,6 +61,8 @@
+ 
+         virtual E_DEVICE_TYPE getType() const _IRR_OVERRIDE_;
+ 
++        void *getViewController();
++
+ 	private:
+         void createWindow();
+         void createViewAndDriver();
+--- source/Irrlicht/CIrrDeviceiOS.mm.bak	2016-11-21 18:00:26.000000000 +0100
++++ source/Irrlicht/CIrrDeviceiOS.mm	2016-11-21 18:06:35.000000000 +0100
+@@ -687,6 +687,12 @@
+         return EIDT_IOS;
+     }
+ 
++    void *CIrrDeviceiOS::getViewController()
++    {
++        SIrrDeviceiOSDataStorage* dataStorage = static_cast<SIrrDeviceiOSDataStorage*>(DataStorage);
++        return (__bridge void*) dataStorage->ViewController;
++    }
++
+     void CIrrDeviceiOS::createWindow()
+     {
+ 		if (CreationParams.DriverType != video::EDT_NULL)

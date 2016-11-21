@@ -85,3 +85,4 @@ build/iOS/deps/*
 !build/iOS/deps/*.sh
 build/iOS/assets.zip
 build/iOS/worlds.zip
+build/iOS/Ads

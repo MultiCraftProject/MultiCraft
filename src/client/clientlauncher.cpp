@@ -34,6 +34,17 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "fontengine.h"
 #include "clientlauncher.h"
 
+#if 0 // toggle to 1 for ads
+#define ADS
+#include "ads.h"
+namespace irr {
+	class CIrrDeviceiOS : public IrrlichtDevice {
+	public:
+		void *getViewController();
+	};
+}
+#endif
+
 /* mainmenumanager.h
  */
 gui::IGUIEnvironment *guienv = NULL;
@@ -238,6 +249,9 @@ bool ClientLauncher::run(GameParams &game_params, const Settings &cmd_args)
 			receiver->m_touchscreengui = new TouchScreenGUI(device, receiver);
 			g_touchscreengui = receiver->m_touchscreengui;
 #endif
+#ifdef ADS
+			ads_enable(true);
+#endif
 
 			the_game(
 				kill,
@@ -261,6 +275,9 @@ bool ClientLauncher::run(GameParams &game_params, const Settings &cmd_args)
 			delete g_touchscreengui;
 			g_touchscreengui = NULL;
 			receiver->m_touchscreengui = NULL;
+#endif
+#ifdef ADS
+			ads_enable(false);
 #endif
 
 		} //try
@@ -498,8 +515,16 @@ void ClientLauncher::main_menu(MainMenuData *menudata)
 	device->getCursorControl()->setVisible(true);
 #endif
 
+#ifdef ADS
+	ads_enable(true);
+#endif
+
 	/* show main menu */
 	GUIEngine mymenu(device, guiroot, &g_menumgr, smgr, menudata, *kill);
+
+#ifdef ADS
+	ads_enable(false);
+#endif
 
 	smgr->clear();	/* leave scene manager in a clean state */
 }
@@ -556,6 +581,12 @@ bool ClientLauncher::create_engine_device()
 	if (device) {
 		porting::initIrrlicht(device);
 	}
+#ifdef ADS
+	if (device) {
+		CIrrDeviceiOS* dev = (CIrrDeviceiOS*) device;
+		ads_startup(dev->getViewController());
+	}
+#endif
 
 	return device != NULL;
 }

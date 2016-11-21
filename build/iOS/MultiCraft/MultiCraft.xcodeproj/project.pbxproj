@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		EB4367AE23CAD13A43ADF4B1 /* libPods-MultiCraft.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8758CE009FCB7E91F4C84C28 /* libPods-MultiCraft.a */; };
 		F81F6BE51DDC7D99000B9E21 /* libintl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F81F6BE41DDC7D99000B9E21 /* libintl.a */; };
+		F84D3A951DE79AB400ADE1A0 /* ads.mm in Sources */ = {isa = PBXBuildFile; fileRef = F84D3A941DE79AB400ADE1A0 /* ads.mm */; };
 		F85722891DDC74B700308383 /* libluajit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F85722881DDC74B700308383 /* libluajit.a */; };
 		F8E6C4E71DCA3B7900F64426 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8E6C4E51DCA3B7900F64426 /* Main.storyboard */; };
 		F8E6C4E91DCA3B7900F64426 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8E6C4E81DCA3B7900F64426 /* Assets.xcassets */; };
@@ -213,6 +214,8 @@
 		32528F14AAB9EA0E9CAB8526 /* Pods-MultiCraft.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MultiCraft.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-MultiCraft/Pods-MultiCraft.debug.xcconfig"; sourceTree = "<group>"; };
 		8758CE009FCB7E91F4C84C28 /* libPods-MultiCraft.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MultiCraft.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F81F6BE41DDC7D99000B9E21 /* libintl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libintl.a; path = ../deps/intl/libintl.a; sourceTree = "<group>"; };
+		F84D3A931DE79AB400ADE1A0 /* ads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ads.h; path = ../../Ads/ads.h; sourceTree = "<group>"; };
+		F84D3A941DE79AB400ADE1A0 /* ads.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ads.mm; path = ../../Ads/ads.mm; sourceTree = "<group>"; };
 		F85722881DDC74B700308383 /* libluajit.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libluajit.a; path = ../deps/luajit/lib/libluajit.a; sourceTree = "<group>"; };
 		F8E6C4D91DCA3B7900F64426 /* MultiCraft.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MultiCraft.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8E6C4E61DCA3B7900F64426 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -667,6 +670,15 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		F84D3A921DE79AA500ADE1A0 /* Ads */ = {
+			isa = PBXGroup;
+			children = (
+				F84D3A931DE79AB400ADE1A0 /* ads.h */,
+				F84D3A941DE79AB400ADE1A0 /* ads.mm */,
+			);
+			name = Ads;
+			sourceTree = "<group>";
+		};
 		F8E6C4D01DCA3B7900F64426 = {
 			isa = PBXGroup;
 			children = (
@@ -702,6 +714,7 @@
 		F8E6C4DC1DCA3B7900F64426 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				F84D3A921DE79AA500ADE1A0 /* Ads */,
 				F8E6C4F31DCA3EA400F64426 /* ioswrap.h */,
 				F8E6C4F41DCA3EA400F64426 /* ioswrap.m */,
 				F8E6C7E01DCA4EB300F64426 /* assets.zip */,
@@ -1354,6 +1367,7 @@
 				F8E6C6351DCA3F9900F64426 /* mapgen_valleys.cpp in Sources */,
 				F8E6C6101DCA3F9900F64426 /* environment.cpp in Sources */,
 				F8E6C64E1DCA3F9900F64426 /* rollback_interface.cpp in Sources */,
+				F84D3A951DE79AB400ADE1A0 /* ads.mm in Sources */,
 				F8E6C6301DCA3F9900F64426 /* mapgen_fractal.cpp in Sources */,
 				F8E6C6441DCA3F9900F64426 /* noise.cpp in Sources */,
 				F8E6C7BB1DCA428800F64426 /* numeric.cpp in Sources */,
