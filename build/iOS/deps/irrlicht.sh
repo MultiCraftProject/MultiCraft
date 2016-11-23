@@ -16,6 +16,7 @@ fi
 
 cd source/Irrlicht
 xcodebuild build \
+	-configuration Release \
 	-project Irrlicht.xcodeproj \
 	-scheme Irrlicht_iOS \
 	-destination generic/platform=iOS

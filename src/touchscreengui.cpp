@@ -61,6 +61,7 @@ const char* touchgui_button_imagenames[] = {
 	"chat.png",
 //	"camera.png",
 	"rangeview.png",
+	"rangeview_ios.png",
 	"empty.png",
 	"escape.png",
 };
@@ -129,6 +130,9 @@ static irr::EKEY_CODE id2keycode(touch_gui_button_id id)
 			key = "camera_mode";
 			break;*/
 		case range_id:
+			key = "rangeselect";
+			break;
+		case range_ios_id:
 			key = "rangeselect";
 			break;
 		case empty_id:
@@ -342,36 +346,42 @@ void TouchScreenGUI::init(ISimpleTextureSource* tsrc)
 			L"fast", false, SLOW_BUTTON_REPEAT);
 #endif*/
 
-/*#ifndef NDEBUG
-	/* init debug button */
-	/*initButton(debug_id,
-			rect<s32>(m_screensize.X - (0.75*button_size), 0.75*button_size,
-					m_screensize.X, 1.5*button_size),
-			L"dbg", false, SLOW_BUTTON_REPEAT);
-#endif*/
-
-	/* init rangeselect button */
-	initButton(range_id,					
-					rect<s32>(m_screensize.X / 2 - (button_size * 1.125), 0,
-					m_screensize.X / 2 - (button_size * 0.375),
-					(button_size * 0.75)),
-			L"far", false, SLOW_BUTTON_REPEAT);
 			
-	/* init minimap button */
-	initButton(minimap_id,
-					rect<s32>(m_screensize.X / 2 - (button_size * 0.375), 0,
-					m_screensize.X / 2 + (button_size * 0.375),
-					(button_size * 0.75)),
-			L"minimap", false, SLOW_BUTTON_REPEAT);
 
-	/* init chat button */
+
 #ifdef __IOS__
+// iOS bar
+	/* init pause button */
 	initButton(escape_id,
-				rect<s32>(m_screensize.X / 2 + (button_size * 0.375), 0,
-				m_screensize.X / 2 + (button_size * 1.125),
+				rect<s32>(m_screensize.X / 2 - (button_size * 0.75), 0,
+				m_screensize.X / 2,
 				(button_size * 0.75)),
 		L"Exit", false, SLOW_BUTTON_REPEAT);
+	
+	/* init rangeselect button */
+	initButton(range_ios_id,
+			   rect<s32>(m_screensize.X / 2, 0,
+						 m_screensize.X / 2 + (button_size * 0.75),
+						 (button_size * 0.75)),
+			   L"far", false, SLOW_BUTTON_REPEAT);
+	
 #else
+// Android and Windows bar
+	/* init rangeselect button */
+	initButton(range_id,
+			   rect<s32>(m_screensize.X / 2 - (button_size * 1.125), 0,
+						 m_screensize.X / 2 - (button_size * 0.375),
+						 (button_size * 0.75)),
+			   L"far", false, SLOW_BUTTON_REPEAT);
+	
+	/* init minimap button */
+	initButton(minimap_id,
+			   rect<s32>(m_screensize.X / 2 - (button_size * 0.375), 0,
+						 m_screensize.X / 2 + (button_size * 0.375),
+						 (button_size * 0.75)),
+			   L"minimap", false, SLOW_BUTTON_REPEAT);
+	
+	/* init chat button */
 	initButton(chat_id,
 					rect<s32>(m_screensize.X / 2 + (button_size * 0.375), 0,
 					m_screensize.X / 2 + (button_size * 1.125),
@@ -379,8 +389,8 @@ void TouchScreenGUI::init(ISimpleTextureSource* tsrc)
 			L"Chat", false, SLOW_BUTTON_REPEAT);
 #endif
 
-		/* init camera button 
-	initButton(camera_id,
+		/* init camera button */
+	/*initButton(camera_id,
 			rect<s32>(0, 0,
 					0.75*button_size, 0.75*button_size),
 			L"cam", false, SLOW_BUTTON_REPEAT);*/

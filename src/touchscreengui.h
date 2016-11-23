@@ -58,6 +58,7 @@ typedef enum {
 	chat_id,
 //	camera_id,
 	range_id,
+	range_ios_id,
 	empty_id,
 	escape_id,
 	after_last_element_id

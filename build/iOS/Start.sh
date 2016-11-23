@@ -14,6 +14,11 @@ echo "Creating Assets:"
 ./assets.sh
 
 echo
+echo "Creating App Icon:"
+
+./appicon.sh
+
+echo
 echo "Install CocoaPods:"
 
 pod install

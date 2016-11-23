@@ -97,8 +97,11 @@ local function init_globals()
 
 	tv_main:set_autosave_tab(true)
 	tv_main:add(tabs.singleplayer)
+	
+if PLATFORM ~= "iOS" then
 	tv_main:add(tabs.multiplayer)
 	tv_main:add(tabs.server)
+end
 
 	if not use_simple_menu then
 		tv_main:add(tabs.settings)
@@ -131,4 +134,3 @@ local function init_globals()
 end
 
 init_globals()
-

@@ -345,8 +345,10 @@ void FontEngine::initFont(unsigned int basesize, FontMode mode)
 			m_font_cache[mode][basesize] = font;
 		}
 		else {
+		#ifndef __IOS__
 			errorstream << "FontEngine: failed to load freetype font: "
 					<< font_path << std::endl;
+		#endif
 		}
 	}
 #endif

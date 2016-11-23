@@ -10,3 +10,5 @@ for sz in $SIZES; do
 	echo "Creating ${sz}x${sz} icon"
 	convert -resize ${sz}x${sz} $SRCFILE $DSTDIR/AppIcon-${sz}.png
 done
+
+echo "App Icon create successful"

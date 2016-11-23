@@ -23,7 +23,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "config.h"
 #include "constants.h"
 #include "porting.h"
+
+#ifdef __IOS__
 #import "SDVersion.h"
+#endif
 
 void set_default_settings(Settings *settings)
 {

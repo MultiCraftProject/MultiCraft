@@ -33,7 +33,6 @@
 		F8E6C6051DCA3F9900F64426 /* craftdef.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C5211DCA3F9900F64426 /* craftdef.cpp */; };
 		F8E6C6061DCA3F9900F64426 /* database-dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C5231DCA3F9900F64426 /* database-dummy.cpp */; };
 		F8E6C6071DCA3F9900F64426 /* database-leveldb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C5251DCA3F9900F64426 /* database-leveldb.cpp */; };
-		F8E6C6081DCA3F9900F64426 /* database-redis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C5271DCA3F9900F64426 /* database-redis.cpp */; };
 		F8E6C6091DCA3F9900F64426 /* database-sqlite3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C5291DCA3F9900F64426 /* database-sqlite3.cpp */; };
 		F8E6C60A1DCA3F9900F64426 /* database.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C52B1DCA3F9900F64426 /* database.cpp */; };
 		F8E6C60B1DCA3F9900F64426 /* debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C52E1DCA3F9900F64426 /* debug.cpp */; };
@@ -296,8 +295,6 @@
 		F8E6C5241DCA3F9900F64426 /* database-dummy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "database-dummy.h"; path = "../../../../src/database-dummy.h"; sourceTree = "<group>"; };
 		F8E6C5251DCA3F9900F64426 /* database-leveldb.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "database-leveldb.cpp"; path = "../../../../src/database-leveldb.cpp"; sourceTree = "<group>"; };
 		F8E6C5261DCA3F9900F64426 /* database-leveldb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "database-leveldb.h"; path = "../../../../src/database-leveldb.h"; sourceTree = "<group>"; };
-		F8E6C5271DCA3F9900F64426 /* database-redis.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "database-redis.cpp"; path = "../../../../src/database-redis.cpp"; sourceTree = "<group>"; };
-		F8E6C5281DCA3F9900F64426 /* database-redis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "database-redis.h"; path = "../../../../src/database-redis.h"; sourceTree = "<group>"; };
 		F8E6C5291DCA3F9900F64426 /* database-sqlite3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "database-sqlite3.cpp"; path = "../../../../src/database-sqlite3.cpp"; sourceTree = "<group>"; };
 		F8E6C52A1DCA3F9900F64426 /* database-sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "database-sqlite3.h"; path = "../../../../src/database-sqlite3.h"; sourceTree = "<group>"; };
 		F8E6C52B1DCA3F9900F64426 /* database.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = database.cpp; path = ../../../../src/database.cpp; sourceTree = "<group>"; };
@@ -843,8 +840,6 @@
 				F8E6C5241DCA3F9900F64426 /* database-dummy.h */,
 				F8E6C5251DCA3F9900F64426 /* database-leveldb.cpp */,
 				F8E6C5261DCA3F9900F64426 /* database-leveldb.h */,
-				F8E6C5271DCA3F9900F64426 /* database-redis.cpp */,
-				F8E6C5281DCA3F9900F64426 /* database-redis.h */,
 				F8E6C5291DCA3F9900F64426 /* database-sqlite3.cpp */,
 				F8E6C52A1DCA3F9900F64426 /* database-sqlite3.h */,
 				F8E6C52B1DCA3F9900F64426 /* database.cpp */,
@@ -1538,7 +1533,6 @@
 				F8E6C6DF1DCA413A00F64426 /* clientpackethandler.cpp in Sources */,
 				F8E6C6261DCA3F9900F64426 /* itemdef.cpp in Sources */,
 				F8E6C61B1DCA3F9900F64426 /* guiKeyChangeMenu.cpp in Sources */,
-				F8E6C6081DCA3F9900F64426 /* database-redis.cpp in Sources */,
 				F8E6C7671DCA423C00F64426 /* thread.cpp in Sources */,
 				F8E6C6481DCA3F9900F64426 /* pathfinder.cpp in Sources */,
 				F8E6C6531DCA3F9900F64426 /* serverobject.cpp in Sources */,
@@ -1854,6 +1848,17 @@
 				INFOPLIST_FILE = MultiCraft/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-isystem",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"-isystem",
+					"\"${PODS_ROOT}/Headers/Public/SDVersion\"",
+					"-isystem",
+					"\"${PODS_ROOT}/Headers/Public/SSZipArchive\"",
+					"-flto",
+					"-fvisibility=hidden",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-L${SRCROOT}/../deps/irrlicht",
@@ -1907,6 +1912,17 @@
 				INFOPLIST_FILE = MultiCraft/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-isystem",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"-isystem",
+					"\"${PODS_ROOT}/Headers/Public/SDVersion\"",
+					"-isystem",
+					"\"${PODS_ROOT}/Headers/Public/SSZipArchive\"",
+					"-flto",
+					"-fvisibility=hidden",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-L${SRCROOT}/../deps/irrlicht",
