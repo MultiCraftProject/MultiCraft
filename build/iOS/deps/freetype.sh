@@ -1,7 +1,6 @@
 #!/bin/bash -e
 
 . ../sdk.sh
-IPHONEOS_DEPLOYMENT_TARGET=
 FREETYPE_VERSION=2.7
 
 if [ ! -d freetype-src ]; then
