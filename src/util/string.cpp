@@ -87,7 +87,15 @@ std::wstring utf8_to_wide(const std::string &input)
 	char *outbuf = new char[outbuf_size];
 	memset(outbuf, 0, outbuf_size);
 
-	if (!convert("WCHAR_T", "UTF-8", outbuf, outbuf_size, inbuf, inbuf_size)) {
+#ifdef __IOS__
+	// iOS needs manual caring to support the full character set possible with wchar_t
+	SANITY_CHECK(sizeof(wchar_t) == 4);
+	const char *to = "UTF-32LE";
+#else
+	const char *to = "WCHAR_T";
+#endif
+
+	if (!convert(to, "UTF-8", outbuf, outbuf_size, inbuf, inbuf_size)) {
 		infostream << "Couldn't convert UTF-8 string 0x" << hex_encode(input)
 			<< " into wstring" << std::endl;
 		delete[] inbuf;
