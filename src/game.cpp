@@ -4649,6 +4649,7 @@ void the_game(bool *kill,
 	g_game = NULL;
 }
 
+#ifdef __IOS__
 void external_pause_game()
 {
 	if (!g_game)
@@ -4663,3 +4664,4 @@ void external_statustext(const char *text, float duration)
 	std::wstring s = narrow_to_wide(std::string(text));
 	g_game->customStatustext(s, duration);
 }
+#endif
