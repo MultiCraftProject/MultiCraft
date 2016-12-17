@@ -1495,6 +1495,9 @@ public:
 
 	void run();
 	void shutdown();
+#ifdef __IOS__
+	void pauseGame();
+#endif
 
 protected:
 
@@ -4526,6 +4529,17 @@ void Game::readSettings()
 	m_cache_mouse_sensitivity = rangelim(m_cache_mouse_sensitivity, 0.001, 100.0);
 }
 
+#ifdef __IOS__
+void Game::pauseGame()
+{
+	g_touchscreengui->handleReleaseAll();
+	if (g_menumgr.pausesGame())
+		return;
+	show_pause_menu(&current_formspec, client, gamedef,
+			texture_src, device, simple_singleplayer_mode);
+}
+#endif
+
 /****************************************************************************/
 /****************************************************************************
  Shutdown / cleanup
@@ -4560,6 +4574,8 @@ void Game::extendedResourceCleanup()
  ****************************************************************************/
 /****************************************************************************/
 
+static Game *g_game = NULL;
+
 void the_game(bool *kill,
 		bool random_input,
 		InputHandler *input,
@@ -4578,6 +4594,7 @@ void the_game(bool *kill,
 		bool simple_singleplayer_mode)
 {
 	Game game;
+	g_game = &game;
 
 	/* Make a copy of the server address because if a local singleplayer server
 	 * is created then this is updated and we don't want to change the value
@@ -4607,4 +4624,13 @@ void the_game(bool *kill,
 		error_message = e.what() + strgettext("\nCheck debug.txt for details.");
 		errorstream << "ModError: " << error_message << std::endl;
 	}
+
+	g_game = NULL;
+}
+
+void external_pause_game()
+{
+	if (!g_game)
+		return;
+	g_game->pauseGame();
 }

@@ -91,8 +91,9 @@ public:
 	void hide();
 	void show();
 
-	void storePointerPos(size_t ID, v2s32 pos);
-	v2s32 loadPointerPos(size_t ID);
+#ifdef __IOS__
+	void handleReleaseAll();
+#endif
 
 private:
 	IrrlichtDevice*         m_device;
@@ -185,6 +186,9 @@ private:
 
 	/* array for doubletap detection */
 	key_event m_key_events[2];
+
+	void storePointerPos(size_t ID, v2s32 pos);
+	v2s32 loadPointerPos(size_t ID);
 };
 extern TouchScreenGUI *g_touchscreengui;
 #endif
