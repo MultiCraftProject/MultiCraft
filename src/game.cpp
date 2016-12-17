@@ -1497,6 +1497,7 @@ public:
 	void shutdown();
 #ifdef __IOS__
 	void pauseGame();
+	void customStatustext(const std::wstring &text, float time);
 #endif
 
 protected:
@@ -1702,6 +1703,9 @@ private:
 #ifdef __ANDROID__
 	bool m_android_chat_open;
 #endif
+#ifdef __IOS__
+	GameRunData* runData_ptr;
+#endif
 };
 
 Game::Game() :
@@ -1725,6 +1729,9 @@ Game::Game() :
 	sky(NULL),
 	local_inventory(NULL),
 	hud(NULL),
+#ifdef __IOS__
+	runData_ptr(NULL),
+#endif
 	mapper(NULL)
 {
 	g_settings->registerChangedCallback("doubletap_jump",
@@ -1844,6 +1851,9 @@ void Game::run()
 	runData.time_from_last_punch  = 10.0;
 	runData.profiler_max_page = 3;
 	runData.update_wielded_item_trigger = true;
+#ifdef __IOS__
+	runData_ptr = &runData;
+#endif
 
 	flags.show_chat = true;
 	flags.show_hud = true;
@@ -4538,6 +4548,17 @@ void Game::pauseGame()
 	show_pause_menu(&current_formspec, client, gamedef,
 			texture_src, device, simple_singleplayer_mode);
 }
+
+void Game::customStatustext(const std::wstring &text, float time)
+{
+	if (!runData_ptr)
+		return;
+	statustext = text;
+	if(statustext == L"")
+		runData_ptr->statustext_time = 0;
+	else
+		runData_ptr->statustext_time = time;
+}
 #endif
 
 /****************************************************************************/
@@ -4633,4 +4654,12 @@ void external_pause_game()
 	if (!g_game)
 		return;
 	g_game->pauseGame();
+}
+
+void external_statustext(const char *text, float duration)
+{
+	if (!g_game)
+		return;
+	std::wstring s = narrow_to_wide(std::string(text));
+	g_game->customStatustext(s, duration);
 }
