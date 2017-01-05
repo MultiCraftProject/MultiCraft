@@ -3880,7 +3880,11 @@ void Game::handlePointingAtObject(GameRunData *runData,
 			runData->selected_object->debugInfoText()));
 	}
 
-	if (input->getLeftState()) {
+	const ItemDefinition &playeritem_def =
+		playeritem.getDefinition(itemdef_manager);
+	bool nohit_enabled = ((ItemGroupList) playeritem_def.groups)["attached_node"] != 0;
+
+	if (input->getLeftState() && !nohit_enabled) {
 		bool do_punch = false;
 		bool do_punch_damage = false;
 
@@ -3910,7 +3914,7 @@ void Game::handlePointingAtObject(GameRunData *runData,
 			if (!disable_send)
 				client->interact(0, pointed);
 		}
-	} else if (input->getRightClicked()) {
+	} else if (input->getRightClicked() || (input->getLeftClicked() && nohit_enabled)) {
 		infostream << "Right-clicked object" << std::endl;
 		client->interact(3, pointed);  // place
 	}
