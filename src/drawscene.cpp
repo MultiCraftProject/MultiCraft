@@ -508,24 +508,47 @@ void draw_load_screen(const std::wstring &text, IrrlichtDevice* device,
 	// draw progress bar
 	if ((percent >= 0) && (percent <= 100))
 	{
-		v2s32 barsize(
-				// 342 is (approximately) 256/0.75 to keep bar on same size as
-				// before with default settings
-				342 * 1.2 * porting::getDisplayDensity() *
-				g_settings->getFloat("gui_scaling"),
-				g_fontengine->getTextHeight() * 3);
+		// rects to be painted with the bar color
+		const static core::rect<s32> rects[] = {
+			core::rect<s32>(  4, 11,  8, 53),
+			core::rect<s32>(  8,  6, 248, 58),
+			core::rect<s32>(248, 11, 252, 53),
+		};
+		static video::ITexture *progress_img_bg = NULL, *progress_img_o = NULL;
+		if (progress_img_bg == NULL) {
+			// IMPORTANT: the texture must be scaled to npot2 for Android beforehand
+			progress_img_bg = driver->getTexture((porting::path_share + "/textures/base/progress_bar_bg.png").c_str());
+			progress_img_o = driver->getTexture((porting::path_share + "/textures/base/progress_bar_overlay.png").c_str());
+		}
 
-		core::rect<s32> barrect(center - barsize / 2, center + barsize / 2);
-		driver->draw2DRectangle(video::SColor(255, 255, 255, 255),barrect, NULL); // border
-		driver->draw2DRectangle(video::SColor(255, 64, 64, 64), core::rect<s32> (
-				barrect.UpperLeftCorner + 1,
-				barrect.LowerRightCorner-1), NULL); // black inside the bar
-		driver->draw2DRectangle(video::SColor(255, 255 - percent * 2, percent * 2, 48), core::rect<s32> (
-				barrect.UpperLeftCorner + 1,
-				core::vector2d<s32>(
-						barrect.LowerRightCorner.X -
-						(barsize.X - 1) + percent * (barsize.X - 2) / 100,
-						barrect.LowerRightCorner.Y - 1)), NULL); // the actual progress
+		const core::dimension2d<u32> &img_size = progress_img_bg->getSize();
+		u32 imgW = MYMAX(208, img_size.Width);
+		u32 imgH = MYMAX(24, img_size.Height);
+		v2s32 img_pos((screensize.X - imgW) / 2, (screensize.Y - imgH) / 2);
+
+		draw2DImageFilterScaled(
+			driver, progress_img_bg,
+			core::rect<s32>(img_pos.X, img_pos.Y, img_pos.X + imgW, img_pos.Y + imgH),
+			core::rect<s32>(0, 0, img_size.Width, img_size.Height),
+			0, 0, true);
+		for (int i = 0; i < ARRLEN(rects); i++) {
+			const s32 clipx = (percent * img_size.Width) / 100;
+			core::rect<s32> r(
+				MYMIN(rects[i].UpperLeftCorner.X, clipx), rects[i].UpperLeftCorner.Y,
+				MYMIN(rects[i].LowerRightCorner.X, clipx), rects[i].LowerRightCorner.Y
+			);
+			if (r.getArea() <= 0)
+				continue;
+			driver->draw2DRectangle(
+				video::SColor(255, 255 - percent * 2, percent * 2, 48),
+				r + img_pos, NULL);
+		}
+		draw2DImageFilterScaled(
+			driver, progress_img_o,
+			core::rect<s32>(img_pos.X, img_pos.Y,
+				img_pos.X + (percent * imgW) / 100, img_pos.Y + imgH),
+			core::rect<s32>(0, 0, ((percent * img_size.Width) / 100), img_size.Height),
+			0, 0, true); // the actual progress
 	}
 	guienv->drawAll();
 	driver->endScene();
