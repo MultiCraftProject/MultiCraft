@@ -510,9 +510,9 @@ void draw_load_screen(const std::wstring &text, IrrlichtDevice* device,
 	{
 		// rects to be painted with the bar color
 		const static core::rect<s32> rects[] = {
-			core::rect<s32>(  4, 11,  8, 53),
-			core::rect<s32>(  8,  6, 248, 58),
-			core::rect<s32>(248, 11, 252, 53),
+			core::rect<s32>(  8, 11,  16, 53),
+			core::rect<s32>( 16,  5, 496, 59),
+			core::rect<s32>(496, 11, 504, 53),
 		};
 		static video::ITexture *progress_img_bg = NULL, *progress_img_o = NULL;
 		if (progress_img_bg == NULL) {
