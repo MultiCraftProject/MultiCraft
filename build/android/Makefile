@@ -59,14 +59,11 @@ LEVELDB_LIB = $(LEVELDB_DIR)/out-static/libleveldb.a
 LEVELDB_TIMESTAMP = $(LEVELDB_DIR)/timestamp
 LEVELDB_TIMESTAMP_INT = $(ANDR_ROOT)/deps/leveldb_timestamp
 
-#OPENAL_URL = https://github.com/MoNTE48/openal-soft/releases/download/$(OPENAL_VER)/$(OPENAL_VER).zip
-#OPENAL_VER = openal-soft-1.17.2-dev
-OPENAL_FOLDER = $(ANDR_ROOT)/deps/openal-soft
-OPENAL_DIR = $(ANDR_ROOT)/deps/openal-soft/android
-OPENAL_LIB = $(OPENAL_DIR)/libs/$(TARGET_ABI)/libopenal.so
+OPENAL_DIR = $(ANDR_ROOT)/deps/openal-soft
+OPENAL_LIB = $(OPENAL_DIR)/libopenal.a
 OPENAL_TIMESTAMP = $(OPENAL_DIR)/timestamp
 OPENAL_TIMESTAMP_INT = $(ANDR_ROOT)/deps/openal_timestamp
-OPENAL_URL_GIT = https://github.com/MoNTE48/openal-soft
+OPENAL_URL_GIT = https://github.com/kcat/openal-soft
 
 VORBIS_DIR = $(ANDR_ROOT)/deps/libvorbis-android
 VORBIS_LIB = $(VORBIS_DIR)/obj/local/$(TARGET_ABI)/libvorbis.a
@@ -168,9 +165,8 @@ openal_download :
 		mkdir -p ${ANDR_ROOT}/deps;                                            \
 		cd ${ANDR_ROOT}/deps ;                                                 \
 		git clone ${OPENAL_URL_GIT} || exit 1;                                 \
-#		wget ${OPENAL_URL} || exit 1;                                          \
-#		unzip ${OPENAL_VER}.zip -d openal-soft || exit 1;                      \
-#		rm ${OPENAL_VER}.zip || exit 1;                                        \
+		cd ${OPENAL_DIR};                                                      \
+		sed '/CMAKE_FIND_ROOT_PATH / s/^/#/' -i XCompile-Android.txt;          \
 	fi
 
 openal : $(OPENAL_LIB)
@@ -186,23 +182,26 @@ $(OPENAL_LIB): $(OPENAL_TIMESTAMP)
 	if [ $$REFRESH -ne 0 ] ; then                                              \
 	echo "changed timestamp for openal detected building...";                  \
 	cd ${OPENAL_DIR};                                                          \
-	${ANDROID_NDK}/ndk-build NDEBUG=${NDEBUG}                                  \
-		NDK_MODULE_PATH=${NDK_MODULE_PATH} APP_ABI=${TARGET_ABI}               \
-		TARGET_ARCH_ABI=${TARGET_ABI} APP_PLATFORM=${APP_PLATFORM}             \
-		NDK_TOOLCHAIN_VERSION=${COMPILER_VERSION}                              \
-		PRIVATE_CC=${NDK_MODULE_PATH}/${TARGET_TOOLCHAIN}-${COMPILER_VERSION}/prebuilt/linux-x86_64/bin/${TARGET_TOOLCHAIN}-gcc \
-		PRIVATE_CXX=${NDK_MODULE_PATH}/${TARGET_TOOLCHAIN}-${COMPILER_VERSION}/prebuilt/linux-x86_64/bin/${TARGET_TOOLCHAIN}-g++ \
-		TARGET_CFLAGS+="${TARGET_CFLAGS_ADDON}"                                \
-		TARGET_LDFLAGS+="${TARGET_LDFLAGS_ADDON}"                              \
-		TARGET_CXXFLAGS+="${TARGET_CXXFLAGS_ADDON}" || exit 1;                 \
+	export TOOLCHAIN=/tmp/ndk-${TARGET_HOST}-openal;                           \
+	${ANDROID_NDK}/build/tools/make-standalone-toolchain.sh                    \
+		--toolchain=${TARGET_TOOLCHAIN}-${COMPILER_VERSION}                    \
+		--platform=${APP_PLATFORM}                                             \
+		--install-dir=$${TOOLCHAIN};                                           \
+	export PATH="$${TOOLCHAIN}/bin:$${PATH}";                                  \
+	cmake .                                                                    \
+		-DCMAKE_TOOLCHAIN_FILE=XCompile-Android.txt -DLIBTYPE=STATIC           \
+		-DHOST=${TARGET_TOOLCHAIN} -DCMAKE_FIND_ROOT_PATH=$${TOOLCHAIN}        \
+		-DALSOFT_NO_CONFIG_UTIL=TRUE || exit 1;                                \
+	$(MAKE) || exit 1;                                                         \
 	touch ${OPENAL_TIMESTAMP};                                                 \
 	touch ${OPENAL_TIMESTAMP_INT};                                             \
+	$(RM) -rf $${TOOLCHAIN};                                                   \
 	else                                                                       \
 		echo "nothing to be done for openal";                                  \
 	fi
 
 clean_openal :
-	$(RM) -rf ${OPENAL_FOLDER}
+	$(RM) -rf ${OPENAL_DIR}
 
 $(VORBIS_TIMESTAMP) : vorbis_download
 	@LAST_MODIF=$$(find ${VORBIS_DIR} -type f -printf '%T@ %p\n' | sort -n | tail -1 | cut -f2- -d" "); \

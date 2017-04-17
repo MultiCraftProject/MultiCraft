@@ -24,7 +24,7 @@ include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := openal
-LOCAL_SRC_FILES := deps/openal-soft/android/obj/local/$(APP_ABI)/libopenal.a
+LOCAL_SRC_FILES := deps/openal-soft/libopenal.a
 include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
