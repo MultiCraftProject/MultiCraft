@@ -1,4 +1,4 @@
---Minetest
+﻿--Minetest
 --Copyright (C) 2013 sapier
 --
 --This program is free software; you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 
 local multicraft_developers = {
 	"Maksim Gamarnik (MoNTE48) <MoNTE48@mail.ua>",
+	"Bektur Mambetov (ubulem) <berkut87@gmail.com>",
 }
 
 local core_developers = {
