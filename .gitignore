@@ -111,3 +111,6 @@ build/iOS/deps/*
 build/iOS/assets.zip
 build/iOS/worlds.zip
 build/iOS/Ads
+
+## WindowsApp files
+build/WindowsApp/multicraft-windows.zip

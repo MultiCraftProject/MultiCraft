@@ -67,37 +67,25 @@ cd $libdir
 [ -d luajit ] || unzip -o $packagedir/luajit-$luajit_version.zip -d luajit
 [ -d leveldb ] || unzip -o $packagedir/libleveldb-$leveldb_version.zip -d leveldb
 
-# Get minetest
+# Get the source
 cd $builddir
-if [ ! "x$EXISTING_MINETEST_DIR" = "x" ]; then
-	ln -s $EXISTING_MINETEST_DIR minetest
-else
-	[ -d minetest ] && (cd minetest && git pull) || (git clone https://github.com/minetest/minetest)
-fi
-cd minetest
-git_hash=$(git rev-parse --short HEAD)
-
-# Get minetest_game
-cd games
-if [ "x$NO_MINETEST_GAME" = "x" ]; then
-	[ -d minetest_game ] && (cd minetest_game && git pull) || (git clone https://github.com/minetest/minetest_game)
-fi
-cd ../..
+[ -d MultiCraft ] && (cd MultiCraft && git pull) || (git clone https://github.com/MultiCraftProject/MultiCraft)
 
 # Build the thing
-cd minetest
+cd MultiCraft
 [ -d _build ] && rm -Rf _build/
 mkdir _build
 cd _build
+# TODO: gettext is currently disabled
 cmake .. \
 	-DCMAKE_INSTALL_PREFIX=/tmp \
-	-DVERSION_EXTRA=$git_hash \
 	-DBUILD_CLIENT=1 -DBUILD_SERVER=0 \
 	-DCMAKE_TOOLCHAIN_FILE=$toolchain_file \
+	-DRUN_IN_PLACE=0 \
 	\
 	-DENABLE_SOUND=1 \
 	-DENABLE_CURL=1 \
-	-DENABLE_GETTEXT=1 \
+	-DENABLE_GETTEXT=0 \
 	-DENABLE_FREETYPE=1 \
 	-DENABLE_LEVELDB=1 \
 	\

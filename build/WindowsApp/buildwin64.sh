@@ -1,7 +1,14 @@
 #!/bin/bash
 set -e
 
-builddir="$( pwd )"
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+if [ $# -ne 1 ]; then
+	echo "Usage: $0 <build directory>"
+	exit 1
+fi
+builddir=$1
+mkdir -p $builddir
+builddir="$( cd "$builddir" && pwd )"
 packagedir=$builddir/packages
 libdir=$builddir/libs
 
@@ -61,18 +68,20 @@ cd $libdir
 [ -d luajit ] || unzip -o $packagedir/luajit-$luajit_version.zip -d luajit
 [ -d leveldb ] || unzip -o $packagedir/libleveldb-$leveldb_version.zip -d leveldb
 
-# Get MultiCraft
+# Get the source
 cd $builddir
+[ -d MultiCraft ] && (cd MultiCraft && git pull) || (git clone https://github.com/MultiCraftProject/MultiCraft)
 
 # Build the thing
+cd MultiCraft
 [ -d _build ] && rm -Rf _build/
 mkdir _build
 cd _build
 cmake .. \
-	-DCMAKE_TOOLCHAIN_FILE=$toolchain_file \
 	-DCMAKE_INSTALL_PREFIX=/tmp \
-	-DVERSION_EXTRA=$git_hash \
 	-DBUILD_CLIENT=1 -DBUILD_SERVER=0 \
+	-DCMAKE_TOOLCHAIN_FILE=$toolchain_file \
+	-DRUN_IN_PLACE=0 \
 	\
 	-DENABLE_SOUND=1 \
 	-DENABLE_CURL=1 \
@@ -128,6 +137,6 @@ cmake .. \
 	-DLEVELDB_LIBRARY=$libdir/leveldb/lib/libleveldb.dll.a \
 	-DLEVELDB_DLL=$libdir/leveldb/bin/libleveldb.dll
 
-make package -j8
+make package -j2
 
 # EOF
