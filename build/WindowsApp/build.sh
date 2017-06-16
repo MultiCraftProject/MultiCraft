@@ -15,7 +15,9 @@ if [ ! -d $mingw ]; then
 fi
 export PATH="$mingw/bin:$PATH"
 
+EXISTING_DIR=$PWD/../.. \
 ./buildwin${bit}.sh /tmp/build${bit}
+
 cd /tmp/build${bit}/MultiCraft/_build/_CPack_Packages/*/ZIP/
 rm *.zip; dir=$(echo *)
 if [ $bit -eq 64 ]; then

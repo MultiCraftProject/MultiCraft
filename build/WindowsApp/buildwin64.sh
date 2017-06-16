@@ -70,7 +70,7 @@ cd $libdir
 
 # Get the source
 cd $builddir
-[ -d MultiCraft ] && (cd MultiCraft && git pull) || (git clone https://github.com/MultiCraftProject/MultiCraft)
+[ -d MultiCraft ] || ln -s "$EXISTING_DIR" MultiCraft
 
 # Build the thing
 cd MultiCraft
