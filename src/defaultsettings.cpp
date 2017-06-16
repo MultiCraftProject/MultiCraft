@@ -431,7 +431,8 @@ void set_default_settings(Settings *settings)
 	if (!lang[0])
 		errorstream << "Language auto-detection failed!" << std::endl;
 	settings->setDefault("language", lang);
-
+#else
+	settings->setDefault("screen_dpi", "72");
 #endif
 
 #ifdef __IOS__
