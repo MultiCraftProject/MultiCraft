@@ -647,7 +647,7 @@ void draw_load_screen(const std::wstring &text, IrrlichtDevice* device,
 			core::rect<s32>(img_pos.X, img_pos.Y, img_pos.X + imgW, img_pos.Y + imgH),
 			core::rect<s32>(0, 0, img_size.Width, img_size.Height),
 			0, 0, true);
-		for (int i = 0; i < ARRLEN(rects); i++) {
+		for (u32 i = 0; i < ARRLEN(rects); i++) {
 			const s32 clipx = (percent * img_size.Width) / 100;
 			core::rect<s32> r(
 				MYMIN(rects[i].UpperLeftCorner.X, clipx), rects[i].UpperLeftCorner.Y,
