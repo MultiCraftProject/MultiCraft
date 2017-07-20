@@ -35,13 +35,11 @@ import java.io.OutputStream;
 import java.util.Arrays;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static mobi.MultiCraft.AdManager.initAd;
 import static mobi.MultiCraft.PreferencesHelper.TAG_BUILD_NUMBER;
 import static mobi.MultiCraft.PreferencesHelper.TAG_LAUNCH_TIMES;
 import static mobi.MultiCraft.PreferencesHelper.TAG_SHORTCUT_CREATED;
 import static mobi.MultiCraft.PreferencesHelper.getBuildNumber;
 import static mobi.MultiCraft.PreferencesHelper.getLaunchTimes;
-import static mobi.MultiCraft.PreferencesHelper.isAdsDisabled;
 import static mobi.MultiCraft.PreferencesHelper.isCreateShortcut;
 import static mobi.MultiCraft.PreferencesHelper.isRestored;
 import static mobi.MultiCraft.PreferencesHelper.loadSettings;
