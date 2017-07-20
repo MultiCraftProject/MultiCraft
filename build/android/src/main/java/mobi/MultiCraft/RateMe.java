@@ -1,5 +1,6 @@
 package mobi.MultiCraft;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RatingBar;
 
+import java.lang.ref.WeakReference;
 import java.util.Date;
 
 class RateMe {
@@ -32,11 +34,14 @@ class RateMe {
     private static boolean mOptOut = false;
     private static Callback sCallback = null;
 
+    private static WeakReference<Activity> mainActivityRef = null;
+
     static void setCallback(Callback callback) {
         sCallback = callback;
     }
 
     static void onStart(Context context) {
+        mainActivityRef = new WeakReference<>((Activity) context);
         SharedPreferences pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         Editor editor = pref.edit();
         // If it is the first launch, save the date in shared preference.
@@ -112,7 +117,13 @@ class RateMe {
                 clearSharedPreferences(context);
             }
         });
-        dialog.show();
+        if (mainActivityRef.get() != null && !mainActivityRef.get().isFinishing()) {
+            dialog.show();
+        } else {
+            if (sCallback != null) {
+                sCallback.onNegative();
+            }
+        }
     }
 
     private static void clearSharedPreferences(Context context) {

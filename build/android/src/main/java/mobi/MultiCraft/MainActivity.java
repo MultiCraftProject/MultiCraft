@@ -2,12 +2,14 @@ package mobi.MultiCraft;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.ProgressDialog;
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -33,10 +35,14 @@ import java.io.OutputStream;
 import java.util.Arrays;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static mobi.MultiCraft.AdManager.initAd;
 import static mobi.MultiCraft.PreferencesHelper.TAG_BUILD_NUMBER;
 import static mobi.MultiCraft.PreferencesHelper.TAG_LAUNCH_TIMES;
+import static mobi.MultiCraft.PreferencesHelper.TAG_SHORTCUT_CREATED;
 import static mobi.MultiCraft.PreferencesHelper.getBuildNumber;
 import static mobi.MultiCraft.PreferencesHelper.getLaunchTimes;
+import static mobi.MultiCraft.PreferencesHelper.isAdsDisabled;
+import static mobi.MultiCraft.PreferencesHelper.isCreateShortcut;
 import static mobi.MultiCraft.PreferencesHelper.isRestored;
 import static mobi.MultiCraft.PreferencesHelper.loadSettings;
 import static mobi.MultiCraft.PreferencesHelper.saveSettings;
@@ -44,6 +50,7 @@ import static mobi.MultiCraft.PreferencesHelper.saveSettings;
 public class MainActivity extends Activity implements WVersionManager.ActivityListener {
     public final static int REQUEST_CODE = 104;
     private final static String TAG = "Error";
+    private final static String CREATE_SHORTCUT = "com.android.launcher.action.INSTALL_SHORTCUT";
     private final static String FILES = Environment.getExternalStorageDirectory() + "/Files.zip";
     private final static String WORLDS = Environment.getExternalStorageDirectory() + "/worlds.zip";
     private final static String GAMES = Environment.getExternalStorageDirectory() + "/games.zip";
@@ -53,10 +60,10 @@ public class MainActivity extends Activity implements WVersionManager.ActivityLi
     private final static int ALL_PERMISSIONS_RESULT = 102;
     private static final String UPDATE_LINK = "https://raw.githubusercontent.com/MoNTE48/MultiCraft-links/master/ver.txt";
 
-    private ProgressDialog mProgressDialog;
     private String dataFolder = "/Android/data/mobi.MultiCraft/files/";
     private String unzipLocation = Environment.getExternalStorageDirectory() + dataFolder;
     private ProgressBar mProgressBar;
+    private ProgressBar mProgressBarIndeterminate;
     private TextView mLoading;
     private ImageView iv;
     private WVersionManager versionManager = null;
@@ -65,7 +72,10 @@ public class MainActivity extends Activity implements WVersionManager.ActivityLi
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            int progress = intent.getIntExtra(UnzipService.ACTION_PROGRESS, 0);
+            int progress = 0;
+            if (intent != null) {
+                progress = intent.getIntExtra(UnzipService.ACTION_PROGRESS, 0);
+            }
             if (progress >= 0) {
                 mProgressBar.setVisibility(View.VISIBLE);
                 mProgressBar.setProgress(progress);
@@ -104,7 +114,6 @@ public class MainActivity extends Activity implements WVersionManager.ActivityLi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dismissProgressDialog();
         unregisterReceiver(myReceiver);
     }
 
@@ -154,6 +163,32 @@ public class MainActivity extends Activity implements WVersionManager.ActivityLi
     }
 
     //interface
+    private void addShortcut() {
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        int size = activityManager.getLauncherLargeIconSize();
+        try {
+            Drawable icon = getPackageManager().getApplicationIcon(getPackageName());
+            Bitmap shortcutIconBitmap = ((BitmapDrawable) icon).getBitmap();
+            Bitmap temp;
+            if (shortcutIconBitmap.getWidth() == size && shortcutIconBitmap.getHeight() == size)
+                temp = shortcutIconBitmap;
+            else
+                temp = Bitmap.createScaledBitmap(shortcutIconBitmap, size, size, true);
+            saveSettings(TAG_SHORTCUT_CREATED, false);
+            Intent shortcutIntent = new Intent(getApplicationContext(), MainActivity.class);
+            shortcutIntent.setAction(Intent.ACTION_MAIN);
+            Intent addIntent = new Intent();
+            addIntent.putExtra("duplicate", false);
+            addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+            addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getString(R.string.app_name));
+            addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON, temp);
+            addIntent.setAction(CREATE_SHORTCUT);
+            getApplicationContext().sendBroadcast(addIntent);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "Shortcut cannot be created");
+        }
+    }
+
     private void addImageView(int pos) {
         int marginTop = pos == 0 ? 48 : 288;
         RelativeLayout rl = (RelativeLayout) findViewById(R.id.activity_main);
@@ -169,6 +204,7 @@ public class MainActivity extends Activity implements WVersionManager.ActivityLi
 
     private void hideViews() {
         mProgressBar.setVisibility(View.GONE);
+        mProgressBarIndeterminate.setVisibility(View.GONE);
         iv.setVisibility(View.GONE);
         mLoading.setVisibility(View.GONE);
     }
@@ -188,25 +224,12 @@ public class MainActivity extends Activity implements WVersionManager.ActivityLi
         }
     }
 
-    private void showSpinnerDialog(int message) {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(MainActivity.this);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setCancelable(false);
-        }
-        mProgressDialog.setMessage(getString(message));
-        mProgressDialog.show();
-    }
-
-    private void dismissProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-        }
-    }
-
     public void init() {
         RateMe.onStart(this);
+        if (isCreateShortcut())
+            addShortcut();
         mProgressBar = (ProgressBar) findViewById(R.id.PB1);
+        mProgressBarIndeterminate = (ProgressBar) findViewById(R.id.PB2);
         mLoading = (TextView) findViewById(R.id.tv_progress_circle);
         Drawable draw = ContextCompat.getDrawable(this, R.drawable.custom_progress_bar);
         mProgressBar.setProgressDrawable(draw);
@@ -337,7 +360,6 @@ public class MainActivity extends Activity implements WVersionManager.ActivityLi
         deleteZip(FILES, WORLDS, GAMES);
         Intent intent = new Intent(this, BillingActivity.class);
         startActivityForResult(intent, REQUEST_CODE);
-
     }
 
 
@@ -398,7 +420,9 @@ public class MainActivity extends Activity implements WVersionManager.ActivityLi
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            showSpinnerDialog(R.string.rm_old);
+            mProgressBarIndeterminate.setVisibility(View.VISIBLE);
+            mLoading.setVisibility(View.VISIBLE);
+            mLoading.setText(R.string.rm_old);
         }
 
         @Override
@@ -410,11 +434,11 @@ public class MainActivity extends Activity implements WVersionManager.ActivityLi
             return null;
         }
 
+
         @Override
         protected void onPostExecute(Void result) {
             if (isFinishing())
                 return;
-            dismissProgressDialog();
             if (unzipLocation.equals(location)) {
                 new CopyZip().execute(FILES, WORLDS, GAMES);
             } else {
@@ -429,12 +453,6 @@ public class MainActivity extends Activity implements WVersionManager.ActivityLi
         String[] zips;
 
         @Override
-        protected void onPreExecute() {
-            mProgressBar.setVisibility(View.VISIBLE);
-            mLoading.setVisibility(View.VISIBLE);
-        }
-
-        @Override
         protected String doInBackground(String... params) {
             zips = params;
             for (String s : zips) {
@@ -444,8 +462,11 @@ public class MainActivity extends Activity implements WVersionManager.ActivityLi
 
         }
 
+
         @Override
         protected void onPostExecute(String result) {
+            mLoading.setText(R.string.loading);
+            mProgressBarIndeterminate.setVisibility(View.GONE);
             try {
                 startUnzipService(zips);
             } catch (IOException e) {

@@ -6,7 +6,6 @@
     <string name="loading">Загрузка&#8230;</string>
     <string name="notification_title">Загрузка MultiCraft</string>
     <string name="notification_description">Осталось меньше минуты&#8230;</string>
-
     <!-- разрешения -->
     <string name="explain">Для корректной работы, игре требуется разрешение записывать в память устройтсва.</string>
     <string name="location">Знание местоположения обеспечивает Вам лучшее взаимодействие с игрой</string>
@@ -21,6 +20,7 @@
     <string name="ignore">Игнорировать</string>
     <string name="later">Позже</string>
     <string name="update">Обновить</string>
+
     <!-- reminder -->
     <string name="message">Сообщение</string>
 </resources>

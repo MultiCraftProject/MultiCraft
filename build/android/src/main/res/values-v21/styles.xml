@@ -19,4 +19,6 @@
     </style>
 
     <style name="CustomLollipopDialogStyle" parent="android:Theme.Material.Light.Dialog.Alert" />
+
+    <style name="IndeterminateProgressBar" parent="android:Widget.Material.ProgressBar.Large"/>
 </resources>
