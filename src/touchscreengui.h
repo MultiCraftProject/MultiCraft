@@ -118,7 +118,7 @@ private:
 
 	rect<s32> m_control_pad_rect;
 
-	int m_move_id;
+	size_t m_move_id;
 	bool m_move_has_really_moved;
 	s64 m_move_downtime;
 	bool m_move_sent_as_mouse_event;
@@ -154,7 +154,7 @@ private:
 
 	struct id_status
 	{
-		int id;
+		size_t id;
 		int X;
 		int Y;
 	};

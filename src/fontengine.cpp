@@ -347,10 +347,8 @@ void FontEngine::initFont(unsigned int basesize, FontMode mode)
 		}
 
 		// try fallback font
-		#ifndef __IOS__
 		errorstream << "FontEngine: failed to load: " << font_path << ", trying to fall back "
 				"to fallback font" << std::endl;
-		#endif
 
 		font_path = g_settings->get(font_config_prefix + "fallback_font_path");
 
