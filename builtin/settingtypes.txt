@@ -655,7 +655,7 @@ font_shadow (Font shadow) int 1
 #    Font shadow alpha (opaqueness, between 0 and 255).
 font_shadow_alpha (Font shadow alpha) int 127 0 255
 
-mono_font_path (Monospace font path) path fonts/liberationmono.ttf
+mono_font_path (Monospace font path) path fonts/Cousine-Regular.ttf
 
 mono_font_size (Monospace font size) int 15
 

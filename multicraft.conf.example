@@ -771,7 +771,7 @@ max_out_chat_queue_size = 20
 # font_shadow_alpha = 127
 
 #    type: path
-# mono_font_path = fonts/liberationmono.ttf
+# mono_font_path = fonts/Cousine-Regular.ttf
 
 #    type: int
 # mono_font_size = 15
