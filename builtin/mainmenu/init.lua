@@ -97,10 +97,7 @@ local function init_globals()
 
 	tv_main:set_autosave_tab(true)
 	tv_main:add(tabs.local_game)
-	
-if PLATFORM ~= "iOS" then
 	tv_main:add(tabs.play_online)
-end
 
 	if not use_simple_menu then
 		tv_main:add(tabs.settings)

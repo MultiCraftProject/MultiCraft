@@ -38,6 +38,7 @@
 		EB4367AE23CAD13A43ADF4B1 /* libPods-MultiCraft.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8758CE009FCB7E91F4C84C28 /* libPods-MultiCraft.a */; };
 		F81F6BE51DDC7D99000B9E21 /* libintl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F81F6BE41DDC7D99000B9E21 /* libintl.a */; };
 		F84D3A951DE79AB400ADE1A0 /* ads.mm in Sources */ = {isa = PBXBuildFile; fileRef = F84D3A941DE79AB400ADE1A0 /* ads.mm */; };
+		F85119A71F4476FC00BFA9AF /* libcurl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F85119A61F4476FC00BFA9AF /* libcurl.a */; };
 		F85722891DDC74B700308383 /* libluajit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F85722881DDC74B700308383 /* libluajit.a */; };
 		F8E6C4E71DCA3B7900F64426 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8E6C4E51DCA3B7900F64426 /* Main.storyboard */; };
 		F8E6C4E91DCA3B7900F64426 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8E6C4E81DCA3B7900F64426 /* Assets.xcassets */; };
@@ -294,6 +295,7 @@
 		F81F6BE41DDC7D99000B9E21 /* libintl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libintl.a; path = ../deps/intl/libintl.a; sourceTree = "<group>"; };
 		F84D3A931DE79AB400ADE1A0 /* ads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ads.h; path = ../../Ads/ads.h; sourceTree = "<group>"; };
 		F84D3A941DE79AB400ADE1A0 /* ads.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ads.mm; path = ../../Ads/ads.mm; sourceTree = "<group>"; };
+		F85119A61F4476FC00BFA9AF /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = ../deps/libcurl/lib/libcurl.a; sourceTree = "<group>"; };
 		F85722881DDC74B700308383 /* libluajit.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libluajit.a; path = ../deps/luajit/lib/libluajit.a; sourceTree = "<group>"; };
 		F8E6C4D91DCA3B7900F64426 /* MultiCraft.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MultiCraft.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8E6C4E61DCA3B7900F64426 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -728,6 +730,7 @@
 				F8E6C7DF1DCA47AF00F64426 /* libvorbisfile.a in Frameworks */,
 				F85722891DDC74B700308383 /* libluajit.a in Frameworks */,
 				F81F6BE51DDC7D99000B9E21 /* libintl.a in Frameworks */,
+				F85119A71F4476FC00BFA9AF /* libcurl.a in Frameworks */,
 				EB4367AE23CAD13A43ADF4B1 /* libPods-MultiCraft.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1332,6 +1335,7 @@
 		F8E6C7C31DCA42F300F64426 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F85119A61F4476FC00BFA9AF /* libcurl.a */,
 				F81F6BE41DDC7D99000B9E21 /* libintl.a */,
 				F85722881DDC74B700308383 /* libluajit.a */,
 				F8E6C7DE1DCA47AF00F64426 /* libvorbisfile.a */,
@@ -1822,7 +1826,7 @@
 					__IOS__,
 					"RUN_IN_PLACE=0",
 					"USE_GETTEXT=1",
-					"USE_CURL=0",
+					"USE_CURL=1",
 					"USE_SOUND=1",
 					"USE_FREETYPE=1",
 					"USE_CURSES=0",
@@ -1846,6 +1850,7 @@
 					"${SRCROOT}/../deps/freetype/include/freetype2",
 					"${SRCROOT}/../deps/luajit/include",
 					"${SRCROOT}/../deps/intl/include",
+					"${SRCROOT}/../deps/libcurl/include",
 				);
 				INFOPLIST_FILE = MultiCraft/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1871,6 +1876,7 @@
 					"-L${SRCROOT}/../deps/freetype/lib",
 					"-L${SRCROOT}/../deps/luajit/lib",
 					"-L${SRCROOT}/../deps/intl",
+					"-L${SRCROOT}/../deps/libcurl/lib",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = mobi.MultiCraft;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1891,7 +1897,7 @@
 					__IOS__,
 					"RUN_IN_PLACE=0",
 					"USE_GETTEXT=1",
-					"USE_CURL=0",
+					"USE_CURL=1",
 					"USE_SOUND=1",
 					"USE_FREETYPE=1",
 					"USE_CURSES=0",
@@ -1915,6 +1921,7 @@
 					"${SRCROOT}/../deps/freetype/include/freetype2",
 					"${SRCROOT}/../deps/luajit/include",
 					"${SRCROOT}/../deps/intl/include",
+					"${SRCROOT}/../deps/libcurl/include",
 				);
 				INFOPLIST_FILE = MultiCraft/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1940,6 +1947,7 @@
 					"-L${SRCROOT}/../deps/freetype/lib",
 					"-L${SRCROOT}/../deps/luajit/lib",
 					"-L${SRCROOT}/../deps/intl",
+					"-L${SRCROOT}/../deps/libcurl/lib",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = mobi.MultiCraft;
 				PRODUCT_NAME = "$(TARGET_NAME)";

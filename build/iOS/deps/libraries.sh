@@ -7,6 +7,7 @@
 ./freetype.sh
 ./luajit.sh
 ./intl.sh
+./libcurl.sh
 
 echo
 echo "All libraries were built!"
