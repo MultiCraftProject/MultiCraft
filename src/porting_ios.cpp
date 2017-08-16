@@ -4,6 +4,7 @@
 #include "config.h"
 #include "ioswrap.h"
 
+static void *uiviewcontroller;
 
 namespace porting {
     void initializePathsiOS() {
@@ -40,6 +41,26 @@ namespace porting {
 
         return retval;
     }
+
+	void setViewController(void *v) {
+		uiviewcontroller = v;
+	}
+
+	void showInputDialog(const std::string &acceptButton, const std::string &hint,
+						 const std::string &current, int editType)
+	{
+		ioswrap_show_dialog(uiviewcontroller, acceptButton.c_str(), hint.c_str(), current.c_str(), editType);
+	}
+
+	int getInputDialogState() {
+		return ioswrap_get_dialog(NULL);
+	}
+
+	std::string getInputDialogValue() {
+		const char *str;
+		ioswrap_get_dialog(&str);
+		return std::string(str);
+	}
 }
 
 

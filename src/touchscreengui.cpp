@@ -364,6 +364,12 @@ void TouchScreenGUI::init(ISimpleTextureSource* tsrc)
 						 m_screensize.X / 2 + (button_size * 0.75),
 						 (button_size * 0.75)),
 			   L"far", false, SLOW_BUTTON_REPEAT);
+	/* init chat button */
+	initButton(chat_id,
+			   rect<s32>(m_screensize.X / 2 + (button_size * 0.75), 0,
+						 m_screensize.X / 2 + (button_size * 1.5),
+						 (button_size * 0.75)),
+			   L"Chat", false, SLOW_BUTTON_REPEAT);
 	
 #else
 // Android and Windows bar

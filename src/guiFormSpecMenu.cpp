@@ -106,7 +106,7 @@ GUIFormSpecMenu::GUIFormSpecMenu(irr::IrrlichtDevice* dev,
 	current_field_enter_pending(""),
 	m_font(NULL),
 	m_remap_dbl_click(remap_dbl_click)
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
 	, m_JavaDialogFieldName("")
 #endif
 {
@@ -2227,7 +2227,7 @@ void GUIFormSpecMenu::regenerateGui(v2u32 screensize)
 	skin->setFont(old_font);
 }
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
 bool GUIFormSpecMenu::getAndroidUIInput()
 {
 	/* no dialog shown */
@@ -3051,7 +3051,7 @@ bool GUIFormSpecMenu::preprocessEvent(const SEvent& event)
 		}
 	}
 
-	#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
 	// display software keyboard when clicking edit boxes
 	if (event.EventType == EET_MOUSE_INPUT_EVENT
 			&& event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN) {

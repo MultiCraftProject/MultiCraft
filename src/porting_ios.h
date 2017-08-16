@@ -8,6 +8,12 @@
 namespace porting {
     void initializePathsiOS();
     void copyAssets();
+	void setViewController(void *v);
+
+	void showInputDialog(const std::string &acceptButton, const std::string &hint,
+						 const std::string &current, int editType);
+	int getInputDialogState();
+	std::string getInputDialogValue();
 }
 
 #endif

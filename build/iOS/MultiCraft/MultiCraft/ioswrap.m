@@ -131,3 +131,45 @@ void ioswrap_size(unsigned int *dest)
     dest[0] = bounds.width * scale;
     dest[1] = bounds.height * scale;
 }
+
+/********/
+
+static int dialog_state;
+static char dialog_text[512];
+
+#define DIALOG_MULTILINE  1
+#define DIALOG_SINGLELINE 2
+#define DIALOG_PASSWORD   3
+
+void ioswrap_show_dialog(void *uiviewcontroller, const char *accept, const char *hint, const char *current, int type)
+{
+	UIViewController *viewc = (__bridge UIViewController*) uiviewcontroller;
+	NSString *accept_ = [NSString stringWithUTF8String:accept];
+	(void) hint; // unused
+
+	UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Text Input" message:nil preferredStyle:UIAlertControllerStyleAlert];
+	[alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+		textField.text = [NSString stringWithUTF8String:current];
+		if(type == DIALOG_PASSWORD)
+			textField.secureTextEntry = YES;
+	}];
+	[alert addAction:[UIAlertAction actionWithTitle:accept_ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+		dialog_state = 0;
+		strncpy(dialog_text, alert.textFields[0].text.UTF8String, sizeof(dialog_text));
+	}]];
+
+	dialog_state = -1;
+	dialog_text[0] = 0;
+	[viewc presentViewController:alert animated:YES completion:nil];
+}
+
+int ioswrap_get_dialog(const char **text)
+{
+	int ret = dialog_state;
+	if(text) {
+		*text = dialog_text;
+		dialog_state = -1; // reset
+	}
+
+	return ret;
+}

@@ -1353,7 +1353,7 @@ protected:
 		return input->wasKeyDown(keycache.key[k]) || input->joystick.wasKeyDown(k);
 	}
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
 	void handleAndroidChatInput();
 #endif
 
@@ -1463,8 +1463,6 @@ private:
 #if defined(__ANDROID__) || defined(__IOS__)
 	bool show_minimap;
 	bool m_cache_hold_aux1;
-#endif
-#ifdef __ANDROID__
 	bool m_android_chat_open;
 #endif
 };
@@ -2547,7 +2545,7 @@ void Game::processUserInput(f32 dtime)
 	// Input handler step() (used by the random input generator)
 	input->step(dtime);
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
 	if (current_formspec != NULL)
 		current_formspec->getAndroidUIInput();
 	else
@@ -2758,7 +2756,7 @@ void Game::openConsole(float scale, const wchar_t *line)
 {
 	assert(scale > 0.0f && scale <= 1.0f);
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
 	porting::showInputDialog(gettext("ok"), "", "", 2);
 	m_android_chat_open = true;
 #else
@@ -2772,7 +2770,7 @@ void Game::openConsole(float scale, const wchar_t *line)
 #endif
 }
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
 void Game::handleAndroidChatInput()
 {
 	if (m_android_chat_open && porting::getInputDialogState() == 0) {

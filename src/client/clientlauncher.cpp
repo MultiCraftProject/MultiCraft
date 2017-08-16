@@ -39,6 +39,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #if 0 // toggle to 1 for ads
 #define ADS
 #include "ads.h"
+#endif
+
+#ifdef __IOS__
 namespace irr {
 	class CIrrDeviceiOS : public IrrlichtDevice {
 	public:
@@ -596,10 +599,14 @@ bool ClientLauncher::create_engine_device()
 
 	if (device)
 		porting::initIrrlicht(device);
-#ifdef ADS
+
+#ifdef __IOS__
 	if (device) {
 		CIrrDeviceiOS* dev = (CIrrDeviceiOS*) device;
+		porting::setViewController(dev->getViewController());
+#ifdef ADS
 		ads_startup(dev->getViewController());
+#endif
 	}
 #endif
 
