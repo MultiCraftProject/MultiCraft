@@ -32,21 +32,32 @@ local function get_formspec(tabview, name, tabdata)
 
 	if PLATFORM ~= "iOS" then
 		retval = retval ..
-			"button[3.5,4.5;2.6,0.5;world_delete;".. fgettext("Delete") .. "]" ..
-			"button[6,4.5;2.8,0.5;world_create;".. fgettext("New") .. "]"
+			"image_button[0.45,4.9;2.9,0.8;" ..
+				core.formspec_escape(defaulttexturedir ..
+					"multicraft_local_delete_btn.png") .. ";world_delete;;true;false]" ..
+			"image_button[3.14,4.9;2.9,0.8;" ..
+				core.formspec_escape(defaulttexturedir ..
+					"multicraft_local_new_btn.png") .. ";world_create;;true;false]"
 	end
+
+	local creative_mode = core.settings:get_bool("creative_mode")
+
 	retval = retval ..
-			"button[8.7,4.5;3.30,0.5;play;".. fgettext("Play") .. "]" ..
-			"checkbox[0.0,4.25;cb_creative_mode;".. fgettext("Creative Mode") .. ";" ..
-			dump(core.settings:get_bool("creative_mode")) .. "]"..
-			"textlist[0,0;11.75,3.7;sp_worlds;" ..
+			"image_button[7,1.5;4.5,1.27;" ..
+				core.formspec_escape(defaulttexturedir ..
+					"multicraft_local_play_btn.png") .. ";play;;true;false]" ..
+			"image_button[7.25,3.15;4.05,0.8;" ..
+				core.formspec_escape(defaulttexturedir ..
+					"multicraft_local_creative_" ..
+					tostring(creative_mode) .. "_btn.png") ..
+					";cb_creative_mode;;true;false]" ..
+			"textlist[0,0;6.25,4.63;sp_worlds;" ..
 			menu_render_worldlist() ..
 			";" .. index .. ";true]"
 	return retval
 end
 
 local function main_button_handler(this, fields, name, tabdata)
-
 	assert(name == "local")
 
 	local world_doubleclick = false
@@ -72,17 +83,13 @@ local function main_button_handler(this, fields, name, tabdata)
 		return true
 	end
 
-    if fields["cb_creative_mode"] then
-            core.settings:set("creative_mode", fields["cb_creative_mode"])
-            local bool = fields["cb_creative_mode"]
-            if bool == 'true' then
-                bool = 'false'
-            else
-                bool = 'true'
-            end
-                core.settings:set("enable_damage", bool)
-            return true
-    end
+	if fields.cb_creative_mode then
+		local creative_mode = core.settings:get_bool("creative_mode")
+		core.settings:set("creative_mode", tostring((not creative_mode)))
+		core.settings:set("enable_damage", tostring(creative_mode))
+
+		return true
+	end
 
 	if fields["cb_server"] then
 		core.settings:set("enable_server", fields["cb_server"])

@@ -56,24 +56,34 @@ local function add_tab(self,tab)
 	end
 end
 
+local function get_bg(tsize, tabname)
+	tabname = tabname or "common"
+	return "background[0,0;" .. tsize.width .. "," .. tsize.height .. ";" ..
+		core.formspec_escape(defaulttexturedir ..
+			"multicraft_" .. tabname .. "_bg.png") .. ";true]"
+end
+
 --------------------------------------------------------------------------------
 local function get_formspec(self)
 	local formspec = ""
+	local name = self.tablist[self.last_tab_index].name
+	local tabname = name == "local" and name or nil
 
 	if not self.hidden and (self.parent == nil or not self.parent.hidden) then
-
 		if self.parent == nil then
 			local tsize = self.tablist[self.last_tab_index].tabsize or
 					{width=self.width, height=self.height}
+
 			formspec = formspec ..
-					string.format("size[%f,%f,%s]",tsize.width,tsize.height,
-						dump(self.fixed_size))
+				string.format("size[%f,%f,%s]",tsize.width,tsize.height,
+					dump(self.fixed_size))
+
+			formspec = formspec .. get_bg(tsize, tabname)
 		end
 		formspec = formspec .. self:tab_header()
 		formspec = formspec ..
 				self.tablist[self.last_tab_index].get_formspec(
-					self,
-					self.tablist[self.last_tab_index].name,
+					self, name,
 					self.tablist[self.last_tab_index].tabdata,
 					self.tablist[self.last_tab_index].tabsize
 					)

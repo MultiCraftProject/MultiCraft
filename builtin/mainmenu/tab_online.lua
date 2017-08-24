@@ -33,8 +33,8 @@ local function get_formspec(tabview, name, tabdata)
 
 	local retval =
 		-- Search
-		"field[0.15,0.35;6.05,0.27;te_search;;"..core.formspec_escape(tabdata.search_for).."]"..
-		"button[5.8,0.1;2,0.1;btn_mp_search;" .. fgettext("Search") .. "]" ..
+		"field[0.15,0.5;6.05,0.27;te_search;;"..core.formspec_escape(tabdata.search_for).."]"..
+		"button[5.8,0.25;2,0.1;btn_mp_search;" .. fgettext("Search") .. "]" ..
 
 		-- Address / Port
 		"label[7.75,-0.25;" .. fgettext("Address / Port") .. "]" ..
@@ -79,7 +79,7 @@ local function get_formspec(tabview, name, tabdata)
 		image_column(fgettext("PvP enabled"), "pvp") .. ",padding=0.25;" ..
 		"color,span=1;" ..
 		"text,padding=1]" ..
-		"table[-0.15,0.6;7.75,5.15;favourites;"
+		"table[-0.15,0.8;7.75,4.75;favourites;"
 
 	if menudata.search_result then
 		for i = 1, #menudata.search_result do
