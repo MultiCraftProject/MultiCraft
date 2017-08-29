@@ -39,6 +39,7 @@
 		F81F6BE51DDC7D99000B9E21 /* libintl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F81F6BE41DDC7D99000B9E21 /* libintl.a */; };
 		F84D3A951DE79AB400ADE1A0 /* ads.mm in Sources */ = {isa = PBXBuildFile; fileRef = F84D3A941DE79AB400ADE1A0 /* ads.mm */; };
 		F85119A71F4476FC00BFA9AF /* libcurl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F85119A61F4476FC00BFA9AF /* libcurl.a */; };
+		F856B5C31F55F7EE00FE9494 /* bg.png in Resources */ = {isa = PBXBuildFile; fileRef = F856B5C21F55F7EE00FE9494 /* bg.png */; };
 		F85722891DDC74B700308383 /* libluajit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F85722881DDC74B700308383 /* libluajit.a */; };
 		F8E6C4E71DCA3B7900F64426 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8E6C4E51DCA3B7900F64426 /* Main.storyboard */; };
 		F8E6C4E91DCA3B7900F64426 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8E6C4E81DCA3B7900F64426 /* Assets.xcassets */; };
@@ -296,6 +297,7 @@
 		F84D3A931DE79AB400ADE1A0 /* ads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ads.h; path = ../../Ads/ads.h; sourceTree = "<group>"; };
 		F84D3A941DE79AB400ADE1A0 /* ads.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ads.mm; path = ../../Ads/ads.mm; sourceTree = "<group>"; };
 		F85119A61F4476FC00BFA9AF /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = ../deps/libcurl/lib/libcurl.a; sourceTree = "<group>"; };
+		F856B5C21F55F7EE00FE9494 /* bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bg.png; path = ../../../../textures/base/bg.png; sourceTree = "<group>"; };
 		F85722881DDC74B700308383 /* libluajit.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libluajit.a; path = ../deps/luajit/lib/libluajit.a; sourceTree = "<group>"; };
 		F8E6C4D91DCA3B7900F64426 /* MultiCraft.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MultiCraft.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8E6C4E61DCA3B7900F64426 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -805,6 +807,7 @@
 				F8E6C4F41DCA3EA400F64426 /* ioswrap.m */,
 				F8E6C7E01DCA4EB300F64426 /* assets.zip */,
 				F8E6C7E21DCA511700F64426 /* worlds.zip */,
+				F856B5C21F55F7EE00FE9494 /* bg.png */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1423,6 +1426,7 @@
 				F8E6C7E11DCA4EB300F64426 /* assets.zip in Resources */,
 				F8E6C4E71DCA3B7900F64426 /* Main.storyboard in Resources */,
 				F8E6C7E31DCA511700F64426 /* worlds.zip in Resources */,
+				F856B5C31F55F7EE00FE9494 /* bg.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
