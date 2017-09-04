@@ -404,7 +404,7 @@ msgstr "Настроить"
 
 #: builtin/mainmenu/tab_local.lua builtin/mainmenu/tab_simple_main.lua
 msgid "Creative Mode"
-msgstr "Режим творчества"
+msgstr "Креатив"
 
 #: builtin/mainmenu/tab_local.lua builtin/mainmenu/tab_simple_main.lua
 msgid "Enable Damage"
@@ -419,8 +419,8 @@ msgid "Host Server"
 msgstr "Запустить сервер"
 
 #: builtin/mainmenu/tab_local.lua
-msgid "Local Game"
-msgstr "Локальная игра"
+msgid "Single Player"
+msgstr "Одиночная"
 
 #: builtin/mainmenu/tab_local.lua
 msgid "Name/Password"

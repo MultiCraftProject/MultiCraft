@@ -30,7 +30,6 @@ local function get_formspec(tabview, name, tabdata)
 				tonumber(core.settings:get("mainmenu_last_selected_world"))
 				)
 
-	if PLATFORM ~= "iOS" then
 		retval = retval ..
 			"image_button[0.45,4.9;2.9,0.8;" ..
 				core.formspec_escape(defaulttexturedir ..
@@ -38,7 +37,6 @@ local function get_formspec(tabview, name, tabdata)
 			"image_button[3.14,4.9;2.9,0.8;" ..
 				core.formspec_escape(defaulttexturedir ..
 					"multicraft_local_new_btn.png") .. ";world_create;;true;false]"
-	end
 
 	local creative_mode = core.settings:get_bool("creative_mode")
 

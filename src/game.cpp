@@ -2313,7 +2313,6 @@ bool Game::getServerContent(bool *aborted)
 			delete[] text;
 		} else {
 			std::stringstream message;
-#ifndef __IOS__
 			std::fixed(message);
 			message.precision(0);
 			message << gettext("Media...") << " " << (client->mediaReceiveProgress()*100) << "%";
@@ -2331,7 +2330,6 @@ bool Game::getServerContent(bool *aborted)
 
 				message << " (" << cur << ' ' << cur_unit << ")";
 			}
-#endif
 			progress = 30 + client->mediaReceiveProgress() * 35 + 0.5;
 			draw_load_screen(utf8_to_wide(message.str()), device,
 					guienv, texture_src, dtime, progress);

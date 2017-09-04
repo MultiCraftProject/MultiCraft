@@ -56,6 +56,23 @@ static void recursive_delete(NSString *path)
 		[fm removeItemAtPath:[path stringByAppendingPathComponent:file] error:nil];
 }
 
+static void loading_alert(UIViewController *viewc, NSString *text)
+{
+	if(text == nil) {
+		[viewc dismissViewControllerAnimated:NO completion:nil];
+		return;
+	}
+
+	UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:text preferredStyle:UIAlertControllerStyleAlert];
+	UIActivityIndicatorView *loading = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+	[loading startAnimating];
+	loading.frame = CGRectMake(10, 5, 50, 50);
+
+	[alert.view addSubview:loading];
+	[viewc presentViewController:alert animated:NO completion:nil];
+	CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, YES);
+}
+
 /**************/
 
 void ioswrap_log(const char *message)
@@ -95,7 +112,14 @@ void ioswrap_assets()
 	};
 	char buf[256];
 	uint32_t v_runtime = parse_version();
+	// create our own UIWindow so we can indicate progress
+	UIWindow *win = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+	UIViewController *viewc = [[UIViewController alloc] init];
+	win.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg.png"]];
+	win.rootViewController = viewc;
+	[win makeKeyAndVisible];
 
+	loading_alert(viewc, @"Extracting...");
 	for(int i = 0; assets[i].name != NULL; i++) {
 		ioswrap_paths(assets[i].path, buf, sizeof(buf));
 		NSString *destpath = [NSString stringWithUTF8String:buf];
@@ -122,6 +146,8 @@ extract:
 		[SSZipArchive unzipFileAtPath:zippath toDestination:destpath];
 		write_version(destpath, v_runtime);
 	}
+
+	loading_alert(viewc, nil);
 }
 
 void ioswrap_size(unsigned int *dest)
