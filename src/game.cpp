@@ -4715,29 +4715,34 @@ void Game::showPauseMenu()
 
 	os << FORMSPEC_VERSION_STRING  << SIZE_TAG
 		<< "bgcolor[#00000060;true]"
-		<< "button_exit[4," << (ypos++) << ";3,0.5;btn_continue;"
+		<< "image_button_exit[4," << (ypos++) << ";3,1;pause_menu_btn.png;btn_continue;"
 		<< strgettext("Continue") << "]";
-	
-#if !defined(__ANDROID__) && !defined(__IOS__)
+
 	if (!simple_singleplayer_mode) {
-		os << "button_exit[4," << (ypos++) << ";3,0.5;btn_change_password;"
-			<< strgettext("Change Password") << "]";
-	} else {
-		os << "field[4.5,0;3,1.0;;" << strgettext("Game paused") << ";]";
-	}
+#if !defined(__ANDROID__) && !defined(__IOS__)
+		os << "image_button_exit[4," << (ypos++)
+		   << ";3,1;pause_menu_btn.png;btn_change_password;"
+		   << strgettext("Change Password") << "]";
 #endif
+	} else {
+		os << "field[4.65,0;3,1.0;;" << strgettext("Game paused") << ";]";
+	}
 
 #if !defined(__ANDROID__) && !defined(__IOS__)
-	os		<< "button_exit[4," << (ypos++) << ";3,0.5;btn_sound;"
+	os	<< "image_button_exit[4," << (ypos++)
+		<< ";3,1;pause_menu_btn.png;btn_sound;"
 		<< strgettext("Sound Volume") << "]";
-	os		<< "button_exit[4," << (ypos++) << ";3,0.5;btn_key_config;"
+	os	<< "image_button_exit[4," << (ypos++)
+		<< ";3,1;pause_menu_btn.png;btn_key_config;"
 		<< strgettext("Change Keys")  << "]";
 #endif
-	os		<< "button_exit[4," << (ypos++) << ";3,0.5;btn_exit_menu;"
+	os	<< "image_button_exit[4," << (ypos++)
+		<< ";3,1;pause_menu_btn.png;btn_exit_menu;"
 		<< strgettext("Save and Exit") << "]"
 #ifndef __IOS__
 ; // LoL
-	os		<< "button_exit[4," << (ypos++) << ";3,0.5;btn_exit_os;"
+	os	<< "image_button_exit[4," << (ypos++)
+		<< ";3,1;pause_menu_btn.png;btn_exit_os;"
 		<< strgettext("Close game")   << "]"
 #endif
 /*		<< "textarea[7.5,0.25;3.9,6.25;;" << control_text << ";]
