@@ -113,7 +113,7 @@ video::ITexture *guiScalingResizeCached(video::IVideoDriver *driver,
 			(u32)destrect.getHeight()));
 	imageScaleNNAA(srcimg, srcrect, destimg);
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
 	// Android is very picky about textures being powers of 2, so expand
 	// the image dimensions to the next power of 2, if necessary, for
 	// that platform.
