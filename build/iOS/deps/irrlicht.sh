@@ -3,12 +3,12 @@
 . sdk.sh
 
 [ ! -d irrlicht-src ] && \
-	svn co -r 5415 svn://svn.code.sf.net/p/irrlicht/code/branches/ogl-es irrlicht-src
+	svn co -r 5573 svn://svn.code.sf.net/p/irrlicht/code/branches/ogl-es irrlicht-src
 
 cd irrlicht-src/
 
 if [ ! -f .patched ]; then
-	for p in touchcount unscaled dblfreefix viewcontroller; do
+	for p in touchcount unscaled dblfreefix viewcontroller headerpath roundingerror; do
 		patch -p0 <../../patches/irrlicht-$p.patch
 	done
 	touch .patched
