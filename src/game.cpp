@@ -4805,7 +4805,7 @@ void Game::showDeathScreen()
 	/* Note: FormspecFormSource and LocalFormspecHandler
 	 * are deleted by guiFormSpecMenu                     */
 	FormspecFormSource *fs_src = new FormspecFormSource(formspec);
-	LocalFormspecHandler *txt_dst = new LocalFormspecHandler("MT_DEATH_SCREEN");
+	LocalFormspecHandler *txt_dst = new LocalFormspecHandler("MT_DEATH_SCREEN", client);
 
 	create_formspec_menu(&current_formspec, client, device, &input->joystick, fs_src, txt_dst);
 }
