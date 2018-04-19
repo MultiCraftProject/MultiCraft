@@ -406,6 +406,8 @@ void Hud::drawStatbar(v2s32 pos, u16 corner, u16 drawdir, std::string texture,
 
 	p += offset;
 
+	p.Y -= g_settings->getU16("hud_move_upwards");
+
 	v2s32 steppos;
 	switch (drawdir) {
 		case HUD_DIR_RIGHT_LEFT:
@@ -457,6 +459,8 @@ void Hud::drawHotbar(u16 playeritem) {
 	s32 hotbar_itemcount = player->hud_hotbar_itemcount;
 	s32 width = hotbar_itemcount * (m_hotbar_imagesize + m_padding * 2);
 	v2s32 pos = centerlowerpos - v2s32(width / 2, m_hotbar_imagesize + m_padding * 2.4);
+
+	pos.Y -= g_settings->getU16("hud_move_upwards");
 
 	if ( (float) width / (float) porting::getWindowSize().X <=
 			g_settings->getFloat("hud_hotbar_max_width")) {

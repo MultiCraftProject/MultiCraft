@@ -170,6 +170,7 @@ void set_default_settings(Settings *settings)
 	settings->setDefault("gui_scaling_filter_txr2img", "true");
 	settings->setDefault("desynchronize_mapblock_texture_animation", "true");
 	settings->setDefault("hud_hotbar_max_width", "1.0");
+	settings->setDefault("hud_move_upwards", "0");
 	settings->setDefault("enable_local_map_saving", "false");
 	settings->setDefault("show_entity_selectionbox", "show_entity_selectionbox");
 	settings->setDefault("texture_clean_transparent", "false");
@@ -484,6 +485,7 @@ void set_default_settings(Settings *settings)
 		settings->setDefault("hud_scaling", "0.7");
 		settings->setDefault("gui_scaling", "1.3");
 		settings->setDefault("mouse_sensitivity", "0.3");
+		settings->setDefault("hud_move_upwards", "20");
 	};
 
 	// Auto-detect language on iOS
