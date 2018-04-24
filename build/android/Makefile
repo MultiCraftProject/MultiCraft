@@ -7,7 +7,8 @@ SHELL := /bin/bash
 # GPROF = 1
 
 # build for build platform
-APP_PLATFORM = android-19
+API = 19
+APP_PLATFORM = android-$(API)
 COMPILER_VERSION = 4.9
 
 ANDR_ROOT = $(shell pwd)
@@ -28,8 +29,8 @@ VERSION_PATCH := $(shell cat $(PROJ_ROOT)/CMakeLists.txt | \
 TARGET_HOST = arm-linux
 TARGET_ABI = armeabi-v7a
 TARGET_TOOLCHAIN = arm-linux-androideabi
-TARGET_CFLAGS_ADDON = -mfpu=vfpv3-d16 -march=armv7-a -Ofast -fdata-sections -ffunction-sections -fvisibility=hidden -flto
-TARGET_CXXFLAGS_ADDON = $(TARGET_CFLAGS_ADDON) 
+TARGET_CFLAGS_ADDON = -mfpu=vfpv3-d16 -march=armv7-a -Ofast -fdata-sections -ffunction-sections -flto -D__ANDROID_API__=$(API)
+TARGET_CXXFLAGS_ADDON = $(TARGET_CFLAGS_ADDON) -fvisibility=hidden
 TARGET_LDFLAGS_ADDON = -Wl,--no-warn-mismatch,--gc-sections,--icf=safe
 CROSS_PREFIX = arm-linux-androideabi
 
@@ -40,8 +41,8 @@ CROSS_PREFIX = arm-linux-androideabi
 # TARGET_HOST = x86-linux
 # TARGET_ABI = x86
 # TARGET_TOOLCHAIN = x86
-# TARGET_CFLAGS_ADDON = -Ofast -fdata-sections -ffunction-sections -fvisibility=hidden -flto
-# TARGET_CXXFLAGS_ADDON = $(TARGET_CFLAGS_ADDON)
+# TARGET_CFLAGS_ADDON = -Ofast -fdata-sections -ffunction-sections -flto -D__ANDROID_API__=$(API)
+# TARGET_CXXFLAGS_ADDON = $(TARGET_CFLAGS_ADDON) -fvisibility=hidden
 # TARGET_LDFLAGS_ADDON = -Wl,--no-warn-mismatch,--gc-sections
 # CROSS_PREFIX = i686-linux-android
 
@@ -112,7 +113,6 @@ LUAJIT_URL_GIT = https://github.com/LuaJIT/LuaJIT.git
 
 ANDROID_SDK = $(shell grep '^sdk\.dir' local.properties | sed 's/^.*=[[:space:]]*//')
 ANDROID_NDK = $(shell grep '^ndk\.dir' local.properties | sed 's/^.*=[[:space:]]*//')
-NDK_MODULE_PATH = $(ANDROID_NDK)/toolchains
 
 debug : local.properties
 	export NDEBUG=;                                                                 \
@@ -168,6 +168,7 @@ openal_download :
 		mv openal-soft-openal-soft-${OPENAL_VERSION} openal-soft || exit 1;    \
 		cd ${OPENAL_DIR};                                                      \
 		sed '/CMAKE_FIND_ROOT_PATH / s/^/#/' -i XCompile-Android.txt;          \
+		sed '/CMAKE_C_COMPILER/ s/-gcc"/-clang"/' -i XCompile-Android.txt;     \
 	fi
 
 openal : $(OPENAL_LIB)
@@ -189,11 +190,9 @@ $(OPENAL_LIB): $(OPENAL_TIMESTAMP)
 		--platform=${APP_PLATFORM}                                             \
 		--install-dir=$${TOOLCHAIN};                                           \
 	export PATH="$${TOOLCHAIN}/bin:$${PATH}";                                  \
-	export TARGET_OS=OS_ANDROID_CROSSCOMPILE;                                  \
-	export CPPFLAGS="$${CPPFLAGS} ${TARGET_CXXFLAGS_ADDON} -fno-lto";          \
-	export CFLAGS="$${CFLAGS} ${TARGET_CFLAGS_ADDON} -fno-lto";                \
 	cmake .                                                                    \
 		-DCMAKE_TOOLCHAIN_FILE=XCompile-Android.txt -DLIBTYPE=STATIC           \
+		-DCMAKE_C_FLAGS="${TARGET_CFLAGS_ADDON} -fno-lto"                      \
 		-DHOST=${CROSS_PREFIX} -DCMAKE_FIND_ROOT_PATH=$${TOOLCHAIN}            \
 		-DALSOFT_NO_CONFIG_UTIL=TRUE || exit 1;                                \
 	$(MAKE) || exit 1;                                                         \
@@ -236,14 +235,7 @@ $(VORBIS_LIB): $(VORBIS_TIMESTAMP)
 	echo "changed timestamp for vorbis detected building...";                  \
 	cd ${VORBIS_DIR};                                                          \
 	${ANDROID_NDK}/ndk-build NDEBUG=${NDEBUG}                                  \
-		NDK_MODULE_PATH=${NDK_MODULE_PATH}                                     \
-		APP_ABI=${TARGET_ABI} APP_PLATFORM=${APP_PLATFORM}                     \
-		NDK_TOOLCHAIN_VERSION=${COMPILER_VERSION}                              \
-		PRIVATE_CC=${NDK_MODULE_PATH}/${TARGET_TOOLCHAIN}-${COMPILER_VERSION}/prebuilt/linux-x86_64/bin/${CROSS_PREFIX}-gcc \
-		PRIVATE_CXX=${NDK_MODULE_PATH}/${TARGET_TOOLCHAIN}-${COMPILER_VERSION}/prebuilt/linux-x86_64/bin/${CROSS_PREFIX}-g++ \
-		TARGET_CFLAGS+="${TARGET_CFLAGS_ADDON}"                                \
-		TARGET_LDFLAGS+="${TARGET_LDFLAGS_ADDON}"                              \
-		TARGET_CXXFLAGS+="${TARGET_CXXFLAGS_ADDON}" || exit 1;                 \
+		NDK_APPLICATION_MK=${ANDR_ROOT}/jni/Deps.mk || exit 1;                 \
 	touch ${VORBIS_TIMESTAMP};                                                 \
 	touch ${VORBIS_TIMESTAMP_INT};                                             \
 	else                                                                       \
@@ -288,13 +280,13 @@ $(LEVELDB_LIB): $(LEVELDB_TIMESTAMP)
 		--platform=${APP_PLATFORM}                                             \
 		--install-dir=$${TOOLCHAIN};                                           \
 	export PATH="$${TOOLCHAIN}/bin:$${PATH}";                                  \
-	export CC=${CROSS_PREFIX}-gcc;                                              \
-	export CXX=${CROSS_PREFIX}-g++;                                             \
+	export CC=${CROSS_PREFIX}-gcc;                                             \
+	export CXX=${CROSS_PREFIX}-g++;                                            \
 	export TARGET_OS=OS_ANDROID_CROSSCOMPILE;                                  \
-	export CPPFLAGS="$${CPPFLAGS} ${TARGET_CXXFLAGS_ADDON}";                   \
+	export CXXFLAGS="$${CPPFLAGS} ${TARGET_CXXFLAGS_ADDON} -fno-lto";          \
 	export CFLAGS="$${CFLAGS} ${TARGET_CFLAGS_ADDON}";                         \
-	export LDFLAGS="$${LDFLAGS} ${TARGET_LDFLAGS_ADDON}";                      \
-	$(MAKE) || exit 1;                                                         \
+	export LDFLAGS="$${LDFLAGS} ${TARGET_LDFLAGS_ADDON} -fno-lto";             \
+	$(MAKE) out-static/libleveldb.a || exit 1;                                 \
 	touch ${LEVELDB_TIMESTAMP};                                                \
 	touch ${LEVELDB_TIMESTAMP_INT};                                            \
 	$(RM) -rf $${TOOLCHAIN};                                                   \
@@ -420,7 +412,7 @@ irrlicht_download :
 		patch -p1 < ${ANDR_ROOT}/patches/irrlicht-back_button.patch  || exit 1;\
 		patch -p1 < ${ANDR_ROOT}/patches/irrlicht-texturehack.patch  || exit 1;\
 		patch -p1 < ${ANDR_ROOT}/patches/irrlicht-optimization.patch || exit 1;\
-		patch -p1 < ${ANDR_ROOT}/patches/irrlicht-CEGL.patch         || exit 1;\
+		patch -p1 < ${ANDR_ROOT}/patches/irrlicht-native_activity.patch || exit 1; \
 	fi
 
 $(IRRLICHT_TIMESTAMP) : irrlicht_download
@@ -446,15 +438,10 @@ $(IRRLICHT_LIB): $(IRRLICHT_TIMESTAMP) $(FREETYPE_LIB)
 	mkdir -p ${IRRLICHT_DIR};                                                  \
 	echo "changed timestamp for irrlicht detected building...";                \
 	cd deps/irrlicht/source/Irrlicht/Android;                                  \
+	export APP_PLATFORM=${APP_PLATFORM};                                       \
+	export TARGET_ABI=${TARGET_ABI};                                           \
 	${ANDROID_NDK}/ndk-build NDEBUG=${NDEBUG}                                  \
-		NDK_MODULE_PATH=${NDK_MODULE_PATH}                                     \
-		APP_ABI=${TARGET_ABI} APP_PLATFORM=${APP_PLATFORM}                     \
-		NDK_TOOLCHAIN_VERSION=${COMPILER_VERSION}                              \
-		PRIVATE_CC=${NDK_MODULE_PATH}/${TARGET_TOOLCHAIN}-${COMPILER_VERSION}/prebuilt/linux-x86_64/bin/${CROSS_PREFIX}-gcc \
-		PRIVATE_CXX=${NDK_MODULE_PATH}/${TARGET_TOOLCHAIN}-${COMPILER_VERSION}/prebuilt/linux-x86_64/bin/${CROSS_PREFIX}-g++ \
-		TARGET_CFLAGS+="${TARGET_CFLAGS_ADDON}"                                \
-		TARGET_LDFLAGS+="${TARGET_LDFLAGS_ADDON}"                              \
-		TARGET_CXXFLAGS+="${TARGET_CXXFLAGS_ADDON}" || exit 1;                 \
+		NDK_APPLICATION_MK=${ANDR_ROOT}/jni/Irrlicht.mk || exit 1;             \
 	touch ${IRRLICHT_TIMESTAMP};                                               \
 	touch ${IRRLICHT_TIMESTAMP_INT};                                           \
 	else                                                                       \
@@ -601,10 +588,11 @@ $(LUAJIT_LIB): $(LUAJIT_TIMESTAMP)
 	--toolchain=${TARGET_TOOLCHAIN}-${COMPILER_VERSION}                        \
 	--platform=${APP_PLATFORM}                                                 \
 	--install-dir=$${TOOLCHAIN};                                               \
-	export PATH="$${TOOLCHAIN}/bin:$${PATH} -fno-lto";                         \
+	export PATH="$${TOOLCHAIN}/bin:$${PATH}";                                  \
 	export TARGET_FLAGS="${TARGET_CFLAGS_ADDON} -fno-lto";                     \
 	export TARGET_LDFLAGS="${TARGET_LDFLAGS_ADDON}";                           \
-	$(MAKE) CROSS=${CROSS_PREFIX}- XCFLAGS="-DLUAJIT_DISABLE_FFI" HOST_CC="gcc -m32" BUILDMODE=static; \
+	$(MAKE) CROSS=${CROSS_PREFIX}- TARGET_CC=${CROSS_PREFIX}-clang             \
+	XCFLAGS="-DLUAJIT_DISABLE_FFI" HOST_CC="gcc -m32" BUILDMODE=static;        \
 	touch ${LUAJIT_TIMESTAMP};                                                 \
 	touch ${LUAJIT_TIMESTAMP_INT};                                             \
 	$(RM) -rf $${TOOLCHAIN};                                                   \
@@ -678,13 +666,9 @@ clean_assets :
 apk: local.properties $(IRRLICHT_LIB) $(CURL_LIB) $(LEVELDB_LIB) $(LUAJIT_LIB) \
 	$(OPENAL_LIB) $(VORBIS_LIB) prep_srcdir $(ANDR_ROOT)/jni/src/android_version.h \
 	$(ANDR_ROOT)/jni/src/android_version_githash.h sqlite3_download intl_download iconv_download assets
-	+@${ANDROID_NDK}/ndk-build NDK_MODULE_PATH=${NDK_MODULE_PATH}               \
-		GPROF=${GPROF} APP_ABI=${TARGET_ABI}                                   \
-		APP_PLATFORM=${APP_PLATFORM}                                           \
-		NDK_TOOLCHAIN_VERSION=${COMPILER_VERSION}                              \
-		PRIVATE_CC=${NDK_MODULE_PATH}/${TARGET_TOOLCHAIN}-${COMPILER_VERSION}/prebuilt/linux-x86_64/bin/${CROSS_PREFIX}-gcc \
-		PRIVATE_CXX=${NDK_MODULE_PATH}/${TARGET_TOOLCHAIN}-${COMPILER_VERSION}/prebuilt/linux-x86_64/bin/${CROSS_PREFIX}-g++ \
-		NDK_TOOLCHAIN_VERSION=${COMPILER_VERSION}  || exit 1;                 \
+	${ANDROID_NDK}/ndk-build                                                   \
+		TARGET_LIBDIR=${TARGET_LIBDIR}                                         \
+		APP_PLATFORM=${APP_PLATFORM} TARGET_ABI=${TARGET_ABI} || exit 1;       \
 	if [ ! -e ${APP_ROOT}/jniLibs ]; then                                      \
 		ln -s ${ANDR_ROOT}/libs ${APP_ROOT}/jniLibs || exit 1;                 \
 	fi;                                                                        \
