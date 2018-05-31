@@ -14,12 +14,18 @@ public class GameActivity extends NativeActivity {
 
     private int messageReturnCode;
     private String messageReturnValue;
+    private int height, width;
+    private float density;
 
     public static native void putMessageBoxResult(String text);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = getIntent().getExtras();
+        density = bundle != null ? bundle.getFloat("density", 0) : getResources().getDisplayMetrics().density;
+        height = bundle != null ? bundle.getInt("height", 0) : getResources().getDisplayMetrics().heightPixels;
+        width = bundle != null ? bundle.getInt("width", 0) : getResources().getDisplayMetrics().widthPixels;
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 //        if (!isAdsDisabled())
 //            startAd(this, true);
@@ -61,7 +67,8 @@ public class GameActivity extends NativeActivity {
     @Override
     protected void onStop() {
         super.onStop();
-//        stopAd();
+//        if (!isAdsDisabled())
+//            stopAd();
     }
 
     @Override
@@ -106,15 +113,15 @@ public class GameActivity extends NativeActivity {
     }
 
     public float getDensity() {
-        return getResources().getDisplayMetrics().density;
+        return density;
     }
 
     public int getDisplayHeight() {
-        return getResources().getDisplayMetrics().heightPixels;
+        return height;
     }
 
     public int getDisplayWidth() {
-        return getResources().getDisplayMetrics().widthPixels;
+        return width;
     }
 
 }

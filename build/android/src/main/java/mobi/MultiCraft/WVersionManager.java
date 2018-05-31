@@ -33,7 +33,7 @@ import java.util.Locale;
 
 class WVersionManager {
     private static final String TAG = "WVersionManager";
-    private static WVersionManager.Callback sCallback = null;
+    private DialogsCallback sCallback = null;
     private CustomTagHandler customTagHandler;
     private String PREF_IGNORE_VERSION_CODE = "w.ignore.version.code";
     private String PREF_REMINDER_TIME = "w.reminder.time";
@@ -61,7 +61,7 @@ class WVersionManager {
         setLaunchTimes();
     }
 
-    void setCallback(WVersionManager.Callback callback) {
+    void setListener(DialogsCallback callback) {
         sCallback = callback;
     }
 
@@ -93,7 +93,6 @@ class WVersionManager {
         AlertDialog.Builder builder = new AlertDialog.Builder(ctw);
         builder.setIcon(getIcon());
         builder.setTitle(getTitle());
-        //noinspection deprecation
         builder.setMessage(Html.fromHtml(getMessage(), null, getCustomTagHandler()));
 
         builder.setPositiveButton(getUpdateNowLabel(), listener);
@@ -268,14 +267,6 @@ class WVersionManager {
         void isShowUpdateDialog(boolean flag);
     }
 
-    interface Callback {
-        void onPositive();
-
-        void onNegative();
-
-        void onRemind();
-    }
-
     private class AlertDialogButtonListener implements DialogInterface.OnClickListener {
 
         @Override
@@ -283,18 +274,18 @@ class WVersionManager {
             switch (which) {
                 case AlertDialog.BUTTON_POSITIVE:
                     if (sCallback != null) {
-                        sCallback.onPositive();
+                        sCallback.onPositive("WVersionManager");
                     }
                     break;
                 case AlertDialog.BUTTON_NEUTRAL:
                     if (sCallback != null) {
-                        sCallback.onRemind();
+                        sCallback.onCancelled("WVersionManager");
                     }
                     remindMeLater(getReminderTimer());
                     break;
                 case AlertDialog.BUTTON_NEGATIVE:
                     if (sCallback != null) {
-                        sCallback.onNegative();
+                        sCallback.onNegative("WVersionManager");
                     }
                     break;
             }

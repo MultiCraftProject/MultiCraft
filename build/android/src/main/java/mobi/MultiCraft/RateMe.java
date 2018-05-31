@@ -32,11 +32,11 @@ class RateMe {
     private static Date mInstallDate = new Date();
     private static int mLaunchTimes = 0;
     private static boolean mOptOut = false;
-    private static Callback sCallback = null;
+    private static DialogsCallback sCallback = null;
 
     private static WeakReference<Activity> mainActivityRef = null;
 
-    static void setCallback(Callback callback) {
+    static void setListener(DialogsCallback callback) {
         sCallback = callback;
     }
 
@@ -86,13 +86,13 @@ class RateMe {
         dialog.setContentView(R.layout.rate_dialog);
         dialog.setTitle(R.string.rta_dialog_title);
 
-        RatingBar ratingBar = (RatingBar) dialog.findViewById(R.id.ratingBar);
+        RatingBar ratingBar = dialog.findViewById(R.id.ratingBar);
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 if (rating >= 3) {
                     if (sCallback != null) {
-                        sCallback.onPositive();
+                        sCallback.onPositive("RateMe");
                     }
                     dialog.dismiss();
                     String appPackage = context.getPackageName();
@@ -101,7 +101,7 @@ class RateMe {
                     setOptOut(context, true);
                 } else {
                     if (sCallback != null) {
-                        sCallback.onNegative();
+                        sCallback.onNegative("RateMe");
                     }
                     dialog.dismiss();
                     clearSharedPreferences(context);
@@ -112,7 +112,7 @@ class RateMe {
             @Override
             public void onCancel(DialogInterface dialog) {
                 if (sCallback != null) {
-                    sCallback.onCancelled();
+                    sCallback.onCancelled("RateMe");
                 }
                 clearSharedPreferences(context);
             }
@@ -121,7 +121,7 @@ class RateMe {
             dialog.show();
         } else {
             if (sCallback != null) {
-                sCallback.onNegative();
+                sCallback.onNegative("RateMe");
             }
         }
     }
@@ -168,11 +168,4 @@ class RateMe {
         }
     }
 
-    interface Callback {
-        void onPositive();
-
-        void onNegative();
-
-        void onCancelled();
-    }
 }

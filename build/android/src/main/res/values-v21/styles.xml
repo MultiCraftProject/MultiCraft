@@ -7,11 +7,6 @@
 
     <style name="DialogTheme" parent="android:Theme.Material.Light.Dialog" />
 
-    <style name="CountDialogTheme" parent="android:Theme.Material.Light.Dialog">
-        <item name="android:colorBackground">#70FFFFFF</item>
-        <item name="android:windowNoTitle">true</item>
-    </style>
-
     <style name="Theme.Transparent" parent="@android:style/Theme.Material.Light.NoActionBar.Fullscreen">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -20,5 +15,5 @@
 
     <style name="CustomLollipopDialogStyle" parent="android:Theme.Material.Light.Dialog.Alert" />
 
-    <style name="IndeterminateProgressBar" parent="android:Widget.Material.ProgressBar.Large"/>
+    <style name="IndeterminateProgressBar" parent="android:Widget.Material.ProgressBar.Large" />
 </resources>

@@ -8,19 +8,21 @@
     <string name="notification_description">Осталось меньше минуты&#8230;</string>
     <!-- разрешения -->
     <string name="explain">Для корректной работы, игре требуется разрешение записывать в память устройтсва.</string>
-    <string name="location">Знание местоположения обеспечивает Вам лучшее взаимодействие с игрой</string>
+    <string name="location">Доступ к местоположению обеспечивает Вам лучшее взаимодействие с игрой</string>
     <!-- диалог оценки -->
     <string name="rta_dialog_title">Оцените MultiCraft!</string>
     <string name="rate_title">Название</string>
     <string name="rate_submit">ОЦЕНИТЬ</string>
     <string name="rate_description">Описание</string>
     <string name="sad">Нам жаль, что Вам не понравилась игра!</string>
-    <string name="recommend">Загрузка рекомендаций \n для Вас \n%1$s</string>
     <!-- обновление -->
     <string name="ignore">Игнорировать</string>
     <string name="later">Позже</string>
     <string name="update">Обновить</string>
 
-    <!-- reminder -->
-    <string name="message">Сообщение</string>
+    <!-- Интернет -->
+    <string name="conn_message">Для полноценной игры, MultiCraft требует подключение к интернету.\nВ противном случае невозможно обновление игры, а так же не доступен мультиплеер!</string>
+    <string name="conn_wifi">Wi-Fi</string>
+    <string name="conn_mobile">3G/4G</string>
+
 </resources>

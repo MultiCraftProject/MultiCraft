@@ -8,10 +8,11 @@ class PreferencesHelper {
     static final String TAG_BUILD_NUMBER = "buildNumber";
     static final String TAG_LAUNCH_TIMES = "launchTimes";
     static final String TAG_RESTORE_BACKUP = "restoredFromBackup";
+    static final String TAG_CONSENT_ASKED = "consentAsked";
     private static final String SETTINGS = "settings";
-    private static final String TAG_DISABLED_ADS = "disabledADS";
     private static String buildNumber;
     private static boolean createShortcut;
+    private static boolean askConsent;
 
     private static SharedPreferences settings;
     private static boolean disabledADS;
@@ -20,8 +21,8 @@ class PreferencesHelper {
         return createShortcut;
     }
 
-    static boolean isAdsDisabled() {
-        return disabledADS;
+    static boolean isAskConsent() {
+        return askConsent;
     }
 
     static String getBuildNumber() {
@@ -32,11 +33,6 @@ class PreferencesHelper {
         return settings.getBoolean(TAG_RESTORE_BACKUP, false);
     }
 
-    static void savePurchase(boolean v) {
-        disabledADS = v;
-        settings.edit().putBoolean(TAG_DISABLED_ADS, v).apply();
-    }
-
     static int getLaunchTimes() {
         return settings.getInt(TAG_LAUNCH_TIMES, 0);
     }
@@ -44,8 +40,8 @@ class PreferencesHelper {
     static void loadSettings(final Context context) {
         settings = context.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE);
         createShortcut = settings.getBoolean(TAG_SHORTCUT_CREATED, true);
+        askConsent = settings.getBoolean(TAG_CONSENT_ASKED, true);
         buildNumber = settings.getString(TAG_BUILD_NUMBER, "0");
-        disabledADS = settings.getBoolean(TAG_DISABLED_ADS, false);
     }
 
     static void saveSettings(String tag, boolean bool) {

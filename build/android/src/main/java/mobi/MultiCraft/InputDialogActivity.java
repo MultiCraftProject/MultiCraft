@@ -29,7 +29,7 @@ public class InputDialogActivity extends Activity {
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.input_dialog, null);
         builder.setView(dialogView);
-        final EditText editText = (EditText) dialogView.findViewById(R.id.editText);
+        final EditText editText = dialogView.findViewById(R.id.editText);
         final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
         if (editType == 3) {
