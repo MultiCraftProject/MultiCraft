@@ -68,7 +68,6 @@
 		F8E6C6051DCA3F9900F64426 /* craftdef.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C5211DCA3F9900F64426 /* craftdef.cpp */; };
 		F8E6C6061DCA3F9900F64426 /* database-dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C5231DCA3F9900F64426 /* database-dummy.cpp */; };
 		F8E6C6071DCA3F9900F64426 /* database-leveldb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C5251DCA3F9900F64426 /* database-leveldb.cpp */; };
-		F8E6C6091DCA3F9900F64426 /* database-sqlite3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C5291DCA3F9900F64426 /* database-sqlite3.cpp */; };
 		F8E6C60A1DCA3F9900F64426 /* database.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C52B1DCA3F9900F64426 /* database.cpp */; };
 		F8E6C60B1DCA3F9900F64426 /* debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C52E1DCA3F9900F64426 /* debug.cpp */; };
 		F8E6C60C1DCA3F9900F64426 /* defaultsettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C5301DCA3F9900F64426 /* defaultsettings.cpp */; };
@@ -138,7 +137,6 @@
 		F8E6C64C1DCA3F9900F64426 /* profiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C5C11DCA3F9900F64426 /* profiler.cpp */; };
 		F8E6C64D1DCA3F9900F64426 /* quicktune.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C5C41DCA3F9900F64426 /* quicktune.cpp */; };
 		F8E6C64E1DCA3F9900F64426 /* rollback_interface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C5C61DCA3F9900F64426 /* rollback_interface.cpp */; };
-		F8E6C64F1DCA3F9900F64426 /* rollback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C5C81DCA3F9900F64426 /* rollback.cpp */; };
 		F8E6C6501DCA3F9900F64426 /* serialization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C5CA1DCA3F9900F64426 /* serialization.cpp */; };
 		F8E6C6511DCA3F9900F64426 /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C5CC1DCA3F9900F64426 /* server.cpp */; };
 		F8E6C6521DCA3F9900F64426 /* serverlist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C5CE1DCA3F9900F64426 /* serverlist.cpp */; };
@@ -228,7 +226,6 @@
 		F8E6C7CD1DCA431B00F64426 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E6C7CC1DCA431B00F64426 /* Foundation.framework */; };
 		F8E6C7CF1DCA432200F64426 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E6C7CE1DCA432200F64426 /* CoreMotion.framework */; };
 		F8E6C7D11DCA433E00F64426 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E6C7D01DCA433E00F64426 /* libiconv.tbd */; };
-		F8E6C7D31DCA434900F64426 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E6C7D21DCA434900F64426 /* libsqlite3.tbd */; };
 		F8E6C7D51DCA476800F64426 /* libIrrlicht.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E6C7D41DCA476800F64426 /* libIrrlicht.a */; };
 		F8E6C7D71DCA477600F64426 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E6C7D61DCA477600F64426 /* libfreetype.a */; };
 		F8E6C7D91DCA478500F64426 /* libleveldb.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E6C7D81DCA478500F64426 /* libleveldb.a */; };
@@ -356,8 +353,6 @@
 		F8E6C5241DCA3F9900F64426 /* database-dummy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "database-dummy.h"; path = "../../../../src/database-dummy.h"; sourceTree = "<group>"; };
 		F8E6C5251DCA3F9900F64426 /* database-leveldb.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "database-leveldb.cpp"; path = "../../../../src/database-leveldb.cpp"; sourceTree = "<group>"; };
 		F8E6C5261DCA3F9900F64426 /* database-leveldb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "database-leveldb.h"; path = "../../../../src/database-leveldb.h"; sourceTree = "<group>"; };
-		F8E6C5291DCA3F9900F64426 /* database-sqlite3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "database-sqlite3.cpp"; path = "../../../../src/database-sqlite3.cpp"; sourceTree = "<group>"; };
-		F8E6C52A1DCA3F9900F64426 /* database-sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "database-sqlite3.h"; path = "../../../../src/database-sqlite3.h"; sourceTree = "<group>"; };
 		F8E6C52B1DCA3F9900F64426 /* database.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = database.cpp; path = ../../../../src/database.cpp; sourceTree = "<group>"; };
 		F8E6C52C1DCA3F9900F64426 /* database.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = database.h; path = ../../../../src/database.h; sourceTree = "<group>"; };
 		F8E6C52D1DCA3F9900F64426 /* daynightratio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = daynightratio.h; path = ../../../../src/daynightratio.h; sourceTree = "<group>"; };
@@ -515,7 +510,6 @@
 		F8E6C5C51DCA3F9900F64426 /* quicktune.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = quicktune.h; path = ../../../../src/quicktune.h; sourceTree = "<group>"; };
 		F8E6C5C61DCA3F9900F64426 /* rollback_interface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = rollback_interface.cpp; path = ../../../../src/rollback_interface.cpp; sourceTree = "<group>"; };
 		F8E6C5C71DCA3F9900F64426 /* rollback_interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rollback_interface.h; path = ../../../../src/rollback_interface.h; sourceTree = "<group>"; };
-		F8E6C5C81DCA3F9900F64426 /* rollback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = rollback.cpp; path = ../../../../src/rollback.cpp; sourceTree = "<group>"; };
 		F8E6C5C91DCA3F9900F64426 /* rollback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rollback.h; path = ../../../../src/rollback.h; sourceTree = "<group>"; };
 		F8E6C5CA1DCA3F9900F64426 /* serialization.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = serialization.cpp; path = ../../../../src/serialization.cpp; sourceTree = "<group>"; };
 		F8E6C5CB1DCA3F9900F64426 /* serialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = serialization.h; path = ../../../../src/serialization.h; sourceTree = "<group>"; };
@@ -702,7 +696,6 @@
 		F8E6C7CC1DCA431B00F64426 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F8E6C7CE1DCA432200F64426 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		F8E6C7D01DCA433E00F64426 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = usr/lib/libiconv.tbd; sourceTree = SDKROOT; };
-		F8E6C7D21DCA434900F64426 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		F8E6C7D41DCA476800F64426 /* libIrrlicht.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libIrrlicht.a; path = ../deps/irrlicht/libIrrlicht.a; sourceTree = "<group>"; };
 		F8E6C7D61DCA477600F64426 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../deps/freetype/lib/libfreetype.a; sourceTree = "<group>"; };
 		F8E6C7D81DCA478500F64426 /* libleveldb.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libleveldb.a; path = ../deps/leveldb/lib/libleveldb.a; sourceTree = "<group>"; };
@@ -725,7 +718,6 @@
 				F8E6C7CD1DCA431B00F64426 /* Foundation.framework in Frameworks */,
 				F8E6C7CF1DCA432200F64426 /* CoreMotion.framework in Frameworks */,
 				F8E6C7D11DCA433E00F64426 /* libiconv.tbd in Frameworks */,
-				F8E6C7D31DCA434900F64426 /* libsqlite3.tbd in Frameworks */,
 				F8E6C7D51DCA476800F64426 /* libIrrlicht.a in Frameworks */,
 				F8E6C7D71DCA477600F64426 /* libfreetype.a in Frameworks */,
 				F8E6C7D91DCA478500F64426 /* libleveldb.a in Frameworks */,
@@ -873,8 +865,6 @@
 				4B35A9B21EEDD16C00274961 /* database-files.h */,
 				F8E6C5251DCA3F9900F64426 /* database-leveldb.cpp */,
 				F8E6C5261DCA3F9900F64426 /* database-leveldb.h */,
-				F8E6C5291DCA3F9900F64426 /* database-sqlite3.cpp */,
-				F8E6C52A1DCA3F9900F64426 /* database-sqlite3.h */,
 				F8E6C52B1DCA3F9900F64426 /* database.cpp */,
 				F8E6C52C1DCA3F9900F64426 /* database.h */,
 				F8E6C52D1DCA3F9900F64426 /* daynightratio.h */,
@@ -1051,7 +1041,6 @@
 				F8E6C5C61DCA3F9900F64426 /* rollback_interface.cpp */,
 				F8E6C5C71DCA3F9900F64426 /* rollback_interface.h */,
 				F8E6C6E41DCA415800F64426 /* script */,
-				F8E6C5C81DCA3F9900F64426 /* rollback.cpp */,
 				F8E6C5C91DCA3F9900F64426 /* rollback.h */,
 				F8E6C5CA1DCA3F9900F64426 /* serialization.cpp */,
 				F8E6C5CB1DCA3F9900F64426 /* serialization.h */,
@@ -1351,7 +1340,6 @@
 				F8E6C7D81DCA478500F64426 /* libleveldb.a */,
 				F8E6C7D61DCA477600F64426 /* libfreetype.a */,
 				F8E6C7D41DCA476800F64426 /* libIrrlicht.a */,
-				F8E6C7D21DCA434900F64426 /* libsqlite3.tbd */,
 				F8E6C7D01DCA433E00F64426 /* libiconv.tbd */,
 				F8E6C7CE1DCA432200F64426 /* CoreMotion.framework */,
 				F8E6C7CC1DCA431B00F64426 /* Foundation.framework */,
@@ -1680,7 +1668,6 @@
 				F8E6C6051DCA3F9900F64426 /* craftdef.cpp in Sources */,
 				4B0F49CF1E424FDF0003953D /* enriched_string.cpp in Sources */,
 				4B0F49D31E42501D0003953D /* static_text.cpp in Sources */,
-				F8E6C6091DCA3F9900F64426 /* database-sqlite3.cpp in Sources */,
 				F8E6C6411DCA3F9900F64426 /* nodedef.cpp in Sources */,
 				F8E6C6F81DCA41DB00F64426 /* c_internal.cpp in Sources */,
 				F8E6C60E1DCA3F9900F64426 /* dungeongen.cpp in Sources */,
@@ -1695,7 +1682,6 @@
 				F8E6C65F1DCA3F9900F64426 /* treegen.cpp in Sources */,
 				F8E6C5F61DCA3F9900F64426 /* chat.cpp in Sources */,
 				F8E6C60B1DCA3F9900F64426 /* debug.cpp in Sources */,
-				F8E6C64F1DCA3F9900F64426 /* rollback.cpp in Sources */,
 				4B35A9B61EEDD18400274961 /* face_position_cache.cpp in Sources */,
 				F8E6C6251DCA3F9900F64426 /* inventorymanager.cpp in Sources */,
 				F8E6C60C1DCA3F9900F64426 /* defaultsettings.cpp in Sources */,

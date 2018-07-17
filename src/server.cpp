@@ -300,8 +300,7 @@ Server::Server(
 
 	m_enable_rollback_recording = g_settings->getBool("enable_rollback_recording");
 	if (m_enable_rollback_recording) {
-		// Create rollback manager
-		m_rollback = new RollbackManager(m_path_world, this);
+		FATAL_ERROR("Rollback not supported");
 	}
 
 	// Give environment reference to scripting api

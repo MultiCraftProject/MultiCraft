@@ -1881,6 +1881,8 @@ bool Game::autoMigrateSingleplayerWorld(const std::string map_dir)
 	return false;
 #endif
 
+	return false; // no more sqlite
+
 	// Check if needed for this world
 	Settings world_mt;
 	std::string world_mt_path = map_dir + DIR_DELIM + "world.mt";

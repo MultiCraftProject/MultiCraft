@@ -25,7 +25,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "rollback_interface.h"
 #include <list>
 #include <vector>
-#include "sqlite3.h"
+//#include "sqlite3.h"
 
 class IGameDef;
 
@@ -63,7 +63,7 @@ private:
 	bool createTables();
 	bool initDatabase();
 	bool registerRow(const ActionRow & row);
-	const std::list<ActionRow> actionRowsFromSelect(sqlite3_stmt * stmt);
+	//const std::list<ActionRow> actionRowsFromSelect(sqlite3_stmt * stmt);
 	ActionRow actionRowFromRollbackAction(const RollbackAction & action);
 	const std::list<RollbackAction> rollbackActionsFromActionRows(
 			const std::list<ActionRow> & rows);
@@ -88,7 +88,7 @@ private:
 	std::list<RollbackAction> action_todisk_buffer;
 	std::list<RollbackAction> action_latest_buffer;
 
-	std::string database_path;
+	/*std::string database_path;
 	sqlite3 * db;
 	sqlite3_stmt * stmt_insert;
 	sqlite3_stmt * stmt_replace;
@@ -98,7 +98,7 @@ private:
 	sqlite3_stmt * stmt_knownActor_select;
 	sqlite3_stmt * stmt_knownActor_insert;
 	sqlite3_stmt * stmt_knownNode_select;
-	sqlite3_stmt * stmt_knownNode_insert;
+	sqlite3_stmt * stmt_knownNode_insert;*/
 
 	std::vector<Entity> knownActors;
 	std::vector<Entity> knownNodes;

@@ -88,7 +88,6 @@ LOCAL_C_INCLUDES := \
 		deps/curl/include                         \
 		deps/openal-soft/include                  \
 		deps/libvorbis-android/jni/include        \
-		deps/sqlite/                              \
 		deps/leveldb/include                      \
 		deps/luajit/src                           \
 
@@ -115,7 +114,6 @@ LOCAL_SRC_FILES := \
 		jni/src/craftdef.cpp                      \
 		jni/src/database-dummy.cpp                \
 		jni/src/database-files.cpp                \
-		jni/src/database-sqlite3.cpp              \
 		jni/src/database.cpp                      \
 		jni/src/debug.cpp                         \
 		jni/src/defaultsettings.cpp               \
@@ -192,7 +190,6 @@ LOCAL_SRC_FILES := \
 		jni/src/raycast.cpp                       \
 		jni/src/reflowscan.cpp                    \
 		jni/src/remoteplayer.cpp                  \
-		jni/src/rollback.cpp                      \
 		jni/src/rollback_interface.cpp            \
 		jni/src/serialization.cpp                 \
 		jni/src/server.cpp                        \
@@ -322,11 +319,6 @@ LOCAL_C_INCLUDES += \
 LOCAL_SRC_FILES += \
 		deps/libiconv/lib/iconv.c               \
 		deps/libiconv/libcharset/lib/localcharset.c
-
-# SQLite3
-LOCAL_CFLAGS += -fno-fast-math -funsafe-math-optimizations -ffinite-math-only -fno-rounding-math -fno-signaling-nans -fcx-limited-range
-
-LOCAL_SRC_FILES += deps/sqlite/sqlite3.c
 
 LOCAL_STATIC_LIBRARIES := Irrlicht LevelDB Freetype Curl LuaJIT OpenAL Vorbis android_native_app_glue $(PROFILER_LIBS)
 

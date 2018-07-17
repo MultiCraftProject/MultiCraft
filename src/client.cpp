@@ -42,7 +42,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "clientmedia.h"
 #include "version.h"
 #include "drawscene.h"
-#include "database-sqlite3.h"
+#include "database.h"
 #include "serialization.h"
 #include "guiscalingfilter.h"
 #include "script/scripting_client.h"
@@ -774,7 +774,7 @@ void Client::initLocalMapSaving(const Address &address,
 		return;
 	}
 
-	const std::string world_path = porting::path_user
+	/*const std::string world_path = porting::path_user
 		+ DIR_DELIM + "worlds"
 		+ DIR_DELIM + "server_"
 		+ hostname + "_" + std::to_string(address.getPort());
@@ -783,7 +783,7 @@ void Client::initLocalMapSaving(const Address &address,
 
 	m_localdb = new MapDatabaseSQLite3(world_path);
 	m_localdb->beginSave();
-	actionstream << "Local map saving started, map will be saved at '" << world_path << "'" << std::endl;
+	actionstream << "Local map saving started, map will be saved at '" << world_path << "'" << std::endl;*/
 }
 
 void Client::ReceiveAll()

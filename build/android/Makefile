@@ -98,10 +98,6 @@ ICONV_URL_HTTP = https://ftp.gnu.org/pub/gnu/libiconv/libiconv-$(ICONV_VERSION).
 INTL_DIR = $(ANDR_ROOT)/deps/libintl
 INTL_URL_GIT = https://github.com/j-jorge/libintl-lite.git
 
-SQLITE3_VERSION = 3240000
-SQLITE3_DIR = $(ANDR_ROOT)/deps/sqlite
-SQLITE3_URL = https://www.sqlite.org/2018/sqlite-amalgamation-$(SQLITE3_VERSION).zip
-
 LUAJIT_GIT_BRANCH = v2.1
 LUAJIT_DIR = $(ANDR_ROOT)/deps/luajit
 LUAJIT_LIB = $(LUAJIT_DIR)src/libluajit.a
@@ -510,21 +506,6 @@ $(CURL_LIB): $(CURL_TIMESTAMP)
 clean_curl :
 	$(RM) -R ${CURL_DIR}
 
-sqlite3_download :
-	@if [ ! -d ${SQLITE3_DIR} ] ; then                                          	\
-		echo "sqlite3 sources missing, downloading...";                       			\
-		mkdir -p ${ANDR_ROOT}/deps;                                          			  \
-		cd ${ANDR_ROOT}/deps;                                                  			\
-		rm -R sqlite;                                                          			\
-		wget ${SQLITE3_URL};                                                  			\
-		unzip sqlite-amalgamation-$(SQLITE3_VERSION).zip || exit 1;            			\
-		rm sqlite-amalgamation-$(SQLITE3_VERSION).zip;                         			\
-		mv sqlite-amalgamation-$(SQLITE3_VERSION) sqlite;                      			\
-	fi
-
-clean_sqlite3 :
-	$(RM) -rf ${SQLITE3_DIR}
-
 $(ASSETS_TIMESTAMP) : $(IRRLICHT_LIB)
 	@mkdir -p ${ANDR_ROOT}/deps;                                               		\
 	for DIRNAME in {builtin,client,doc,fonts,games,po,textures}; do            		\
@@ -662,7 +643,7 @@ clean_assets :
 
 apk: local.properties $(IRRLICHT_LIB) $(CURL_LIB) $(LEVELDB_LIB) $(LUAJIT_LIB) 	\
 	$(OPENAL_LIB) $(VORBIS_LIB) prep_srcdir $(ANDR_ROOT)/jni/src/android_version.h \
-	$(ANDR_ROOT)/jni/src/android_version_githash.h sqlite3_download intl_download iconv_download assets
+	$(ANDR_ROOT)/jni/src/android_version_githash.h intl_download iconv_download assets
 	+@${ANDROID_NDK}/ndk-build																										\
 		TARGET_LIBDIR=${TARGET_LIBDIR}																							\
 		APP_PLATFORM=${APP_PLATFORM} TARGET_ABI=${TARGET_ABI} || exit 1;						\
