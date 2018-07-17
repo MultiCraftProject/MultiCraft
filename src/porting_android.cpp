@@ -260,6 +260,68 @@ std::string getInputDialogValue()
 	return text;
 }
 
+void showPurchaseMenu()
+{
+	jmethodID purchaseDialog = jnienv->GetMethodID(nativeActivity,
+			"showPurchaseMenu", "()V");
+
+	if (purchaseDialog == 0) {
+		assert("porting::showPurchaseMenu unable to find java show dialog method" == 0);
+	}
+
+	jnienv->CallVoidMethod(app_global->activity->clazz, purchaseDialog);
+}
+
+int getPurchaseState()
+{
+	jmethodID purchaseState = jnienv->GetMethodID(nativeActivity,
+			"getPurchaseState", "()I");
+
+	if (purchaseState == 0) {
+		assert("porting::getPurchaseState unable to find java show dialog method" == 0);
+	}
+
+	return jnienv->CallIntMethod(app_global->activity->clazz, purchaseState);
+}
+
+void notifyAbortLoading()
+{
+	jmethodID notifyAbort = jnienv->GetMethodID(nativeActivity,
+			"notifyAbortLoading", "()V");
+
+	if (notifyAbort == 0) {
+		assert("porting::notifyAbortLoading unable to find java show dialog method" == 0);
+	}
+
+	jnienv->CallVoidMethod(app_global->activity->clazz, notifyAbort);
+}
+
+void notifyServerConnect(bool is_multiplayer)
+{
+	jmethodID notifyConnect = jnienv->GetMethodID(nativeActivity,
+			"notifyServerConnect", "(Z)V");
+
+	if (notifyConnect == 0) {
+		assert("porting::notifyServerConnect unable to find java show dialog method" == 0);
+	}
+
+	jboolean param = (jboolean)is_multiplayer;
+
+	jnienv->CallVoidMethod(app_global->activity->clazz, notifyConnect, param);
+}
+
+void notifyExitGame()
+{
+	jmethodID notifyExit = jnienv->GetMethodID(nativeActivity,
+			"notifyExitGame", "()V");
+
+	if (notifyExit == 0) {
+		assert("porting::notifyExitGame unable to find java show dialog method" == 0);
+	}
+
+	jnienv->CallVoidMethod(app_global->activity->clazz, notifyExit);
+}
+
 #ifndef SERVER
 float getDisplayDensity()
 {

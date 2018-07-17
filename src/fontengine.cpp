@@ -362,6 +362,9 @@ void FontEngine::initFont(unsigned int basesize, FontMode mode)
 		}
 
 		// give up
+#if defined(__ANDROID__) || defined(__IOS__)
+		porting::notifyAbortLoading();
+#endif
 		errorstream << "FontEngine: failed to load freetype font: "
 				<< font_path << std::endl;
 		errorstream << "minetest can not continue without a valid font. Please correct "

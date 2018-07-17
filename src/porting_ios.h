@@ -14,6 +14,12 @@ namespace porting {
 						 const std::string &current, int editType);
 	int getInputDialogState();
 	std::string getInputDialogValue();
+	//TODO
+	void showPurchaseMenu() {}
+	int getPurchaseState() { return 1; }
+	void notifyAbortLoading() {}
+	void notifyServerConnect(bool is_multiplayer) {}
+	void notifyExitGame() {}
 }
 
 #endif

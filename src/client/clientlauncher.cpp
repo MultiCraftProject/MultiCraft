@@ -49,6 +49,9 @@ namespace irr {
 	};
 }
 #endif
+#if defined(__ANDROID__) || defined(__IOS__)
+#include "porting.h"
+#endif
 
 /* mainmenumanager.h
  */
@@ -267,6 +270,9 @@ bool ClientLauncher::run(GameParams &game_params, const Settings &cmd_args)
 #endif
 #ifdef ADS
 			ads_enable(false);
+#endif
+#if defined(__ANDROID__) || defined(__IOS__)
+			porting::notifyExitGame();
 #endif
 
 		} //try

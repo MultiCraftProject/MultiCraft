@@ -123,4 +123,25 @@ public class GameActivity extends NativeActivity {
         return width;
     }
 
+    public void showPurchaseMenu() {
+        //TODO open payment dialog
+    }
+
+    public int getPurchaseState() {
+        //TODO return purchased state
+        //return isAdsDisabled() ? 1 : 0;
+        return 1;
+    }
+
+    public void notifyAbortLoading() {
+
+    }
+
+    public void notifyServerConnect(boolean is_multiplayer) {
+
+    }
+
+    public void notifyExitGame() {
+
+    }
 }

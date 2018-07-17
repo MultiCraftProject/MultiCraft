@@ -72,6 +72,37 @@ int getInputDialogState();
  */
 std::string getInputDialogValue();
 
+/**
+ * show in-app java purchase menu
+ */
+
+void showPurchaseMenu();
+
+/**
+ * get app purchased status
+ * returns 1 when purchased, otherwise 0
+ */
+
+int getPurchaseState();
+
+/**
+ * notify java that font loading failded
+ */
+
+void notifyAbortLoading();
+
+/**
+ * notify java on server connection
+ */
+
+void notifyServerConnect(bool is_multiplayer);
+
+/**
+ * notify java on game exit.
+ */
+
+void notifyExitGame();
+
 }
 
 #endif

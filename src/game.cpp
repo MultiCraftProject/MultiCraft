@@ -1902,6 +1902,10 @@ bool Game::createClient(const std::string &playername,
 		return false;
 	}
 
+#if defined(__ANDROID__) || defined(__IOS__)
+	porting::notifyServerConnect(!simple_singleplayer_mode);
+#endif
+
 	GameGlobalShaderConstantSetterFactory *scsf = new GameGlobalShaderConstantSetterFactory(
 			&flags.force_fog_off, &runData.fog_range, client);
 	shader_src->addShaderConstantSetterFactory(scsf);

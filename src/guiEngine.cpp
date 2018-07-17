@@ -42,7 +42,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifdef __ANDROID__
 #include "client/tile.h"
 #endif
-
+#if defined(__ANDROID__) || defined(__IOS__)
+#include "guiPurchaseButton.h"
+#endif
 
 /******************************************************************************/
 /** TextDestGuiEngine                                                         */
@@ -203,6 +205,15 @@ GUIEngine::GUIEngine(	irr::IrrlichtDevice* dev,
 	m_menu->allowClose(false);
 	m_menu->lockSize(true,v2u32(800,600));
 
+#if defined(__ANDROID__) || defined(__IOS__)
+	GUIPurchaseButton *buy_button = NULL;
+	if (porting::getPurchaseState() == 0) {
+		m_menu->allowFocusRemoval(true);
+		buy_button = new GUIPurchaseButton(m_device->getGUIEnvironment(),
+				m_parent, m_texture_source);
+	}
+#endif
+
 	// Initialize scripting
 
 	infostream << "GUIEngine: Initializing Lua" << std::endl;
@@ -215,6 +226,9 @@ GUIEngine::GUIEngine(	irr::IrrlichtDevice* dev,
 
 		if (!loadMainMenuScript()) {
 			errorstream << "No future without main menu!" << std::endl;
+#if defined(__ANDROID__) || defined(__IOS__)
+			porting::notifyAbortLoading();
+#endif
 			abort();
 		}
 
@@ -223,6 +237,14 @@ GUIEngine::GUIEngine(	irr::IrrlichtDevice* dev,
 		errorstream << "Main menu error: " << e.what() << std::endl;
 		m_data->script_data.errormessage = e.what();
 	}
+
+#if defined(__ANDROID__) || defined(__IOS__)
+	if (buy_button) {
+		buy_button->remove();
+		buy_button->drop();
+		buy_button = NULL;
+	}
+#endif
 
 	m_menu->quitMenu();
 	m_menu->drop();
