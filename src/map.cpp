@@ -2310,7 +2310,7 @@ MapDatabase *ServerMap::createDatabase(
 	}
 	#endif
 	else
-		throw BaseException(std::string("Database backend ") + name + " not supported.");
+		throw ModError(std::string("Database backend ") + name + " not supported.");
 }
 
 void ServerMap::beginSave()
