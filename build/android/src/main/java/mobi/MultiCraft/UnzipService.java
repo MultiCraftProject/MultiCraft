@@ -1,14 +1,15 @@
 package mobi.MultiCraft;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -23,26 +24,19 @@ public class UnzipService extends IntentService {
     public static final String EXTRA_KEY_IN_FILE = "file";
     public static final String EXTRA_KEY_IN_LOCATION = "location";
     public static final String ACTION_PROGRESS = "progress";
-    public final String TAG = UnzipService.class.getSimpleName();
     private NotificationManager mNotifyManager;
     private int id = 1;
+    private int percent = 0;
+    private int size;
 
     public UnzipService() {
         super("mobi.MultiCraft.UnzipService");
     }
 
-    private void isDir(String dir, String unzipLocation) {
-        File f = new File(unzipLocation + dir);
-
-        if (!f.isDirectory()) {
-            f.mkdirs();
-        }
-    }
-
     @Override
     protected void onHandleIntent(Intent intent) {
         createNotification();
-        unzip(intent);
+        unzipLoop(intent);
 
     }
 
@@ -51,14 +45,17 @@ public class UnzipService extends IntentService {
         String name = "mobi.MultiCraft";
         String channelId = "MultiCraft channel"; // The user-visible name of the channel.
         String description = "notifications from MultiCraft"; // The user-visible description of the channel.
-        NotificationCompat.Builder builder;
+        Notification.Builder builder;
         if (mNotifyManager == null) {
             mNotifyManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             int importance = NotificationManager.IMPORTANCE_LOW;
-            NotificationChannel mChannel = mNotifyManager.getNotificationChannel(channelId);
+            NotificationChannel mChannel = null;
+            if (mNotifyManager != null) {
+                mChannel = mNotifyManager.getNotificationChannel(channelId);
+            }
             if (mChannel == null) {
                 mChannel = new NotificationChannel(channelId, name, importance);
                 mChannel.setDescription(description);
@@ -68,12 +65,12 @@ public class UnzipService extends IntentService {
                 mChannel.enableVibration(false);
                 mNotifyManager.createNotificationChannel(mChannel);
             }
-            builder = new NotificationCompat.Builder(this, channelId);
+            builder = new Notification.Builder(this, channelId);
             builder.setContentTitle(getString(R.string.notification_title))  // required
                     .setSmallIcon(R.drawable.update) // required
                     .setContentText(getString(R.string.notification_description)); // required
         } else {
-            builder = new NotificationCompat.Builder(this);
+            builder = new Notification.Builder(this);
             builder.setContentTitle(getString(R.string.notification_title))
                     .setContentText(getString(R.string.notification_description))
                     .setSmallIcon(R.drawable.update);
@@ -81,44 +78,51 @@ public class UnzipService extends IntentService {
         mNotifyManager.notify(id, builder.build());
     }
 
-    private void unzip(Intent intent) {
-        String[] file = intent.getStringArrayExtra(EXTRA_KEY_IN_FILE);
+    private void unzipLoop(Intent intent) {
+        String[] zips = intent.getStringArrayExtra(EXTRA_KEY_IN_FILE);
         String location = intent.getStringExtra(EXTRA_KEY_IN_LOCATION);
-        int per = 0;
-        int size = getSummarySize(file);
-        for (String f : file) {
-            try {
-                try {
-                    FileInputStream fin = new FileInputStream(f);
-                    ZipInputStream zin = new ZipInputStream(fin);
-                    ZipEntry ze;
-                    while ((ze = zin.getNextEntry()) != null) {
-                        if (ze.isDirectory()) {
-                            per++;
-                            isDir(ze.getName(), location);
-                        } else {
-                            per++;
-                            int progress = 100 * per / size;
-                            // send update
-                            publishProgress(progress);
-                            FileOutputStream f_out = new FileOutputStream(location + ze.getName());
-                            byte[] buffer = new byte[8192];
-                            int len;
-                            while ((len = zin.read(buffer)) != -1) {
-                                f_out.write(buffer, 0, len);
-                            }
-                            f_out.close();
-                            zin.closeEntry();
-                            f_out.close();
-                        }
-                    }
-                    zin.close();
-                } catch (FileNotFoundException e) {
-                    Log.e(TAG, e.getMessage());
-                }
-            } catch (IOException e) {
-                Log.e(TAG, e.getMessage());
+        size = getSummarySize(zips);
+        try {
+            for (String z : zips) {
+                unzipFile(z, location);
             }
+        } catch (IOException e) {
+            Log.e("WTF", e.getMessage() == null ? "Unzip failed" : e.getMessage());
+        }
+    }
+
+    @SuppressWarnings("TryFinallyCanBeTryWithResources")
+    private void unzipFile(String zipFile, String targetDirectory) throws IOException {
+        ZipInputStream zis = new ZipInputStream(
+                new BufferedInputStream(new FileInputStream(zipFile)));
+        try {
+            ZipEntry ze;
+            int count;
+            byte[] buffer = new byte[8192];
+            while ((ze = zis.getNextEntry()) != null) {
+                File file = new File(targetDirectory, ze.getName());
+                File dir = ze.isDirectory() ? file : file.getParentFile();
+                if (!dir.isDirectory() && !dir.mkdirs())
+                    throw new FileNotFoundException("Failed to ensure directory: " +
+                            dir.getAbsolutePath());
+                if (ze.isDirectory()) {
+                    percent++;
+                    continue;
+                }
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                try {
+                    while ((count = zis.read(buffer)) != -1) {
+                        fileOutputStream.write(buffer, 0, count);
+                        percent++;
+                        int progress = 100 * percent / size;
+                        publishProgress(progress);
+                    }
+                } finally {
+                    fileOutputStream.close();
+                }
+            }
+        } finally {
+            zis.close();
         }
     }
 
@@ -135,7 +139,7 @@ public class UnzipService extends IntentService {
                 ZipFile zipSize = new ZipFile(z);
                 size += zipSize.size();
             } catch (IOException e) {
-                Log.e(TAG, e.getLocalizedMessage());
+                Log.e("WTF", e.getMessage() == null ? "Unzip failed" : e.getMessage());
             }
         }
         return size;

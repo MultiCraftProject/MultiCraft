@@ -15,7 +15,6 @@ public class GameActivity extends NativeActivity {
     private int messageReturnCode;
     private String messageReturnValue;
     private int height, width;
-    private float density;
 
     public static native void putMessageBoxResult(String text);
 
@@ -23,15 +22,13 @@ public class GameActivity extends NativeActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getIntent().getExtras();
-        density = bundle != null ? bundle.getFloat("density", 0) : getResources().getDisplayMetrics().density;
         height = bundle != null ? bundle.getInt("height", 0) : getResources().getDisplayMetrics().heightPixels;
         width = bundle != null ? bundle.getInt("width", 0) : getResources().getDisplayMetrics().widthPixels;
+        // pf = PreferencesHelper.getInstance(this);
+        // if (pf.isAdsEnabled()) setAppodealCallbacks(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-//        if (!isAdsDisabled())
-//            startAd(this, true);
         messageReturnCode = -1;
         messageReturnValue = "";
-        makeFullScreen();
     }
 
 
@@ -54,8 +51,10 @@ public class GameActivity extends NativeActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-//        if (!isAdsDisabled())
-//            startAd(this, false);
+        /*if (pf.isAdsEnabled()) {
+            stopAd();
+            startAd(this, false);
+        }*/
     }
 
     @Override
@@ -67,8 +66,8 @@ public class GameActivity extends NativeActivity {
     @Override
     protected void onStop() {
         super.onStop();
-//        if (!isAdsDisabled())
-//            stopAd();
+        /*if (pf.isAdsEnabled())
+            stopAd();*/
     }
 
     @Override
@@ -113,7 +112,7 @@ public class GameActivity extends NativeActivity {
     }
 
     public float getDensity() {
-        return density;
+        return getResources().getDisplayMetrics().density;
     }
 
     public int getDisplayHeight() {

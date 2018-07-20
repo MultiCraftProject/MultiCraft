@@ -74,8 +74,9 @@ class RateMe {
         }
     }
 
-    static void showRateDialog(final Context context) {
-        final Dialog dialog = new Dialog(context, R.style.DialogTheme);
+    static void showRateDialog() {
+        final Activity activity = mainActivityRef.get();
+        final Dialog dialog = new Dialog(activity, R.style.DialogTheme);
         dialog.setCanceledOnTouchOutside(false);
         if (Build.VERSION.SDK_INT >= 19) {
             dialog.getWindow().getDecorView().setSystemUiVisibility(
@@ -95,16 +96,16 @@ class RateMe {
                         sCallback.onPositive("RateMe");
                     }
                     dialog.dismiss();
-                    String appPackage = context.getPackageName();
+                    String appPackage = activity.getPackageName();
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(GOOGLE_PLAY + appPackage));
-                    context.startActivity(intent);
-                    setOptOut(context, true);
+                    activity.startActivity(intent);
+                    setOptOut(activity, true);
                 } else {
                     if (sCallback != null) {
                         sCallback.onNegative("RateMe");
                     }
                     dialog.dismiss();
-                    clearSharedPreferences(context);
+                    clearSharedPreferences(activity);
                 }
             }
         });
@@ -114,10 +115,10 @@ class RateMe {
                 if (sCallback != null) {
                     sCallback.onCancelled("RateMe");
                 }
-                clearSharedPreferences(context);
+                clearSharedPreferences(activity);
             }
         });
-        if (mainActivityRef.get() != null && !mainActivityRef.get().isFinishing()) {
+        if (!activity.isFinishing()) {
             dialog.show();
         } else {
             if (sCallback != null) {
@@ -126,7 +127,7 @@ class RateMe {
         }
     }
 
-    private static void clearSharedPreferences(Context context) {
+    private static void clearSharedPreferences(Activity context) {
         SharedPreferences pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         Editor editor = pref.edit();
         editor.remove(KEY_INSTALL_DATE);
@@ -134,7 +135,7 @@ class RateMe {
         editor.apply();
     }
 
-    private static void setOptOut(final Context context, boolean optOut) {
+    private static void setOptOut(final Activity context, boolean optOut) {
         SharedPreferences pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         Editor editor = pref.edit();
         editor.putBoolean(KEY_OPT_OUT, optOut);

@@ -15,12 +15,22 @@
     <string name="rate_submit">ОЦЕНИТЬ</string>
     <string name="rate_description">Описание</string>
     <string name="sad">Нам жаль, что Вам не понравилась игра!</string>
+    <string name="recommend">Загрузка рекомендаций \n для Вас \n%1$s</string>
     <!-- обновление -->
     <string name="ignore">Игнорировать</string>
     <string name="later">Позже</string>
     <string name="update">Обновить</string>
 
-    <!-- Интернет -->
+    <!-- reminder -->
+    <string name="message">Сообщение</string>
+
+    <!-- in-app -->
+    <string name="buy_title">Супер предложение!</string>
+    <string name="buy_message">Полностью отключите рекламу \n и активируйте Pro-режим со скидкой 75%!</string>
+    <string name="close">Закрыть</string>
+    <string name="disable">Отключить рекламу!</string>
+
+    <!-- no connection dialog -->
     <string name="conn_message">Для полноценной игры, MultiCraft требует подключение к интернету.\nВ противном случае невозможно обновление игры, а так же не доступен мультиплеер!</string>
     <string name="conn_wifi">Wi-Fi</string>
     <string name="conn_mobile">3G/4G</string>

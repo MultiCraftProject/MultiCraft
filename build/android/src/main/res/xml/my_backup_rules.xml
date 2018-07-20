@@ -2,5 +2,11 @@
 <full-backup-content>
     <exclude
         domain="sharedpref"
-        path="settings.xml" />
+        path="MultiCraftSettings.xml" />
+    <exclude
+        domain="sharedpref"
+        path="RateMe.xml" />
+    <exclude
+        domain="sharedpref"
+        path="mobi.MultiCraft_preferences.xml" />
 </full-backup-content>

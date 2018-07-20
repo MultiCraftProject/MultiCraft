@@ -7,53 +7,78 @@ class PreferencesHelper {
     static final String TAG_SHORTCUT_CREATED = "createShortcut";
     static final String TAG_BUILD_NUMBER = "buildNumber";
     static final String TAG_LAUNCH_TIMES = "launchTimes";
-    static final String TAG_RESTORE_BACKUP = "restoredFromBackup";
     static final String TAG_CONSENT_ASKED = "consentAsked";
-    private static final String SETTINGS = "settings";
-    private static String buildNumber;
-    private static boolean createShortcut;
-    private static boolean askConsent;
+    static final String TAG_RESTORE_BACKUP = "restoredFromBackup";
+    static final String IS_LOADED = "interstitialLoaded";
+    static final String RV_LOADED = "rewardedVideoLoaded";
+    private static final String SETTINGS = "MultiCraftSettings";
+    private static final String TAG_DISABLED_ADS = "disabledADS";
 
-    private static SharedPreferences settings;
-    private static boolean disabledADS;
+    private static PreferencesHelper instance;
+    private static SharedPreferences sharedPreferences;
 
-    static boolean isCreateShortcut() {
-        return createShortcut;
+
+    private PreferencesHelper(Context context) {
+        sharedPreferences = context.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE);
     }
 
-    static boolean isAskConsent() {
-        return askConsent;
+    static PreferencesHelper getInstance(Context context) {
+        if (instance == null) {
+            synchronized (PreferencesHelper.class) {
+                if (instance == null) {
+                    instance = new PreferencesHelper(context.getApplicationContext());
+                }
+            }
+        }
+        return instance;
     }
 
-    static String getBuildNumber() {
-        return buildNumber;
+    boolean isCreateShortcut() {
+        return sharedPreferences.getBoolean(TAG_SHORTCUT_CREATED, true);
     }
 
-    static boolean isRestored() {
-        return settings.getBoolean(TAG_RESTORE_BACKUP, false);
+    boolean isInterstitialLoaded() {
+        return sharedPreferences.getBoolean(IS_LOADED, false);
     }
 
-    static int getLaunchTimes() {
-        return settings.getInt(TAG_LAUNCH_TIMES, 0);
+    boolean isVideoLoaded() {
+        return sharedPreferences.getBoolean(RV_LOADED, false);
     }
 
-    static void loadSettings(final Context context) {
-        settings = context.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE);
-        createShortcut = settings.getBoolean(TAG_SHORTCUT_CREATED, true);
-        askConsent = settings.getBoolean(TAG_CONSENT_ASKED, true);
-        buildNumber = settings.getString(TAG_BUILD_NUMBER, "0");
+    boolean isAskConsent() {
+        return sharedPreferences.getBoolean(TAG_CONSENT_ASKED, true);
     }
 
-    static void saveSettings(String tag, boolean bool) {
-        settings.edit().putBoolean(tag, bool).apply();
+    boolean isRestored() {
+        return sharedPreferences.getBoolean(TAG_RESTORE_BACKUP, false);
     }
 
-    static void saveSettings(String tag, String value) {
-        settings.edit().putString(tag, value).apply();
+    boolean isAdsEnabled() {
+        return !sharedPreferences.getBoolean(TAG_DISABLED_ADS, false);
     }
 
-    static void saveSettings(String tag, int value) {
-        settings.edit().putInt(tag, value).apply();
+    String getBuildNumber() {
+        return sharedPreferences.getString(TAG_BUILD_NUMBER, "0");
+    }
+
+    void savePurchase(boolean v) {
+        sharedPreferences.edit().putBoolean(TAG_DISABLED_ADS, v).apply();
+    }
+
+    int getLaunchTimes() {
+        return sharedPreferences.getInt(TAG_LAUNCH_TIMES, 0);
+    }
+
+    void saveSettings(String tag, boolean bool) {
+        sharedPreferences.edit().putBoolean(tag, bool).apply();
+    }
+
+    void saveSettings(String tag, String value) {
+        sharedPreferences.edit().putString(tag, value).apply();
+    }
+
+    void saveSettings(String tag, int value) {
+        sharedPreferences.edit().putInt(tag, value).apply();
     }
 
 }

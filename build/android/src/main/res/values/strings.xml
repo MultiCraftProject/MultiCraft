@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name" translatable="false">MultiCraft</string>
-    <string name="ver" translatable="false">1.1.11.2</string>
+    <string name="ver" translatable="false">1.1.11.6</string>
     <!-- preparation for start -->
 
     <string name="rm_old">Preparing to update&#8230;</string>
@@ -19,11 +19,21 @@
     <string name="rate_submit">SUBMIT</string>
     <string name="rate_description">Description</string>
     <string name="sad">We are sorry that you did not like the game!</string>
+    <string name="recommend">Loading recommendations \n for you \n %1$s</string>
 
     <!--update input_dialog -->
     <string name="update">Update</string>
     <string name="later">Later</string>
     <string name="ignore">Ignore</string>
+
+    <!-- reminder -->
+    <string name="message">Message</string>
+
+    <!-- in-app -->
+    <string name="buy_title">Special Offer!</string>
+    <string name="buy_message">Only for 0.99$ \nDisable ads forever \nand activate Pro features!</string>
+    <string name="close">Close</string>
+    <string name="disable">Disable Ads!</string>
 
     <!-- no connection dialog -->
     <string name="conn_message">MultiCraft requires an internet connection to use all game features.\nOtherwise, you will not get updates and multiplayer will be not available!</string>

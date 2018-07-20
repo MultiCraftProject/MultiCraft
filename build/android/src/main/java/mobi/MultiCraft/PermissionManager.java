@@ -11,17 +11,17 @@ import java.util.ArrayList;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static mobi.MultiCraft.PreferencesHelper.TAG_RESTORE_BACKUP;
-import static mobi.MultiCraft.PreferencesHelper.getLaunchTimes;
-import static mobi.MultiCraft.PreferencesHelper.saveSettings;
 
 class PermissionManager {
     static ArrayList<String> permissionsToRequest;
     static ArrayList<String> permissionsRejected;
     private Activity activity;
     private SharedPreferences sharedPreferences;
+    private PreferencesHelper pf;
 
     PermissionManager(Activity activity) {
         this.activity = activity;
+        pf = PreferencesHelper.getInstance(activity);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
     }
 
@@ -39,7 +39,7 @@ class PermissionManager {
                 markAsAsked(perm);
             }
             return permissionsToRequest.toArray(new String[permissionsToRequest.size()]);
-        } else if (permissionsRejected.size() > 0 && getLaunchTimes() % 3 == 0) {
+        } else if (permissionsRejected.size() > 0 && pf.getLaunchTimes() % 3 == 0) {
             return permissionsRejected.toArray(new String[permissionsRejected.size()]);
         }
         return new String[]{};
@@ -50,9 +50,9 @@ class PermissionManager {
     }
 
     private boolean shouldWeAsk(String permission) {
-        if (getLaunchTimes() > 1 && permission.equals(WRITE_EXTERNAL_STORAGE)) {
+        if (pf.getLaunchTimes() > 1 && permission.equals(WRITE_EXTERNAL_STORAGE)) {
             sharedPreferences.edit().clear().apply();
-            saveSettings(TAG_RESTORE_BACKUP, true);
+            pf.saveSettings(TAG_RESTORE_BACKUP, true);
         }
         return sharedPreferences.getBoolean(permission, true);
     }
