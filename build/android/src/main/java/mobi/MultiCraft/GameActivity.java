@@ -25,7 +25,7 @@ public class GameActivity extends NativeActivity {
         height = bundle != null ? bundle.getInt("height", 0) : getResources().getDisplayMetrics().heightPixels;
         width = bundle != null ? bundle.getInt("width", 0) : getResources().getDisplayMetrics().widthPixels;
         // pf = PreferencesHelper.getInstance(this);
-        // if (pf.isAdsEnabled()) setAppodealCallbacks(this);
+        // if (pf.isAdsEnabled()) setAdsCallbacks(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         messageReturnCode = -1;
         messageReturnValue = "";
