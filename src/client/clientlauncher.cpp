@@ -36,11 +36,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "clientlauncher.h"
 #include "version.h"
 
-#if 0 // toggle to 1 for ads
-#define ADS
-#include "ads.h"
-#endif
-
 #ifdef __IOS__
 namespace irr {
 	class CIrrDeviceiOS : public IrrlichtDevice {

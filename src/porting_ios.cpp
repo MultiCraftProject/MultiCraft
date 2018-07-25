@@ -61,6 +61,20 @@ namespace porting {
 		ioswrap_get_dialog(&str);
 		return std::string(str);
 	}
+
+	void showPurchaseMenu() {
+#ifdef ADS
+		ads_show_purchase();
+#endif
+	}
+
+	int getPurchaseState() {
+#ifdef ADS
+		return ads_purchase_state();
+#else
+		return 1;
+#endif
+	}
 }
 
 
