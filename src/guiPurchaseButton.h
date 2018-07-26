@@ -19,8 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "irrlichttypes_extrabloated.h"
+#include "irrlichttypes.h"
 #include "porting.h"
+#include "util/string.h"
 
 class GUIPurchaseButton : public gui::IGUIElement
 {
@@ -28,27 +29,28 @@ public:
 	GUIPurchaseButton(gui::IGUIEnvironment *env, gui::IGUIElement *parent,
 			ISimpleTextureSource *tsrc) :
 		gui::IGUIElement(gui::EGUIET_ELEMENT, env, parent, -1,
-				core::rect<s32>(0, 0, 0, 0))
+				core::rect<s32>(0, 0, 0, 0)),
+		m_texture(NULL)
 	{
-		core::dimension2du dim = env->getVideoDriver()->getScreenSize();
-		s32 w = dim.Width / 6;
-		s32 h = w / 4;
-		setRelativePosition(core::rect<s32>(dim.Width - w, 0, dim.Width, h));
-		gui::IGUIButton *btn = env->addButton(core::rect<s32>(0, 0, w, h), this,
-			-1, L"Purchase");
-
-		//TODO figure out why Irrlicht fails to find the texture
-		//video::ITexture *texture = tsrc->getTexture("multicraft_local_buy_btn.png");
-		//if (texture) {
-		//	btn->setUseAlphaChannel(true);
-		//	btn->setDrawBorder(false);
-		//	btn->setImage(texture);
-		//	btn->setPressedImage(texture);
-		//	btn->setScaleImage(true);
-		//	btn->setText(L"");
-		//}
-		btn->setText(L"Purchase");
+		std::string texture = porting::path_share + DIR_DELIM + "textures" +
+			DIR_DELIM + "base" + DIR_DELIM + "multicraft_local_buy_btn.png";
+		m_texture = tsrc->getTexture(texture);
 	}
+
+	void draw()
+	{
+		if (!IsVisible)
+			return;
+
+		v2u32 screensize = Environment->getVideoDriver()->getScreenSize();
+		if (screensize != m_screensize)
+		{
+			m_screensize = screensize;
+			regenerateGui(screensize);
+		}
+		gui::IGUIElement::draw();
+	}
+
 	bool OnEvent(const irr::SEvent &event)
 	{
 		if (event.EventType == irr::EET_GUI_EVENT &&
@@ -63,4 +65,25 @@ public:
 		}
 		return gui::IGUIElement::OnEvent(event);
 	}
+
+private:
+	void regenerateGui(v2u32 size)
+	{
+		s32 w = size.X / 6; // button width = screen width / 6
+		s32 h = w / 4; // button height = button width / 4
+		setRelativePosition(core::rect<s32>(size.X - w, 0, size.X, h));
+		gui::IGUIButton *btn = Environment->addButton(
+				core::rect<s32>(0, 0, w, h), this, -1, L"Purchase");
+		if (m_texture) {
+			btn->setUseAlphaChannel(true);
+			btn->setDrawBorder(false);
+			btn->setImage(m_texture);
+			btn->setPressedImage(m_texture);
+			btn->setScaleImage(true);
+			btn->setText(L"");
+		}
+	}
+
+	video::ITexture *m_texture;
+	v2u32 m_screensize;
 };
