@@ -32,7 +32,11 @@ Sky::Sky(scene::ISceneNode* parent, scene::ISceneManager* mgr, s32 id,
 
 	video::SMaterial mat;
 	mat.Lighting = false;
+#if defined(__ANDROID__) || defined(__IOS__)
+	mat.ZBuffer = video::ECFN_DISABLED;
+#else
 	mat.ZBuffer = video::ECFN_NEVER;
+#endif
 	mat.ZWriteEnable = false;
 	mat.AntiAliasing = 0;
 	mat.TextureLayer[0].TextureWrapU = video::ETC_CLAMP_TO_EDGE;
@@ -431,6 +435,34 @@ void Sky::render()
 			video::SColor starcolor(255, f * 90, f * 90, f * 90);
 			if (starcolor.getBlue() < m_skycolor.getBlue())
 				break;
+#if defined(__ANDROID__) || defined(__IOS__)
+			u16 indices[SKY_STAR_COUNT * 3];
+			video::S3DVertex vertices[SKY_STAR_COUNT * 3];
+			for (u32 i = 0; i < SKY_STAR_COUNT; i++) {
+				indices[i * 3 + 0] = i * 3 + 0;
+				indices[i * 3 + 1] = i * 3 + 1;
+				indices[i * 3 + 2] = i * 3 + 2;
+				v3f p = m_stars[i];
+				core::CMatrix4<f32> a;
+				a.buildRotateFromTo(v3f(0, 1, 0), v3f(d, 1 + d, -d / 2));
+				v3f p1 = p;
+				a.rotateVect(p1);
+				a.buildRotateFromTo(v3f(0, 1, 0), v3f(d, 1 - d, d / 2));
+				v3f p2 = p;
+				a.rotateVect(p2);
+				p.rotateXYBy(wicked_time_of_day * 360 - 90);
+				p1.rotateXYBy(wicked_time_of_day * 360 - 90);
+				p2.rotateXYBy(wicked_time_of_day * 360 - 90);
+				vertices[i * 3 + 0].Pos = p;
+				vertices[i * 3 + 0].Color = starcolor;
+				vertices[i * 3 + 1].Pos = p1;
+				vertices[i * 3 + 1].Color = starcolor;
+				vertices[i * 3 + 2].Pos = p2;
+				vertices[i * 3 + 2].Color = starcolor;
+			}
+			driver->drawIndexedTriangleList(vertices, SKY_STAR_COUNT * 3,
+					indices, SKY_STAR_COUNT);
+#else
 			u16 indices[SKY_STAR_COUNT * 4];
 			video::S3DVertex vertices[SKY_STAR_COUNT * 4];
 			for (u32 i = 0; i < SKY_STAR_COUNT; i++) {
@@ -465,6 +497,7 @@ void Sky::render()
 			driver->drawVertexPrimitiveList(vertices, SKY_STAR_COUNT * 4,
 				indices, SKY_STAR_COUNT, video::EVT_STANDARD,
 				scene::EPT_QUADS, video::EIT_16BIT);
+#endif
 		} while(0);
 		
 		// Draw far cloudy fog thing below east and west horizons
