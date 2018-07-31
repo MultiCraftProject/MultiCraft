@@ -1,20 +1,14 @@
-local function register_sign(material, desc, def)
-	minetest.register_node(":default:sign_wall_" .. material, {
-		tiles = {"default_wood.png"},
-		paramtype = "light",
-		paramtype2 = "wallmounted",
-		sunlight_propagates = true,
-		is_ground_content = false,
-		walkable = false,
-		groups = def.groups,
-		legacy_wallmounted = true,
-	})
-end
-
-register_sign("wood", "Wooden", {
-	groups = {choppy = 2, attached_node = 1, flammable = 2, oddly_breakable_by_hand = 3, not_in_creative_inventory = 1}
+minetest.register_node(":default:sign_wall_wood", {
+	tiles = {"default_wood.png"},
+	paramtype = "light",
+	paramtype2 = "wallmounted",
+	sunlight_propagates = true,
+	is_ground_content = false,
+	walkable = false,
+	groups = {choppy = 2, attached_node = 1, flammable = 2, oddly_breakable_by_hand = 3, not_in_creative_inventory = 1},
+	legacy_wallmounted = true,
 })
-
+	
 minetest.register_lbm({
 	label = "Upgrade legacy signs",
 	name = "signs:sign_wall_update",
