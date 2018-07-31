@@ -67,6 +67,55 @@ minetest.register_entity("signs:sign_text", {
 	end
 })
 
+local function check_text(pos, wall)
+	local meta = minetest.get_meta(pos)
+	local text = meta:get_string("sign_text")
+	if text and text ~= "" then
+		local found = false
+		for _, obj in pairs(minetest.get_objects_inside_radius(pos, 0.5)) do
+                        local ent = obj:get_luaentity()
+                        if ent and ent.name == "signs:sign_text" then
+                                found = true
+                                break
+                        end
+                end
+		if not found then
+			local p2 = minetest.get_node(pos).param2
+			if wall then
+				local obj = minetest.add_entity(vector.add(pos, signs.wall_sign_positions[p2][1]),
+                                "signs:sign_text")
+				obj:set_properties({textures = {signs.generate_sign_texture(text), "blank.png"}})
+				obj:set_yaw(signs.wall_sign_positions[p2][2])
+			else
+				local obj = minetest.add_entity(vector.add(pos, signs.sign_positions[p2][1]),
+                                "signs:sign_text")
+				obj:set_properties({textures = {signs.generate_sign_texture(text), "blank.png"}})
+				obj:set_yaw(signs.sign_positions[p2][2])
+			end
+		end
+	end
+end
+
+minetest.register_lbm({
+        label = "Check for sign text",
+        name = "signs:sign_text",
+        nodenames = {"signs:sign"},
+        run_at_every_load = true,
+        action = function(pos, node)
+                check_text(pos, false)
+        end,
+})
+
+minetest.register_lbm({
+        label = "Check for sign text (Wall)",
+        name = "signs:sign_wall_text",
+        nodenames = {"signs:sign_wall"},
+        run_at_every_load = true,
+        action = function(pos, node)
+		check_text(pos, true)
+	end,
+})
+
 minetest.register_node("signs:sign", {
 	description = "Sign",
 	tiles = {"default_wood.png"},
@@ -93,6 +142,9 @@ minetest.register_node("signs:sign", {
 			end
 		end
 	end,
+	on_punch = function(pos)
+		check_text(pos, false)
+	end,
 	on_receive_fields = function(pos, formname, fields, sender)
 		if not fields.text then
 			return
@@ -106,16 +158,16 @@ minetest.register_node("signs:sign", {
 			local ent = obj:get_luaentity()
 			if ent and ent.name == "signs:sign_text" then
 				obj:set_properties({textures = {signs.generate_sign_texture(fields.text), "blank.png"}})
-				obj:set_pos(vector.add(pos, sign_positions[p2][1]))
-				obj:set_yaw(sign_positions[p2][2])
+				obj:set_pos(vector.add(pos, signs.sign_positions[p2][1]))
+				obj:set_yaw(signs.sign_positions[p2][2])
 				found = true
 			end
 		end
 		if not found then
-			local obj = minetest.add_entity(vector.add(pos, sign_positions[p2][1]),
+			local obj = minetest.add_entity(vector.add(pos, signs.sign_positions[p2][1]),
 				"signs:sign_text")
 			obj:set_properties({textures = {signs.generate_sign_texture(fields.text), "blank.png"}})
-			obj:set_yaw(sign_positions[p2][2])
+			obj:set_yaw(signs.sign_positions[p2][2])
 		end
 		local meta = minetest.get_meta(pos)
 		meta:set_string("sign_text", fields.text)
@@ -148,6 +200,9 @@ minetest.register_node("signs:wall_sign", {
 			end
 		end
 	end,
+	on_punch = function(pos)
+                check_text(pos, true)
+        end,
 	on_receive_fields = function(pos, formname, fields, sender)
 		if not fields.text then
 			return
@@ -161,16 +216,16 @@ minetest.register_node("signs:wall_sign", {
 			local ent = obj:get_luaentity()
 			if ent and ent.name == "signs:sign_text" then
 				obj:set_properties({textures = {signs.generate_sign_texture(fields.text), "blank.png"}})
-				obj:set_pos(vector.add(pos, wall_sign_positions[p2][1]))
-				obj:set_yaw(wall_sign_positions[p2][2])
+				obj:set_pos(vector.add(pos, signs.wall_sign_positions[p2][1]))
+				obj:set_yaw(signs.wall_sign_positions[p2][2])
 				found = true
 			end
 		end
 		if not found then
-			local obj = minetest.add_entity(vector.add(pos, wall_sign_positions[p2][1]),
+			local obj = minetest.add_entity(vector.add(pos, signs.wall_sign_positions[p2][1]),
 				"signs:sign_text")
 			obj:set_properties({textures = {signs.generate_sign_texture(fields.text), "blank.png"}})
-			obj:set_yaw(wall_sign_positions[p2][2])
+			obj:set_yaw(signs.wall_sign_positions[p2][2])
 		end
 		local meta = minetest.get_meta(pos)
 		meta:set_string("sign_text", fields.text)
