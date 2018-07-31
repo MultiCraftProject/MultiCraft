@@ -1,17 +1,17 @@
 signs = {}
 
 signs.sign_positions = {
-	[0] = {{x = 0.0075, y = 0.18, z = -0.065}, math.pi},
-	[1] = {{x = -0.065, y = 0.18, z = 0.0075}, math.pi / 2},
-	[2] = {{x = 0.0075, y = 0.18, z = 0.065}, 0},
-	[3] = {{x = 0.065, y = 0.18, z = 0.0075}, math.pi * 1.5},
+	[0] = {{x =  0.0075, y = 0.18, z = -0.065},  math.pi},
+	[1] = {{x = -0.065,  y = 0.18, z =  0.0075}, math.pi / 2},
+	[2] = {{x =  0.0075, y = 0.18, z =  0.065},  0},
+	[3] = {{x =  0.065,  y = 0.18, z =  0.0075}, math.pi * 1.5},
 }
 
 signs.wall_sign_positions = {
-	[0] = {{x = 0.437, y = -0.005, z = 0.06}, math.pi / 2},
-	[1] = {{x = -0.437, y = -0.005, z = -0.06}, math.pi * 1.5},
-	[2] = {{x = -0.06, y = -0.005, z = 0.437}, math.pi},
-	[3] = {{x = 0.06, y = -0.005, z = -0.437}, 0},
+	[0] = {{x =  0.437, y = -0.005, z =  0.06},  math.pi / 2},
+	[1] = {{x = -0.437, y = -0.005, z = -0.06},  math.pi * 1.5},
+	[2] = {{x = -0.06,  y = -0.005, z =  0.437}, math.pi},
+	[3] = {{x =  0.06,  y = -0.005, z = -0.437}, 0},
 }
 
 local function generate_sign_line_texture(string, texture, row)
@@ -55,7 +55,9 @@ minetest.register_entity("signs:sign_text", {
 	},
 	pointable = false,
 	on_activate = function(self, staticdata)
-		self.object:set_properties({textures = {signs.generate_sign_texture(staticdata), "blank.png"}})
+		self.object:set_properties({
+			textures = {signs.generate_sign_texture(staticdata), "blank.png"}
+		})
 	end,
 	get_staticdata = function(self)
 		local meta = minetest.get_meta(self.object:get_pos())
@@ -82,14 +84,18 @@ local function check_text(pos, wall)
 		if not found then
 			local p2 = minetest.get_node(pos).param2
 			if wall then
-				local obj = minetest.add_entity(vector.add(pos, signs.wall_sign_positions[p2][1]),
-                                "signs:sign_text")
-				obj:set_properties({textures = {signs.generate_sign_texture(text), "blank.png"}})
+				local obj = minetest.add_entity(vector.add(pos,
+					signs.wall_sign_positions[p2][1]), "signs:sign_text")
+				obj:set_properties({
+					textures = {signs.generate_sign_texture(text), "blank.png"}
+				})
 				obj:set_yaw(signs.wall_sign_positions[p2][2])
 			else
-				local obj = minetest.add_entity(vector.add(pos, signs.sign_positions[p2][1]),
-                                "signs:sign_text")
-				obj:set_properties({textures = {signs.generate_sign_texture(text), "blank.png"}})
+				local obj = minetest.add_entity(vector.add(pos,
+					signs.sign_positions[p2][1]), "signs:sign_text")
+				obj:set_properties({
+					textures = {signs.generate_sign_texture(text), "blank.png"}
+				})
 				obj:set_yaw(signs.sign_positions[p2][2])
 			end
 		end
@@ -137,7 +143,8 @@ minetest.register_node("signs:sign", {
 			if undery > posy then -- Trying to place on celling, not allowed
 				return itemstack
 			elseif undery == posy then -- Wall sign
-				local count, success = minetest.item_place(ItemStack("signs:wall_sign"), placer, pointed_thing)
+				local count, success = minetest.item_place(
+					ItemStack("signs:wall_sign"), placer, pointed_thing)
 				if success then
 					return itemstack:take_item(1)
 				end
@@ -174,16 +181,20 @@ minetest.register_node("signs:sign", {
 		for _, obj in pairs(minetest.get_objects_inside_radius(pos, 0.5)) do
 			local ent = obj:get_luaentity()
 			if ent and ent.name == "signs:sign_text" then
-				obj:set_properties({textures = {signs.generate_sign_texture(fields.text), "blank.png"}})
+				obj:set_properties(
+					{textures = {signs.generate_sign_texture(fields.text), "blank.png"}
+				})
 				obj:set_pos(vector.add(pos, signs.sign_positions[p2][1]))
 				obj:set_yaw(signs.sign_positions[p2][2])
 				found = true
 			end
 		end
 		if not found then
-			local obj = minetest.add_entity(vector.add(pos, signs.sign_positions[p2][1]),
-				"signs:sign_text")
-			obj:set_properties({textures = {signs.generate_sign_texture(fields.text), "blank.png"}})
+			local obj = minetest.add_entity(vector.add(pos, 
+				signs.sign_positions[p2][1]), "signs:sign_text")
+			obj:set_properties({
+				textures = {signs.generate_sign_texture(fields.text), "blank.png"}
+			})
 			obj:set_yaw(signs.sign_positions[p2][2])
 		end
 		local meta = minetest.get_meta(pos)
@@ -233,22 +244,27 @@ minetest.register_node("signs:wall_sign", {
 		for _, obj in pairs(minetest.get_objects_inside_radius(pos, 0.5)) do
 			local ent = obj:get_luaentity()
 			if ent and ent.name == "signs:sign_text" then
-				obj:set_properties({textures = {signs.generate_sign_texture(fields.text), "blank.png"}})
+				obj:set_properties({
+					textures = {signs.generate_sign_texture(fields.text), "blank.png"}
+				})
 				obj:set_pos(vector.add(pos, signs.wall_sign_positions[p2][1]))
 				obj:set_yaw(signs.wall_sign_positions[p2][2])
 				found = true
 			end
 		end
 		if not found then
-			local obj = minetest.add_entity(vector.add(pos, signs.wall_sign_positions[p2][1]),
-				"signs:sign_text")
-			obj:set_properties({textures = {signs.generate_sign_texture(fields.text), "blank.png"}})
+			local obj = minetest.add_entity(vector.add(pos, 
+				signs.wall_sign_positions[p2][1]), "signs:sign_text")
+			obj:set_properties({
+				textures = {signs.generate_sign_texture(fields.text), "blank.png"}
+			})
 			obj:set_yaw(signs.wall_sign_positions[p2][2])
 		end
 		local meta = minetest.get_meta(pos)
 		meta:set_string("sign_text", fields.text)
 	end,
-	groups = {oddly_breakable_by_hand = 1, choppy = 3, not_in_creative_inventory = 1, attached_node = 1},
+	groups = {oddly_breakable_by_hand = 1, choppy = 3,
+		not_in_creative_inventory = 1, attached_node = 1},
 })
 
 dofile(minetest.get_modpath("signs") .. "/legacy.lua")
