@@ -108,8 +108,8 @@ minetest.register_lbm({
 
 minetest.register_lbm({
         label = "Check for sign text (Wall)",
-        name = "signs:sign_wall_text",
-        nodenames = {"signs:sign_wall"},
+        name = "signs:wall_sign_text",
+        nodenames = {"signs:wall_sign"},
         run_at_every_load = true,
         action = function(pos, node)
 		check_text(pos, true)
@@ -122,6 +122,7 @@ minetest.register_node("signs:sign", {
 	drawtype = "nodebox",
 	paramtype = "light",
 	paramtype2 = "facedir",
+	node_placement_prediction = "",
 	node_box = {
 		type = "fixed",
 		fixed = {
@@ -129,6 +130,22 @@ minetest.register_node("signs:sign", {
 			{-0.0625, -0.5, -0.0625, 0.0625, -0.125, 0.0625}, -- NodeBox2
 		}
 	},
+	on_place = function(itemstack, placer, pointed_thing)
+		if pointed_thing.type == "node" then
+			local undery = pointed_thing.under.y
+			local posy = pointed_thing.above.y
+			if undery > posy then -- Trying to place on celling, not allowed
+				return itemstack
+			elseif undery == posy then -- Wall sign
+				local count, success = minetest.item_place(ItemStack("signs:wall_sign"), placer, pointed_thing)
+				if success then
+					return itemstack:take_item(1)
+				end
+			else -- Normal sign
+				return minetest.item_place(itemstack, placer, pointed_thing)
+			end
+		end
+	end,
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("formspec", "field[text;;${sign_text}]")
@@ -172,7 +189,7 @@ minetest.register_node("signs:sign", {
 		local meta = minetest.get_meta(pos)
 		meta:set_string("sign_text", fields.text)
 	end,
-	groups = {oddly_breakable_by_hand = 1, choppy = 3},
+	groups = {oddly_breakable_by_hand = 1, choppy = 3, attached_node = 1},
 })
 
 minetest.register_node("signs:wall_sign", {
@@ -187,6 +204,7 @@ minetest.register_node("signs:wall_sign", {
 		wall_bottom = {-0.4375, -0.5, -0.3125, 0.4375, -0.4375, 0.3125},
 		wall_side   = {-0.5, -0.3125, -0.4375, -0.4375, 0.3125, 0.4375},
 	},
+	drop = "signs:sign",
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("formspec", "field[text;;${sign_text}]")
@@ -230,7 +248,7 @@ minetest.register_node("signs:wall_sign", {
 		local meta = minetest.get_meta(pos)
 		meta:set_string("sign_text", fields.text)
 	end,
-	groups = {oddly_breakable_by_hand = 1, choppy = 3, not_in_creative_inventory = 1},
+	groups = {oddly_breakable_by_hand = 1, choppy = 3, not_in_creative_inventory = 1, attached_node = 1},
 })
 
 dofile(minetest.get_modpath("signs") .. "/legacy.lua")
