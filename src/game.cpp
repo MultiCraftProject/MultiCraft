@@ -1211,6 +1211,7 @@ public:
 	void pauseGame();
 	void customStatustext(const std::wstring &text, float time);
 #endif
+	void pauseAnimation(bool is_paused);
 
 protected:
 
@@ -1464,6 +1465,7 @@ private:
 	bool m_cache_hold_aux1;
 	bool m_android_chat_open;
 #endif
+	core::list<scene::ISceneNode *> m_anim_nodes;
 };
 
 Game::Game() :
@@ -3120,6 +3122,9 @@ inline void Game::step(f32 *dtime)
 	if (can_be_and_is_paused) {	// This is for a singleplayer server
 		*dtime = 0;             // No time passes
 	} else {
+		if (simple_singleplayer_mode && !m_anim_nodes.empty())
+			pauseAnimation(false);
+
 		if (server != NULL) {
 			//TimeTaker timer("server->step(dtime)");
 			server->step(*dtime);
@@ -4572,6 +4577,30 @@ void Game::customStatustext(const std::wstring &text, float time)
 }
 #endif
 
+void Game::pauseAnimation(bool is_paused)
+{
+	core::list<scene::ISceneNode *> nodes = (is_paused) ?
+			smgr->getRootSceneNode()->getChildren() : m_anim_nodes;
+
+	for (core::list<scene::ISceneNode *>::ConstIterator it = nodes.begin();
+			it != nodes.end(); ++it) {
+		if ((*it) && (*it)->getType() == scene::ESNT_ANIMATED_MESH) {
+			scene::IAnimatedMeshSceneNode *node =
+					(scene::IAnimatedMeshSceneNode*)(*it);
+			if (is_paused) {
+				if (node->getLoopMode()) {
+					m_anim_nodes.push_back(node);
+					node->setLoopMode(false);
+				}
+			} else {
+				node->setLoopMode(true);
+			}
+		}
+	}
+	if (!is_paused)
+		m_anim_nodes.clear();
+}
+
 /****************************************************************************/
 /****************************************************************************
  Shutdown / cleanup
@@ -4735,6 +4764,9 @@ void Game::showPauseMenu()
 	create_formspec_menu(&current_formspec, client, device, &input->joystick, fs_src, txt_dst);
 	current_formspec->setFocus("btn_continue");
 	current_formspec->doPause = true;
+
+	if (simple_singleplayer_mode)
+		pauseAnimation(true);
 }
 
 #ifdef DISABLE_CSM
