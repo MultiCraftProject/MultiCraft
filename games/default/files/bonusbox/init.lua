@@ -1,7 +1,39 @@
+-- Format of each item:
+-- {item_name, minimum, maximum}
+
+-- Sample registration
+local items_ore = {
+	{"default:diamond", 1, 4},
+	{"default:coal_lump", 1, 12},
+	{"default:quartz_crystal", 6, 18},
+	{"default:emerald", 1, 1},
+	{"default:steel_ingot", 2, 4},
+}
+
+local items_food = {
+	{"default:apple", 5, 15},
+	{"mobs:pork", 1, 6},
+	{"mobs:chicken_cooked", 1, 6},
+}
+
+local items_material = {
+	{"default:wood", 5, 64},
+	{"default:stone", 10, 48},
+	{"default:tree", 1, 16},
+	{"default:cobble", 64, 64},
+}
+	
+
 local item_spawn = function (pos, node)
-	minetest.spawn_item({x = pos.x - 0.4, y = pos.y + 0.58, z = pos.z - 0.2}, "default:steel_ingot 2")
-	minetest.spawn_item({x = pos.x, y = pos.y + 0.58, z = pos.z}, "default:emerald")
-	minetest.spawn_item({x = pos.x + 0.4, y = pos.y + 0.58, z = pos.z - 0.2}, "default:diamond")
+	local item1 = items_food[math.random(#items_food)]
+	item1 = item1[1] .. " " .. math.random(item1[2], item1[3])
+	local item2 = items_ore[math.random(#items_ore)]
+	item2 = item2[1] .. " " .. math.random(item2[2], item2[3])
+	local item3 = items_material[math.random(#items_material)]
+	item3 = item3[1] .. " " .. math.random(item3[2], item3[3])
+	minetest.spawn_item({x = pos.x - 0.4, y = pos.y + 0.58, z = pos.z - 0.2}, item1)
+	minetest.spawn_item({x = pos.x, y = pos.y + 0.58, z = pos.z}, item2)
+	minetest.spawn_item({x = pos.x + 0.4, y = pos.y + 0.58, z = pos.z - 0.2}, item3)
 
 	minetest.set_node(pos, {name = "bonusbox:chest_open", param2 = node.param2})
 	minetest.set_node({x = pos.x, y = pos.y + 1, z = pos.z}, {name = "bonusbox:chest_cap", param2 = node.param2})
