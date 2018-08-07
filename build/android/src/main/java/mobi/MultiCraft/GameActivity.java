@@ -123,14 +123,20 @@ public class GameActivity extends NativeActivity {
         return width;
     }
 
-    public void showPurchaseMenu() {
-        //TODO open payment dialog
+    public int getMemoryMax() {
+        //TODO return max device RAM as integer value, MB?
+        //return -1 on failure to detect
+        return -1;
     }
 
     public int getPurchaseState() {
         //TODO return purchased state
         //return isAdsDisabled() ? 1 : 0;
         return 1;
+    }
+
+    public void showPurchaseMenu() {
+        //TODO open payment dialog
     }
 
     public void notifyAbortLoading() {

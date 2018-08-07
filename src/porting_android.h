@@ -76,17 +76,24 @@ std::string getInputDialogValue();
  * show in-app java purchase menu
  */
 
-void showPurchaseMenu();
+int getMemoryMax();
 
 /**
- * get app purchased status
- * returns 1 when purchased, otherwise 0
+ * notify java that font loading failded
  */
 
 int getPurchaseState();
 
 /**
- * notify java that font loading failded
+ * get max device RAM as integer value
+ * returns -1 on failure
+ */
+
+void showPurchaseMenu();
+
+/**
+ * get app purchased status
+ * returns 1 when purchased, otherwise 0
  */
 
 void notifyAbortLoading();

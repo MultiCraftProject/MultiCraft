@@ -80,6 +80,7 @@ extern "C" {
 namespace porting {
 
 std::string path_storage = DIR_DELIM "sdcard" DIR_DELIM;
+int device_memory_max = 0;
 
 android_app* app_global;
 JNIEnv*      jnienv;
@@ -260,16 +261,19 @@ std::string getInputDialogValue()
 	return text;
 }
 
-void showPurchaseMenu()
+int getMemoryMax()
 {
-	jmethodID purchaseDialog = jnienv->GetMethodID(nativeActivity,
-			"showPurchaseMenu", "()V");
+	if (device_memory_max == 0) {
+		jmethodID getMemory = jnienv->GetMethodID(nativeActivity,
+				"getMemoryMax", "()I");
 
-	if (purchaseDialog == 0) {
-		assert("porting::showPurchaseMenu unable to find java show dialog method" == 0);
+		if (getMemory == 0)
+			assert("porting::getMemoryMax unable to find java method" == 0);
+
+		device_memory_max = jnienv->CallIntMethod(
+				app_global->activity->clazz, getMemory);
 	}
-
-	jnienv->CallVoidMethod(app_global->activity->clazz, purchaseDialog);
+	return device_memory_max;
 }
 
 int getPurchaseState()
@@ -278,10 +282,22 @@ int getPurchaseState()
 			"getPurchaseState", "()I");
 
 	if (purchaseState == 0) {
-		assert("porting::getPurchaseState unable to find java show dialog method" == 0);
+		assert("porting::getPurchaseState unable to find java method" == 0);
 	}
 
 	return jnienv->CallIntMethod(app_global->activity->clazz, purchaseState);
+}
+
+void showPurchaseMenu()
+{
+	jmethodID purchaseDialog = jnienv->GetMethodID(nativeActivity,
+			"showPurchaseMenu", "()V");
+
+	if (purchaseDialog == 0) {
+		assert("porting::showPurchaseMenu unable to find java method" == 0);
+	}
+
+	jnienv->CallVoidMethod(app_global->activity->clazz, purchaseDialog);
 }
 
 void notifyAbortLoading()
@@ -290,7 +306,7 @@ void notifyAbortLoading()
 			"notifyAbortLoading", "()V");
 
 	if (notifyAbort == 0) {
-		assert("porting::notifyAbortLoading unable to find java show dialog method" == 0);
+		assert("porting::notifyAbortLoading unable to find java method" == 0);
 	}
 
 	jnienv->CallVoidMethod(app_global->activity->clazz, notifyAbort);
@@ -302,7 +318,7 @@ void notifyServerConnect(bool is_multiplayer)
 			"notifyServerConnect", "(Z)V");
 
 	if (notifyConnect == 0) {
-		assert("porting::notifyServerConnect unable to find java show dialog method" == 0);
+		assert("porting::notifyServerConnect unable to find java method" == 0);
 	}
 
 	jboolean param = (jboolean)is_multiplayer;
@@ -316,7 +332,7 @@ void notifyExitGame()
 			"notifyExitGame", "()V");
 
 	if (notifyExit == 0) {
-		assert("porting::notifyExitGame unable to find java show dialog method" == 0);
+		assert("porting::notifyExitGame unable to find java method" == 0);
 	}
 
 	jnienv->CallVoidMethod(app_global->activity->clazz, notifyExit);
