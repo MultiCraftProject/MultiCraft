@@ -75,6 +75,18 @@ namespace porting {
 		return 1;
 #endif
 	}
+
+	void notifyServerConnect(bool is_multiplayer) {
+#ifdef ADS
+		ads_allow_video(false);
+#endif
+	}
+
+	void notifyExitGame() {
+#ifdef ADS
+		ads_allow_video(true);
+#endif
+	}
 }
 
 

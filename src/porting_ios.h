@@ -24,8 +24,8 @@ namespace porting {
 	int getPurchaseState();
 
 	void notifyAbortLoading() {}
-	void notifyServerConnect(bool is_multiplayer) {}
-	void notifyExitGame() {}
+	void notifyServerConnect(bool is_multiplayer);
+	void notifyExitGame();
 }
 
 #endif
