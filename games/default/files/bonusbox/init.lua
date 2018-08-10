@@ -3,26 +3,25 @@
 
 -- Sample registration
 local items_ore = {
-	{"default:diamond", 1, 4},
-	{"default:coal_lump", 1, 12},
-	{"default:quartz_crystal", 6, 18},
-	{"default:emerald", 1, 1},
-	{"default:steel_ingot", 2, 4},
+	{"default:diamond", 1, 2},
+	{"default:emerald", 1, 2},
+	{"default:gold_ingot", 2, 4},
+	{"default:steel_ingot", 2, 8},
 }
 
 local items_food = {
-	{"default:apple", 5, 15},
-	{"mobs:pork", 1, 6},
-	{"mobs:chicken_cooked", 1, 6},
+	{"default:apple", 2, 8},
+	{"mobs:pork", 1, 4},
+	{"mobs:meat", 1, 4},
+	{"mobs:chicken_cooked", 1, 4},
 }
 
 local items_material = {
-	{"default:wood", 5, 64},
-	{"default:stone", 10, 48},
-	{"default:tree", 1, 16},
-	{"default:cobble", 64, 64},
+	{"default:wood", 8, 64},
+	{"default:cobble", 8, 64},
+	{"default:obsidian", 2, 8},
+	{"default:tree", 4, 16},
 }
-	
 
 local item_spawn = function (pos, node)
 	local item1 = items_food[math.random(#items_food)]
