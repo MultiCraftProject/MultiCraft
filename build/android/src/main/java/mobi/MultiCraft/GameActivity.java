@@ -124,30 +124,32 @@ public class GameActivity extends NativeActivity {
     }
 
     public int getMemoryMax() {
-        //TODO return max device RAM as integer value, MB?
-        //return -1 on failure to detect
-        return -1;
-    }
+        ActivityManager actManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager.MemoryInfo memInfo = new ActivityManager.MemoryInfo();
+        if (actManager != null) {
+            actManager.getMemoryInfo(memInfo);
+            return (int) Math.floor(memInfo.totalMem / 1024 * 1024 * 1024 * 1.0);
+        } else {
+            return 1;
+        }
 
-    public int getPurchaseState() {
-        //TODO return purchased state
-        //return isAdsDisabled() ? 1 : 0;
-        return 1;
     }
 
     public void showPurchaseMenu() {
-        //TODO open payment dialog
+        
+    }
+
+    public int getPurchaseState() {
+        return 1;
+    }
+
+    public void notifyServerConnect(boolean isMultiplayer) {
     }
 
     public void notifyAbortLoading() {
 
     }
 
-    public void notifyServerConnect(boolean is_multiplayer) {
-
-    }
-
     public void notifyExitGame() {
-
     }
 }
