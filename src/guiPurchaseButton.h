@@ -34,7 +34,7 @@ public:
 		m_texture(NULL)
 	{
 		std::string texture = porting::path_share + DIR_DELIM + "textures" +
-			DIR_DELIM + "base" + DIR_DELIM + "multicraft_local_buy_btn.png";
+			DIR_DELIM + "base" + DIR_DELIM + "local_buy_btn.png";
 		m_texture = tsrc->getTexture(texture);
 	}
 
