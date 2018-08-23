@@ -618,9 +618,9 @@ minetest.register_node("default:reeds", {
 
 minetest.register_node("default:quartz_ore", {
     description = "Quartz Ore",
-    tiles = {"default_quartz_ore.png"},
+    tiles = {"default_hellstone.png^default_quartz_ore.png"},
     groups = {cracky=3, stone=1, building = 1},
-    drop = 'default:quartz_crystal',
+    drop = "default:quartz_crystal",
     sounds = default.node_sound_stone_defaults(),
 })
 
@@ -1514,23 +1514,6 @@ minetest.register_node("default:dry_grass", {
     end
 })
 
-minetest.register_node("default:glowstone", {
-    description = "Glowstone",
-    tiles = {"default_glowstone.png"},
-    groups = {cracky=3, building = 1},
-    drop = {
-    max_items = 1,
-    items = {
-            {items = {'default:glowdust 9'},rarity = 7},
-            {items = {'default:glowdust 6'},rarity = 5},
-            {items = {'default:glowdust 4'},rarity = 3},
-            {items = {'default:glowdust 3'},rarity = 2},
-            {items = {'default:glowdust 2'}},
-        }
-    },
-    light_source = 12,
-})
-
 minetest.register_node("default:sponge", {
     description = "Sponge",
     drawtype = "normal",
@@ -1680,4 +1663,41 @@ minetest.register_node("default:snowblock", {
 		dug = {name = "default_snow_footstep", gain = 0.75},
     }),
     drop = "default:snow 4",
+})
+
+
+--
+-- Hell nodes
+--
+
+minetest.register_node("default:hellstone", {
+    description = "Hellstone",
+    tiles = {"default_hellstone.png"},
+    groups = {cracky = 3, stone = 1, building = 1, decorative = 1},
+    sounds = default.node_sound_stone_defaults(),
+})
+
+minetest.register_node("default:glowstone", {
+    description = "Glowstone",
+    tiles = {"default_glowstone.png"},
+    paramtype = "light",
+    light_source = 12,
+    groups = {cracky = 3, building = 1},
+    drop = {
+        max_items = 1,
+        items = {
+            {items = {'default:glowdust 9'},rarity = 7},
+            {items = {'default:glowdust 6'},rarity = 5},
+            {items = {'default:glowdust 4'},rarity = 3},
+            {items = {'default:glowdust 3'},rarity = 2},
+            {items = {'default:glowdust 2'}},
+        }
+    },
+})
+
+minetest.register_node("default:hellstone_brick", {
+    description = "Hellstone Brick",
+    tiles = {"default_hellstone_brick.png"},
+    groups = {cracky = 3, stone = 1, building = 1, decorative = 1},
+    sounds = default.node_sound_stone_defaults(),
 })

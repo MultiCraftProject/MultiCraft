@@ -37,6 +37,7 @@ minetest.register_alias("mapgen_stair_cobble", "stairs:stair_cobble")
 minetest.register_alias("mapgen_mossycobble", "default:mossycobble")
 minetest.register_alias("mapgen_sandstonebrick", "default:sandstone")
 minetest.register_alias("mapgen_stair_sandstonebrick", "stairs:stair_sandstone")
+minetest.register_alias("mapgen_hellstone_brick", "default:hellstone_brick")
 
 
 --
@@ -356,6 +357,45 @@ function default.register_ores()
 	    clust_size     = 5,
 	    y_min          = -59,
 	    y_max          = -0,
+	})
+
+	-- Hell glowstone
+
+	minetest.register_ore({
+	    ore_type       = "scatter",
+	    ore            = "default:glowstone",
+	    wherein        = "default:hellstone",
+	    clust_scarcity = 7 * 7 * 7,
+	    clust_num_ores = 4,
+	    clust_size     = 2,
+	    y_min          = -31000,
+	    y_max          = -113,
+	})
+
+	-- Hell quartz ore
+
+	minetest.register_ore({
+	    ore_type       = "scatter",
+	    ore            = "default:quartz_ore",
+	    wherein        = "default:hellstone",
+	    clust_scarcity = 16 * 16 * 16,
+	    clust_num_ores = 8,
+	    clust_size     = 3,
+	    y_min          = -31000,
+	    y_max          = -113,
+	})
+
+	-- Hell lava sources
+
+	minetest.register_ore({
+	    ore_type       = "scatter",
+	    ore            = "default:lava_source",
+	    wherein        = "default:hellstone",
+	    clust_scarcity = 48 * 48 * 48,
+	    clust_num_ores = 1,
+	    clust_size     = 1,
+	    y_min          = -31000,
+	    y_max          = -113,
 	})
 end
 
@@ -869,16 +909,16 @@ function default.register_biomes()
 		humidity_point = 80,
 	})
 
-	-- Underground
+	-- Hell
 
 	minetest.register_biome({
-		name = "underground",
+		name = "hell",
 		--node_dust = "",
 		--node_top = "",
 		--depth_top = ,
 		--node_filler = "",
 		--depth_filler = ,
-		--node_stone = "",
+		node_stone = "default:hellstone",
 		--node_water_top = "",
 		--depth_water_top = ,
 		--node_water = "",

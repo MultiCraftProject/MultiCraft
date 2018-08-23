@@ -28,7 +28,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "content_sao.h"
 #include "nodedef.h"
 #include "voxelalgorithms.h"
-//#include "profiler.h" // For TimeTaker
+#include "profiler.h" // For TimeTaker
 #include "settings.h" // For g_settings
 #include "emerge.h"
 #include "dungeongen.h"
@@ -52,13 +52,26 @@ FlagDesc flagdesc_mapgen_v7p[] = {
 MapgenV7P::MapgenV7P(int mapgenid, MapgenV7PParams *params, EmergeManager *emerge)
 	: MapgenBasic(mapgenid, params, emerge)
 {
-	spflags = params->spflags;
+	this->spflags         = params->spflags;
+	this->hell_top        = params->hell_top;
+	this->hell_lava_level = params->hell_lava_level;
+	this->hell_threshold  = params->hell_threshold;
 
 	// Average of mgv6 small caves count
 	small_caves_count = 6 * csize.X * csize.Z * MAP_BLOCKSIZE / 50000;
 
-	// Highest level of bedrock
+	// Upper limit of bedrock
 	bedrock_level = water_level - 64;
+
+	// Hell tapering
+	s16 taper_margin = csize.Y + 32; // 32 is taper distance
+	hell_y_max = hell_top + taper_margin;
+	hell_y_min = hell_lava_level - taper_margin;
+	offset_amp = -4.0f / (32.0f * 32.0f);
+
+	// Mapgen-specific dungeon noise
+	// Dungeons per mapchunk = floor(noise)
+	np_helldun_density  = &params->np_helldun_density;
 
 	// 2D noise
 	noise_terrain_base    = new Noise(&params->np_terrain_base,    seed, csize.X, csize.Z);
@@ -77,8 +90,12 @@ MapgenV7P::MapgenV7P(int mapgenid, MapgenV7PParams *params, EmergeManager *emerg
 		noise_ridge        = new Noise(&params->np_ridge,        seed, csize.X, csize.Z);
 	}
 
+	// 3D noise, 1 down overgeneration
+	noise_hell = new Noise(&params->np_hell, seed, csize.X, csize.Y + 1, csize.Z);
+
 	// Resolve additional nodes
-	c_bedrock = ndef->getId("mapgen_bedrock");
+	c_bedrock         = ndef->getId("mapgen_bedrock");
+	c_hellstone_brick = ndef->getId("mapgen_hellstone_brick");
 }
 
 
@@ -99,54 +116,71 @@ MapgenV7P::~MapgenV7P()
 		delete noise_ridge_uwater;
 		delete noise_ridge;
 	}
+
+	delete noise_hell;
 }
 
 
 MapgenV7PParams::MapgenV7PParams()
 {
 	spflags            = MGV7P_MOUNTAINS | MGV7P_RIDGES;
+	hell_top           = -768;
+	hell_lava_level    = -1010;
+	hell_threshold     = 0.2;
 
-	np_terrain_base    = NoiseParams(4,    35,  v3f(600,  600,  600),  82341, 5, 0.6,  2.0);
-	np_terrain_alt     = NoiseParams(4,    25,  v3f(600,  600,  600),  5934,  5, 0.6,  2.0);
-	np_terrain_persist = NoiseParams(0.6,  0.1, v3f(2000, 2000, 2000), 539,   3, 0.6,  2.0);
-	np_height_select   = NoiseParams(-8,   16,  v3f(500,  500,  500),  4213,  6, 0.7,  2.0);
-	np_filler_depth    = NoiseParams(0,    1.2, v3f(150,  150,  150),  261,   3, 0.7,  2.0);
-	np_mount_height    = NoiseParams(128,  56,  v3f(1000, 1000, 1000), 72449, 3, 0.6,  2.0);
-	np_ridge_uwater    = NoiseParams(0,    1,   v3f(1000, 1000, 1000), 85039, 5, 0.6,  2.0);
-	np_mountain        = NoiseParams(-0.6, 1,   v3f(250,  250,  250),  5333,  5, 0.63, 2.0);
-	np_ridge           = NoiseParams(0,    1,   v3f(100,  100,  100),  6467,  4, 0.75, 2.0);
+	np_terrain_base     = NoiseParams(4,    35,  v3f(600,  600,  600),  82341, 5, 0.6,  2.0);
+	np_terrain_alt      = NoiseParams(4,    25,  v3f(600,  600,  600),  5934,  5, 0.6,  2.0);
+	np_terrain_persist  = NoiseParams(0.6,  0.1, v3f(2000, 2000, 2000), 539,   3, 0.6,  2.0);
+	np_height_select    = NoiseParams(-8,   16,  v3f(500,  500,  500),  4213,  6, 0.7,  2.0);
+	np_filler_depth     = NoiseParams(0,    1.2, v3f(150,  150,  150),  261,   3, 0.7,  2.0);
+	np_mount_height     = NoiseParams(128,  56,  v3f(1000, 1000, 1000), 72449, 3, 0.6,  2.0);
+	np_ridge_uwater     = NoiseParams(0,    1,   v3f(1000, 1000, 1000), 85039, 5, 0.6,  2.0);
+	np_mountain         = NoiseParams(-0.6, 1,   v3f(250,  250,  250),  5333,  5, 0.63, 2.0);
+	np_ridge            = NoiseParams(0,    1,   v3f(100,  100,  100),  6467,  4, 0.75, 2.0);
+	np_hell             = NoiseParams(0,    1,   v3f(192,  64,   192),  723,   4, 0.63, 2.0);
+	np_helldun_density  = NoiseParams(-1,   3.5, v3f(128,  128,  128),  11,    1, 0.0,  2.0);
 }
 
 
 void MapgenV7PParams::readParams(const Settings *settings)
 {
-	settings->getFlagStrNoEx("mgv7p_spflags",              spflags, flagdesc_mapgen_v7p);
+	settings->getFlagStrNoEx("mgv7p_spflags", spflags, flagdesc_mapgen_v7p);
+	settings->getS16NoEx("mgv7p_hell_top",                hell_top);
+	settings->getS16NoEx("mgv7p_hell_lava_level",         hell_lava_level);
+	settings->getFloatNoEx("mgv7p_hell_threshold",        hell_threshold);
 
-	settings->getNoiseParams("mgv7p_np_terrain_base",      np_terrain_base);
-	settings->getNoiseParams("mgv7p_np_terrain_alt",       np_terrain_alt);
-	settings->getNoiseParams("mgv7p_np_terrain_persist",   np_terrain_persist);
-	settings->getNoiseParams("mgv7p_np_height_select",     np_height_select);
-	settings->getNoiseParams("mgv7p_np_filler_depth",      np_filler_depth);
-	settings->getNoiseParams("mgv7p_np_mount_height",      np_mount_height);
-	settings->getNoiseParams("mgv7p_np_ridge_uwater",      np_ridge_uwater);
-	settings->getNoiseParams("mgv7p_np_mountain",          np_mountain);
-	settings->getNoiseParams("mgv7p_np_ridge",             np_ridge);
+	settings->getNoiseParams("mgv7p_np_terrain_base",     np_terrain_base);
+	settings->getNoiseParams("mgv7p_np_terrain_alt",      np_terrain_alt);
+	settings->getNoiseParams("mgv7p_np_terrain_persist",  np_terrain_persist);
+	settings->getNoiseParams("mgv7p_np_height_select",    np_height_select);
+	settings->getNoiseParams("mgv7p_np_filler_depth",     np_filler_depth);
+	settings->getNoiseParams("mgv7p_np_mount_height",     np_mount_height);
+	settings->getNoiseParams("mgv7p_np_ridge_uwater",     np_ridge_uwater);
+	settings->getNoiseParams("mgv7p_np_mountain",         np_mountain);
+	settings->getNoiseParams("mgv7p_np_ridge",            np_ridge);
+	settings->getNoiseParams("mgv7p_np_hell",             np_hell);
+	settings->getNoiseParams("mgv7p_np_helldun_density",  np_helldun_density);
 }
 
 
 void MapgenV7PParams::writeParams(Settings *settings) const
 {
-	settings->setFlagStr("mgv7p_spflags",           spflags, flagdesc_mapgen_v7p, U32_MAX);
+	settings->setFlagStr("mgv7p_spflags", spflags, flagdesc_mapgen_v7p, U32_MAX);
+	settings->setS16("mgv7p_hell_top",                    hell_top);
+	settings->setS16("mgv7p_hell_lava_level",             hell_lava_level);
+	settings->setFloat("mgv7p_hell_threshold",            hell_threshold);
 
-	settings->setNoiseParams("mgv7p_np_terrain_base",      np_terrain_base);
-	settings->setNoiseParams("mgv7p_np_terrain_alt",       np_terrain_alt);
-	settings->setNoiseParams("mgv7p_np_terrain_persist",   np_terrain_persist);
-	settings->setNoiseParams("mgv7p_np_height_select",     np_height_select);
-	settings->setNoiseParams("mgv7p_np_filler_depth",      np_filler_depth);
-	settings->setNoiseParams("mgv7p_np_mount_height",      np_mount_height);
-	settings->setNoiseParams("mgv7p_np_ridge_uwater",      np_ridge_uwater);
-	settings->setNoiseParams("mgv7p_np_mountain",          np_mountain);
-	settings->setNoiseParams("mgv7p_np_ridge",             np_ridge);
+	settings->setNoiseParams("mgv7p_np_terrain_base",     np_terrain_base);
+	settings->setNoiseParams("mgv7p_np_terrain_alt",      np_terrain_alt);
+	settings->setNoiseParams("mgv7p_np_terrain_persist",  np_terrain_persist);
+	settings->setNoiseParams("mgv7p_np_height_select",    np_height_select);
+	settings->setNoiseParams("mgv7p_np_filler_depth",     np_filler_depth);
+	settings->setNoiseParams("mgv7p_np_mount_height",     np_mount_height);
+	settings->setNoiseParams("mgv7p_np_ridge_uwater",     np_ridge_uwater);
+	settings->setNoiseParams("mgv7p_np_mountain",         np_mountain);
+	settings->setNoiseParams("mgv7p_np_ridge",            np_ridge);
+	settings->setNoiseParams("mgv7p_np_hell",             np_hell);
+	settings->setNoiseParams("mgv7p_np_helldun_density",  np_helldun_density);
 }
 
 
@@ -187,6 +221,8 @@ void MapgenV7P::makeChunk(BlockMakeData *data)
 		data->blockpos_requested.Y <= data->blockpos_max.Y &&
 		data->blockpos_requested.Z <= data->blockpos_max.Z);
 
+	TimeTaker t("makeChunk");
+
 	this->generating = true;
 	this->vm = data->vmanip;
 	this->ndef = data->nodedef;
@@ -200,52 +236,104 @@ void MapgenV7P::makeChunk(BlockMakeData *data)
 
 	blockseed = getBlockSeed2(full_node_min, seed);
 
-	if (node_max.Y <= bedrock_level) {
-		// Only generate bedrock
-		generateBedrock();
+	bool hell_chunk = node_max.Y <= hell_y_max and node_min.Y >= hell_y_min;
+
+	if (node_max.Y <= bedrock_level and !hell_chunk) {
+		// Generate bedrock only
+		generateSinglenode(c_bedrock);
 	} else {
-		// Generate base and mountain terrain
-		s16 stone_surface_max_y = generateTerrain();
+		// Generate base terrain or stone for hell
+		s16 stone_surface_max_y = -MAX_MAP_GENERATION_LIMIT;
+		if (hell_chunk) {
+			generateSinglenode(c_stone);
+			stone_surface_max_y = node_max.Y;
+		} else {
+			stone_surface_max_y = generateTerrain();
+		}
 
-		// Generate rivers
-		if (spflags & MGV7P_RIDGES)
-			generateRidgeTerrain();
+		if (!hell_chunk) {
+			// Generate rivers
+			if (spflags & MGV7P_RIDGES)
+				generateRidgeTerrain();
 
-		// Create heightmap
-		updateHeightmap(node_min, node_max);
+			// Create heightmap
+			updateHeightmap(node_min, node_max);
+		}
 
 		// Init biome generator, place biome-specific nodes, and build biomemap
 		biomegen->calcBiomeNoise(node_min);
 		MgStoneType stone_type = generateBiomes();
 
-		// Generate mgv6 caves but not deep into bedrock
-		if (flags & MG_CAVES)
-			generateCaves(stone_surface_max_y, water_level);
-
-		// Generate dungeons
-		if (flags & MG_DUNGEONS)
-			generateDungeons(stone_surface_max_y, stone_type);
-
-		// Generate the registered decorations
-		if (flags & MG_DECORATIONS)
-			m_emerge->decomgr->placeAllDecos(this, blockseed, node_min, node_max);
+		// Generate mgv6 type caves or hell caves
+		if (flags & MG_CAVES) {
+			if (hell_chunk)
+				generateHellCaves();
+			else
+				generateCaves(stone_surface_max_y, water_level);
+		}
 
 		// Generate the registered ores
 		m_emerge->oremgr->placeAllOres(this, blockseed, node_min, node_max);
 
-		// Sprinkle some dust on top after everything else was generated
-		dustTopNodes();
+		// Generate dungeons
+		if (flags & MG_DUNGEONS) {
+			if (hell_chunk && full_node_min.Y > hell_lava_level &&
+					full_node_max.Y < hell_top) {
+				DungeonParams dp;
+
+				dp.seed             = seed;
+				dp.c_water          = c_water_source;
+				dp.c_river_water    = c_river_water_source;
+				dp.only_in_ground   = false;
+				dp.corridor_len_min = 8;
+				dp.corridor_len_max = 32;
+				dp.rooms_min        = 8;
+				dp.rooms_max        = 32;
+				dp.y_min            = -MAX_MAP_GENERATION_LIMIT;
+				dp.y_max            = MAX_MAP_GENERATION_LIMIT;
+				dp.np_density       = *np_helldun_density;
+				dp.np_alt_wall      = nparams_dungeon_alt_wall;
+
+				dp.c_wall     = c_hellstone_brick;
+				dp.c_alt_wall = CONTENT_IGNORE;
+				dp.c_stair    = c_hellstone_brick;
+
+				dp.diagonal_dirs       = false;
+				dp.holesize            = v3s16(3, 3, 3);
+				dp.room_size_min       = v3s16(8, 4, 8);
+				dp.room_size_max       = v3s16(16, 8, 16);
+				dp.room_size_large_min = v3s16(8, 4, 8);
+				dp.room_size_large_max = v3s16(16, 8, 16);
+				dp.notifytype          = GENNOTIFY_DUNGEON;
+			
+				DungeonGen dgen(ndef, &gennotify, &dp);
+				dgen.generate(vm, blockseed, full_node_min, full_node_max);
+			} else if (!hell_chunk) {
+				generateDungeons(stone_surface_max_y, stone_type);
+			}
+		}
+
+		if (!hell_chunk) {
+			// Generate the registered decorations
+			if (flags & MG_DECORATIONS)
+				m_emerge->decomgr->placeAllDecos(this, blockseed, node_min, node_max);
+
+			// Sprinkle some dust on top after everything else was generated
+			dustTopNodes();
+		}
 
 		// Update liquids
 		updateLiquid(&data->transforming_liquid, full_node_min, full_node_max);
+
+		// Calculate lighting
+		if (flags & MG_LIGHT)
+			calcLighting(node_min - v3s16(0, 1, 0), node_max + v3s16(0, 1, 0),
+				full_node_min, full_node_max, true);
 	}
 
-	// Calculate lighting
-	if (flags & MG_LIGHT)
-		calcLighting(node_min - v3s16(0, 1, 0), node_max + v3s16(0, 1, 0),
-			full_node_min, full_node_max, true);
-
 	this->generating = false;
+
+	printf("makeChunk: %lums\n", t.stop());
 }
 
 
@@ -300,9 +388,9 @@ float MapgenV7P::mountainLevelFromMap(int idx_xz)
 }
 
 
-void MapgenV7P::generateBedrock()
+void MapgenV7P::generateSinglenode(content_t c_node)
 {
-	MapNode n_bedrock(c_bedrock);
+	MapNode n_node(c_node);
 
 	for (s16 z = node_min.Z; z <= node_max.Z; z++)
 	for (s16 y = node_min.Y - 1; y <= node_max.Y + 1; y++) {
@@ -310,7 +398,7 @@ void MapgenV7P::generateBedrock()
 
 		for (s16 x = node_min.X; x <= node_max.X; x++, vi++) {
 			if (vm->m_data[vi].getContent() == CONTENT_IGNORE)
-				vm->m_data[vi] = n_bedrock;
+				vm->m_data[vi] = n_node;
 		}
 	}
 }
@@ -427,5 +515,63 @@ void MapgenV7P::generateCaves(s16 max_stone_y, s16 large_cave_depth)
 		bool large_cave = (i >= small_caves_count);
 		cave.makeCave(vm, node_min, node_max, &ps, &ps2,
 			large_cave, max_stone_y, heightmap);
+	}
+}
+
+
+void MapgenV7P::generateHellCaves()
+{
+	MapNode n_lava(c_lava_source);
+	MapNode n_air(CONTENT_AIR);
+
+	// Calculate noise
+	noise_hell->perlinMap3D(node_min.X, node_min.Y - 1, node_min.Z);
+
+	// Cache taper values
+	float *taper = new float[csize.Y + 1];
+	u8 taper_index = 0;  // Index zero at column top
+
+	for (s16 y = node_max.Y; y >= node_min.Y - 1; y--, taper_index++) {
+		float offset = 0.0f;
+		if (y > hell_top)
+			offset = (y - hell_top) * (y - hell_top) * offset_amp;
+		else if (y < hell_lava_level)
+			offset = (hell_lava_level - y) * (hell_lava_level - y) * offset_amp;
+		taper[taper_index] = offset;
+	}
+
+	// Place nodes
+	v3s16 em = vm->m_area.getExtent();
+	u32 index2d = 0;
+
+	for (s16 z = node_min.Z; z <= node_max.Z; z++)
+	for (s16 x = node_min.X; x <= node_max.X; x++, index2d++) {
+		// Reset taper index to column top
+		taper_index = 0;
+		// Initial voxelmanip index at column top
+		u32 vi = vm->m_area.index(x, node_max.Y, z);
+		// Initial 3D noise index at column top
+		u32 index3d = (z - node_min.Z) * zstride_1d + csize.Y * ystride +
+			(x - node_min.X);
+		// Don't excavate the overgenerated stone at node_max.Y + 1,
+		// this creates a 'roof' over the caverns, preventing light in
+		// caverns at mapchunk borders when generating mapchunks upwards.
+		// This 'roof' is excavated when the mapchunk above is generated.
+		for (s16 y = node_max.Y; y >= node_min.Y - 1; y--,
+				index3d -= ystride,
+				vm->m_area.add_y(em, vi, -1),
+				taper_index++) {
+			float n_hell = noise_hell->result[index3d] + taper[taper_index];
+
+			if (n_hell > hell_threshold) {
+				content_t c = vm->m_data[vi].getContent();
+				if (ndef->get(c).is_ground_content) {
+					if (y <= hell_lava_level)
+						vm->m_data[vi] = n_lava;
+					else
+						vm->m_data[vi] = n_air;
+				}
+			}
+		}
 	}
 }

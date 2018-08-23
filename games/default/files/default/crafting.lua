@@ -435,6 +435,14 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+    output = 'default:hellstone_brick',
+    recipe = {
+        {'default:hellstone', 'default:hellstone'},
+        {'default:hellstone', 'default:hellstone'},
+    }
+})
+
+minetest.register_craft({
     type = "shapeless",
     output = "default:gunpowder",
     recipe = {

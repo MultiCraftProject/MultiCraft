@@ -35,6 +35,10 @@ extern FlagDesc flagdesc_mapgen_v7p[];
 struct MapgenV7PParams : public MapgenParams {
 	u32 spflags;
 
+	s16 hell_top;
+	s16 hell_lava_level;
+	float hell_threshold;
+
 	NoiseParams np_terrain_base;
 	NoiseParams np_terrain_alt;
 	NoiseParams np_terrain_persist;
@@ -44,6 +48,8 @@ struct MapgenV7PParams : public MapgenParams {
 	NoiseParams np_ridge_uwater;
 	NoiseParams np_mountain;
 	NoiseParams np_ridge;
+	NoiseParams np_hell;
+	NoiseParams np_helldun_density;
 
 	MapgenV7PParams();
 	~MapgenV7PParams() {}
@@ -67,12 +73,17 @@ public:
 	float mountainLevelAtPoint(s16 x, s16 z);
 	float mountainLevelFromMap(int idx_xz);
 
-	void generateBedrock();
+	void generateSinglenode(content_t c_node);
 	int generateTerrain();
 	void generateRidgeTerrain();
 	virtual void generateCaves(s16 max_stone_y, s16 large_cave_depth);
+	void generateHellCaves();
 
 private:
+	s16 hell_top;
+	s16 hell_lava_level;
+	float hell_threshold;
+
 	Noise *noise_terrain_base;
 	Noise *noise_terrain_alt;
 	Noise *noise_terrain_persist;
@@ -81,11 +92,18 @@ private:
 	Noise *noise_ridge_uwater;
 	Noise *noise_mountain;
 	Noise *noise_ridge;
+	Noise *noise_hell;
+
+	NoiseParams *np_helldun_density;
 
 	content_t c_bedrock;
+	content_t c_hellstone_brick;
 
 	u32 small_caves_count;
 	s16 bedrock_level;
+	s16 hell_y_max;
+	s16 hell_y_min;
+	float offset_amp;
 };
 
 #endif
