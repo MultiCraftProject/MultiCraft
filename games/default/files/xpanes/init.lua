@@ -80,8 +80,9 @@ function pane(node, desc, dropitem, recipeitem, color)
             tiles = {"xpanes_top_"..node..""..color..".png", "xpanes_top_"..node..""..color..".png", texture},
             paramtype = "light",
             use_texture_alpha = true,
-            groups = {snappy = 2, cracky=3, oddly_breakable_by_hand = 3, decorative = 1},
+            groups = {snappy = 2, crack = 3, oddly_breakable_by_hand = 3},
             drop = dropitem,
+            sounds = default.node_sound_glass_defaults(),
             node_box = {
                 type = "fixed",
                 fixed = take
@@ -102,8 +103,10 @@ function pane(node, desc, dropitem, recipeitem, color)
         wield_image = "xpanes_pane_"..node..""..color..".png",
         node_placement_prediction = "",
         on_construct = update_pane,
+        groups = {snappy = 2, crack = 3, oddly_breakable_by_hand = 3},
         drop = "",
-        groups = {decorative = 1}
+        sounds = default.node_sound_glass_defaults()
+
     })
 
     minetest.register_on_placenode(update_nearby)
