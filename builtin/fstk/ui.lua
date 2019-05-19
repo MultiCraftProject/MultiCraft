@@ -82,6 +82,13 @@ function ui.update()
 
 	-- handle errors
 	if gamedata ~= nil and gamedata.reconnect_requested then
+		if core.settings:get_bool("auto_connect") == true then
+			gamedata.reconnect_requested = false
+			gamedata.errormessage = nil
+			gamedata.do_reconnect = true
+			core.start()
+			return
+		end
 		formspec = wordwrap_quickhack(gamedata.errormessage or "")
 		formspec = "size[12,5]" ..
 				"label[0.5,0;" .. fgettext("The server has requested a reconnect:") ..

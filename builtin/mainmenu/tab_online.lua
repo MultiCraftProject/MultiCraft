@@ -340,6 +340,15 @@ local function main_button_handler(tabview, fields, name, tabdata)
 			gamedata.serverdescription = ""
 		end
 
+		local auto_connect = false
+		for _, server in pairs(serverlist) do
+			if server.server_id and server.address == gamedata.address then
+				auto_connect = true
+				break
+			end
+		end
+
+		core.settings:set_bool("auto_connect", auto_connect)
 		core.settings:set("address",     fields.te_address)
 		core.settings:set("remote_port", fields.te_port)
 
