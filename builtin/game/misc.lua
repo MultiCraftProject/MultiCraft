@@ -229,3 +229,54 @@ end
 function core.cancel_shutdown_requests()
 	core.request_shutdown("", false, -1)
 end
+
+local hud, timer = {}, {}
+local timeout = 2
+
+local function add_text(player)
+	local player_name = player:get_player_name()
+	hud[player_name] = player:hud_add({
+		hud_elem_type = "text",
+		position = {x = 0.5, y = 0.965},
+		offset = {x = 0, y = -75},
+		alignment = {x = 0, y = 0},
+		number = 0xFFFFFF,
+		text = "",
+	})
+end
+
+core.register_on_joinplayer(function(player)
+	core.after(0, add_text, player)
+end)
+
+core.register_globalstep(function(dtime)
+	local players = core.get_connected_players()
+	for i = 1, #players do
+		local player = players[i]
+		local player_name = player:get_player_name()
+
+		local wielded_item = player:get_wielded_item()
+		local wielded_item_name = wielded_item:get_name()
+
+		if timer[player_name] and timer[player_name] < timeout then
+			timer[player_name] = timer[player_name] + dtime
+			if timer[player_name] > timeout and hud[player_name] then
+				player:hud_change(hud[player_name], "text", "")
+			end
+		end
+
+		timer[player_name] = 0
+
+		if hud[player_name] then
+			local def = core.registered_items[wielded_item_name]
+			local meta = wielded_item:get_meta()
+			local meta_desc = meta:get_string("description")
+			meta_desc = meta_desc:gsub("\27", ""):gsub("%(c@#%w%w%w%w%w%w%)", "")
+
+			local description = meta_desc ~= "" and meta_desc or
+				(def and (def.description:match("(.-)\n") or def.description) or "")
+
+			player:hud_change(hud[player_name], "text", description)
+		end
+	end
+end)
