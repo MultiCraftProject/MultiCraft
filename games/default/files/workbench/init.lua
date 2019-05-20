@@ -277,7 +277,7 @@ minetest.register_node("workbench:workbench", {
 				for i, stack in ipairs(inv:get_list("craft")) do
 					minetest.item_drop(stack, nil, pos)
 					stack:clear()
-					inv:set_stack(name, i, stack)
+					inv:set_stack("craft", i, stack)
 				end
 			end
 		end
