@@ -489,8 +489,8 @@ stairs.register_all("steelblock", "default:steelblock",
 	"Steel",
 	stairs.metal)
 
-
 minetest.register_alias("stairs:steel", "stairs:steelblock")
+minetest.register_alias("stairs:stair_steel", "stairs:steelblock")
 
 stairs.register_all("goldblock", "default:goldblock",
 	{cracky = 1},
@@ -499,6 +499,7 @@ stairs.register_all("goldblock", "default:goldblock",
 	stairs.metal)
 	
 minetest.register_alias("stairs:gold", "stairs:goldblock")
+minetest.register_alias("stairs:stair_gold", "stairs:goldblock")
 minetest.register_alias("stairs:corner_gold", "stairs:goldblock")
 
 stairs.register_all("diamondblock", "default:diamondblock",
@@ -508,6 +509,7 @@ stairs.register_all("diamondblock", "default:diamondblock",
 	stairs.stone)
 	
 minetest.register_alias("stairs:diamond", "stairs:diamondblock")
+minetest.register_alias("stairs:stair_diamond", "stairs:diamondblock")
 
 -- Glass types
 
