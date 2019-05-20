@@ -1,11 +1,11 @@
-function round(num) 
-	return math.floor(num + 0.5) 
+function round(num)
+	return math.floor(num + 0.5)
 end
 
 local lasttime = "default"
 
 minetest.register_globalstep(function(dtime)
-	local now = round((minetest.env:get_timeofday() * 24) % 12)
+	local now = round((minetest.get_timeofday() * 24) % 12)
 	if now ~= lasttime then
 		lasttime = now
 		if now == 12 then now = 0 end
@@ -56,8 +56,8 @@ end
 minetest.register_craft({
 	output = 'watch:0',
 	recipe = {
-    {'', 'default:gold_ingot', ''},
-    {'default:gold_ingot', 'default:bluestone_dust', 'default:gold_ingot'},
-    {'', 'default:gold_ingot', ''}
-	}
+	{'', 'default:gold_ingot', ''},
+	{'default:gold_ingot', 'default:bluestone_dust', 'default:gold_ingot'},
+	{'', 'default:gold_ingot', ''}
+	},
 })

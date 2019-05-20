@@ -1,0 +1,18 @@
+return {
+	"default:charcoal_lump",
+	"default:glowstone_dust",
+	"default:clay_lump",
+	"default:steel_ingot",
+	"default:gold_ingot",
+	"default:coal_lump",
+	"default:diamond",
+	"farming:string",
+	"default:bone",
+	"default:clay_brick",
+	"default:emerald",
+	"default:quartz_crystal",
+	"default:sugar",
+	"default:sugarcane",
+	"default:stick",
+	"default:gunpowder",
+}

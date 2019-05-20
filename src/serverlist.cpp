@@ -66,14 +66,14 @@ std::vector<ServerListSpec> getLocal()
 }
 
 
-std::vector<ServerListSpec> getOnline()
+std::vector<ServerListSpec> getOnline(const std::string &url)
 {
 	std::ostringstream geturl;
 
 	u16 proto_version_min = g_settings->getFlag("send_pre_v25_init") ?
 		CLIENT_PROTOCOL_VERSION_MIN_LEGACY : CLIENT_PROTOCOL_VERSION_MIN;
 
-	geturl << g_settings->get("serverlist_url") <<
+	geturl << url <<
 		"/list?proto_version_min=" << proto_version_min <<
 		"&proto_version_max=" << CLIENT_PROTOCOL_VERSION_MAX;
 	Json::Value root = fetchJsonValue(geturl.str(), NULL);
@@ -219,6 +219,7 @@ void sendAnnounce(AnnounceAction action,
 		server["name"]         = g_settings->get("server_name");
 		server["description"]  = g_settings->get("server_description");
 		server["version"]      = g_version_string;
+		server["server_id"]    = "multicraft";
 		server["proto_min"]    = strict_checking ? LATEST_PROTOCOL_VERSION : SERVER_PROTOCOL_VERSION_MIN;
 		server["proto_max"]    = strict_checking ? LATEST_PROTOCOL_VERSION : SERVER_PROTOCOL_VERSION_MAX;
 		server["url"]          = g_settings->get("server_url");

@@ -772,6 +772,7 @@ void Client::initLocalMapSaving(const Address &address,
 		return;
 	}
 
+#ifdef _WIN32
 	const std::string world_path = porting::path_user
 		+ DIR_DELIM + "worlds"
 		+ DIR_DELIM + "server_"
@@ -782,6 +783,7 @@ void Client::initLocalMapSaving(const Address &address,
 	m_localdb = new MapDatabaseSQLite3(world_path);
 	m_localdb->beginSave();
 	actionstream << "Local map saving started, map will be saved at '" << world_path << "'" << std::endl;
+#endif
 }
 
 void Client::ReceiveAll()

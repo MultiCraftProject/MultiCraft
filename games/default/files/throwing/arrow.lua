@@ -1,7 +1,6 @@
 minetest.register_craftitem("throwing:arrow", {
     description = "Arrow",
     inventory_image = "throwing_arrow_inv.png",
-    groups = {combat = 1},
 })
 
 minetest.register_node("throwing:arrow_box", {
@@ -34,9 +33,8 @@ local THROWING_ARROW_ENTITY={
     physical = false,
     timer=0,
     visual = "wielditem",
-    visual_size = {x=0.4, y=0.4},
-    --textures = {"throwing:arrow_box"},
-    textures = {"throwing_arrow_back.png"},
+    visual_size = {x=0.3, y=0.3},
+    textures = {"throwing:arrow_box"},
     lastpos={},
     collisionbox = {0,0,0,0,0,0},
 }

@@ -1,5 +1,4 @@
 -- Bunny by ExeterDad
-
 mobs:register_mob("mobs_animal:bunny", {
 	stepheight = 0.6,
 	type = "animal",
@@ -22,8 +21,9 @@ mobs:register_mob("mobs_animal:bunny", {
 	walk_velocity = 1,
 	run_velocity = 2,
 	runaway = true,
+	runaway_from = {"mobs_animal:pumba", "player"},
 	jump = true,
-	jump_height = 6,
+	jump_height = 4,
 	drops = {
 		{name = "mobs:meat_raw", chance = 1, min = 1, max = 1},
 	},

@@ -35,6 +35,7 @@
 		4B35A9F11EEE014F00274961 /* l_storage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B35A9EF1EEE014F00274961 /* l_storage.cpp */; };
 		4B35A9F41EEE017000274961 /* scripting_client.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B35A9F21EEE017000274961 /* scripting_client.cpp */; };
 		4B35A9F71EEE018D00274961 /* scripting_server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B35A9F51EEE018D00274961 /* scripting_server.cpp */; };
+		844B495F228606B200EB60EF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 844B495D228606B200EB60EF /* Main.storyboard */; };
 		849C4F86209656D3005EB041 /* ru.lproj in Resources */ = {isa = PBXBuildFile; fileRef = 849C4F85209656D2005EB041 /* ru.lproj */; };
 		EB4367AE23CAD13A43ADF4B1 /* libPods-MultiCraft.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8758CE009FCB7E91F4C84C28 /* libPods-MultiCraft.a */; };
 		F810D7052080E48100D109B8 /* en.lproj in Resources */ = {isa = PBXBuildFile; fileRef = F810D7042080E48000D109B8 /* en.lproj */; };
@@ -44,7 +45,6 @@
 		F856B5C31F55F7EE00FE9494 /* bg.png in Resources */ = {isa = PBXBuildFile; fileRef = F856B5C21F55F7EE00FE9494 /* bg.png */; };
 		F85722891DDC74B700308383 /* libluajit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F85722881DDC74B700308383 /* libluajit.a */; };
 		F87DC8BA210887C700393B64 /* mapgen_v7p.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F87DC8B9210887C700393B64 /* mapgen_v7p.cpp */; };
-		F8E6C4E71DCA3B7900F64426 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8E6C4E51DCA3B7900F64426 /* Main.storyboard */; };
 		F8E6C4E91DCA3B7900F64426 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8E6C4E81DCA3B7900F64426 /* Assets.xcassets */; };
 		F8E6C4EC1DCA3B7900F64426 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8E6C4EA1DCA3B7900F64426 /* LaunchScreen.storyboard */; };
 		F8E6C4F51DCA3EA400F64426 /* ioswrap.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E6C4F41DCA3EA400F64426 /* ioswrap.m */; };
@@ -290,6 +290,7 @@
 		4B35A9F31EEE017000274961 /* scripting_client.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scripting_client.h; path = ../../../../src/script/scripting_client.h; sourceTree = "<group>"; };
 		4B35A9F51EEE018D00274961 /* scripting_server.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = scripting_server.cpp; path = ../../../../src/script/scripting_server.cpp; sourceTree = "<group>"; };
 		4B35A9F61EEE018D00274961 /* scripting_server.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scripting_server.h; path = ../../../../src/script/scripting_server.h; sourceTree = "<group>"; };
+		844B495E228606B200EB60EF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		849C4F85209656D2005EB041 /* ru.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ru.lproj; sourceTree = "<group>"; };
 		8758CE009FCB7E91F4C84C28 /* libPods-MultiCraft.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MultiCraft.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F810D7042080E48000D109B8 /* en.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = en.lproj; sourceTree = "<group>"; };
@@ -302,7 +303,6 @@
 		F87DC8B8210887C600393B64 /* mapgen_v7p.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mapgen_v7p.h; path = ../../../../src/mapgen_v7p.h; sourceTree = "<group>"; };
 		F87DC8B9210887C700393B64 /* mapgen_v7p.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mapgen_v7p.cpp; path = ../../../../src/mapgen_v7p.cpp; sourceTree = "<group>"; };
 		F8E6C4D91DCA3B7900F64426 /* MultiCraft.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MultiCraft.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F8E6C4E61DCA3B7900F64426 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F8E6C4E81DCA3B7900F64426 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F8E6C4EB1DCA3B7900F64426 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F8E6C4ED1DCA3B7900F64426 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -788,8 +788,8 @@
 			children = (
 				849C4F85209656D2005EB041 /* ru.lproj */,
 				F810D7042080E48000D109B8 /* en.lproj */,
-				F8E6C4E51DCA3B7900F64426 /* Main.storyboard */,
 				F8E6C4E81DCA3B7900F64426 /* Assets.xcassets */,
+				844B495D228606B200EB60EF /* Main.storyboard */,
 				F8E6C4EA1DCA3B7900F64426 /* LaunchScreen.storyboard */,
 				F8E6C4ED1DCA3B7900F64426 /* Info.plist */,
 				F8E6C4DC1DCA3B7900F64426 /* Supporting Files */,
@@ -1391,6 +1391,11 @@
 					F8E6C4D81DCA3B7900F64426 = {
 						CreatedOnToolsVersion = 8.0;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -1420,9 +1425,9 @@
 				F810D7052080E48100D109B8 /* en.lproj in Resources */,
 				F8E6C4EC1DCA3B7900F64426 /* LaunchScreen.storyboard in Resources */,
 				F8E6C4E91DCA3B7900F64426 /* Assets.xcassets in Resources */,
+				844B495F228606B200EB60EF /* Main.storyboard in Resources */,
 				F8E6C7E11DCA4EB300F64426 /* assets.zip in Resources */,
 				849C4F86209656D3005EB041 /* ru.lproj in Resources */,
-				F8E6C4E71DCA3B7900F64426 /* Main.storyboard in Resources */,
 				F8E6C7E31DCA511700F64426 /* worlds.zip in Resources */,
 				F856B5C31F55F7EE00FE9494 /* bg.png in Resources */,
 			);
@@ -1733,11 +1738,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		F8E6C4E51DCA3B7900F64426 /* Main.storyboard */ = {
+		844B495D228606B200EB60EF /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F8E6C4E61DCA3B7900F64426 /* Base */,
-				84F65DD0226E3C9C0028D198 /* ru */,
+				844B495E228606B200EB60EF /* Base */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -1746,7 +1750,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				F8E6C4EB1DCA3B7900F64426 /* Base */,
-				84F65DD1226E3C9D0028D198 /* ru */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -1860,6 +1863,8 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = R3RLJ9TW52;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1907,18 +1912,12 @@
 					"\"${PODS_ROOT}/Headers/Public/SDVersion\"",
 					"-isystem",
 					"\"${PODS_ROOT}/Headers/Public/SSZipArchive\"",
-					"-flto",
+					"-flto=thin",
 					"-fvisibility=hidden",
 					"-fdata-sections",
 					"-ffunction-sections",
 				);
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(OTHER_CFLAGS)",
-					"-flto",
-					"-fvisibility=hidden",
-					"-fdata-sections",
-					"-ffunction-sections",
-				);
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-L${SRCROOT}/../deps/irrlicht",
@@ -1946,6 +1945,8 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = R3RLJ9TW52;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1994,18 +1995,12 @@
 					"\"${PODS_ROOT}/Headers/Public/SDVersion\"",
 					"-isystem",
 					"\"${PODS_ROOT}/Headers/Public/SSZipArchive\"",
-					"-flto",
+					"-flto=thin",
 					"-fvisibility=hidden",
 					"-fdata-sections",
 					"-ffunction-sections",
 				);
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(OTHER_CFLAGS)",
-					"-flto",
-					"-fvisibility=hidden",
-					"-fdata-sections",
-					"-ffunction-sections",
-				);
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-L${SRCROOT}/../deps/irrlicht",

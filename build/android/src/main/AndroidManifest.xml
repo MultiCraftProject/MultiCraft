@@ -1,22 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="mobi.MultiCraft"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.multicraft.game"
     android:installLocation="auto"
     android:versionName="@string/ver">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:node="replace" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
         android:fullBackupContent="@xml/my_backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name">
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:resizeableActivity="false"
+        tools:ignore="GoogleAppIndexingWarning">
+
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.1" />
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.multicraft.game.MainActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme">
@@ -26,7 +47,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".GameActivity"
+            android:name="com.multicraft.game.GameActivity"
             android:configChanges="orientation|keyboard|keyboardHidden|navigation|screenSize|smallestScreenSize"
             android:hardwareAccelerated="true"
             android:launchMode="singleTask"
@@ -41,12 +62,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".InputDialogActivity"
+            android:name="com.multicraft.game.InputDialogActivity"
             android:theme="@style/Theme.Transparent"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <service
-            android:name=".UnzipService"
+            android:name="com.multicraft.game.UnzipService"
             android:enabled="true"
             android:exported="false" />
     </application>

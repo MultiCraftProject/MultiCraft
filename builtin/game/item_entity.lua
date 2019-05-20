@@ -211,15 +211,33 @@ core.register_entity(":__builtin:item", {
 				self.object:set_properties({physical = true})
 			end
 		end
-
-		if nn == "default:lava_flowing" or nn == "default:lava_source" then
+		
+		local node = minetest.get_node_or_nil(self.object:get_pos())
+		if not node then
+			return
+		end
+		if minetest.get_item_group(node.name, "lava") > 0 then
 			minetest.sound_play("default_cool_lava", {
-				pos=self.object:getpos(),
-				max_hear_distance = 6,
-				gain = 0.5
+				pos = self.object:get_pos(),
+				max_hear_distance = 8,
 			})
 			self.object:remove()
-			return
+			minetest.add_particlespawner({
+				amount = 3,
+				time = 0.1,
+				minpos = {x = p.x - 0.1, y = p.y + 0.1, z = p.z - 0.1 },
+				maxpos = {x = p.x + 0.1, y = p.y + 0.2, z = p.z + 0.1 },
+				minvel = {x = 0, y = 2.5, z = 0},
+				maxvel = {x = 0, y = 2.5, z = 0},
+				minacc = {x = -0.15, y = -0.02, z = -0.15},
+				maxacc = {x = 0.15, y = -0.01, z = 0.15},
+				minexptime = 4,
+				maxexptime = 6,
+				minsize = 2,
+				maxsize = 4,
+				texture = "item_smoke.png"
+			})
+		return
 		end
 	end,
 

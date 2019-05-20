@@ -30,7 +30,7 @@ typedef Json::Value ServerListSpec;
 namespace ServerList
 {
 std::vector<ServerListSpec> getLocal();
-std::vector<ServerListSpec> getOnline();
+std::vector<ServerListSpec> getOnline(const std::string &url);
 
 bool deleteEntry(const ServerListSpec &server);
 bool insert(const ServerListSpec &server);

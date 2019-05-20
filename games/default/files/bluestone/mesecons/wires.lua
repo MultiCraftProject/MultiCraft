@@ -34,10 +34,10 @@ for zmy=0, 1 do
             tostring(xpy)..tostring(zpy)..tostring(xmy)..tostring(zmy)
 
     if nodeid == "00000000" then
-        groups = {dig_immediate = 3, mesecon_conductor_craftable = 1, attach_node = 1, mese = 1}
+		groups = {dig_immediate = 3, mesecon_conductor_craftable=1}
         wiredesc = "Mesecon"
     else
-        groups = {dig_immediate = 3, not_in_creative_inventory = 1, attach_node = 1}
+		groups = {dig_immediate = 3, not_in_creative_inventory = 1}
         wiredesc = "Mesecons Wire (ID: "..nodeid..")"
     end
 
@@ -99,8 +99,6 @@ for zmy=0, 1 do
         description = "Bluestone Dust",
         drawtype = "nodebox",
         tiles = tiles_off,
---      inventory_image = "wires_inv.png",
---      wield_image = "wires_inv.png",
         inventory_image = "default_bluestone_dust.png",
         wield_image = "default_bluestone_dust.png",
         paramtype = "light",
@@ -120,15 +118,13 @@ for zmy=0, 1 do
         mesecons = {conductor={
             state = mesecon.state.off,
             onstate = "mesecons:wire_"..nodeid.."_on"
-        }},
+        }}
     })
 
     minetest.register_node("mesecons:wire_"..nodeid.."_on", {
         description = "Bluestone Dust",
         drawtype = "nodebox",
         tiles = tiles_on,
---      inventory_image = "wires_inv.png",
---      wield_image = "wires_inv.png",
         inventory_image = "default_bluestone_dust.png",
         wield_image = "default_bluestone_dust.png",
         paramtype = "light",
@@ -148,7 +144,7 @@ for zmy=0, 1 do
         mesecons = {conductor={
             state = mesecon.state.on,
             offstate = "mesecons:wire_"..nodeid.."_off"
-        }},
+        }}
     })
 end
 end

@@ -20,9 +20,9 @@
 local multicraft_developers = {
 	"Maksim Gamarnik (MoNTE48) <MoNTE48@mail.ua>",
 	"Bektur Mambetov (ubulem) <berkut87@gmail.com>",
-	"Alexander  Zavrin (Ransom.00)",
+	"Alexander Zavrin (Ransom.00)",
 	"sfan5 <sfan5@live.de>",
-	"stujones11 Stuart Jones <stujones111@gmail.com>",
+	"Stuart Jones (stujones11) <stujones111@gmail.com>",
 	"paramat",
 	"And other people who helped make the world better!",
 }
@@ -96,11 +96,10 @@ return {
 	caption = fgettext("Credits"),
 	cbf_formspec = function(tabview, name, tabdata)
 	local version = core.get_version()
---		return "label[0.1,0;MultiCraft Open Source Project, ver. " .. version.string .. "]" ..
-		return "label[0.1,0;MultiCraft Open Source Project]" ..
-			"label[0.1,0.3;]" ..
-			"label[0.1,0.5;https://github.com/MultiCraftProject]" ..
-			"label[0.1,1.0;LGPLv3.0+ and CC-BY-SA 3.0]" ..
+		return "label[0.1,0;MultiCraft Open Source Project, ver. " .. version.string .. "]" ..
+			"label[0.1,0.25;Copyright (c) 2014-2019 MultiCraft Developement Team]" ..
+			"label[0.1,0.5;Home page: https://github.com/MultiCraftProject/MultiCraft]" ..
+			"label[0.1,0.75;Licence: LGPLv3.0+ and CC-BY-SA 3.0]" ..
 			"tablecolumns[color;text]" ..
 			"tableoptions[background=#999999;highlight=#00000000;border=true]" ..
 			"table[0,1.6;11.8,3.8;list_credits;" ..

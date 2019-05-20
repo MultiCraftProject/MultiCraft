@@ -43,7 +43,7 @@ function signs.generate_sign_texture(string)
 		row = row + 1
 	end
 	return texture
-end		
+end
 
 minetest.register_entity("signs:sign_text", {
 	initial_properties = {
@@ -75,14 +75,15 @@ local function check_text(pos, wall)
 	if text and text ~= "" then
 		local found = false
 		for _, obj in pairs(minetest.get_objects_inside_radius(pos, 0.5)) do
-                        local ent = obj:get_luaentity()
-                        if ent and ent.name == "signs:sign_text" then
-                                found = true
-                                break
-                        end
-                end
+						local ent = obj:get_luaentity()
+						if ent and ent.name == "signs:sign_text" then
+								found = true
+								break
+						end
+				end
 		if not found then
 			local p2 = minetest.get_node(pos).param2
+			if not p2 or p2 > 3 or p2 < 0 then return end
 			if wall then
 				local obj = minetest.add_entity(vector.add(pos,
 					signs.wall_sign_positions[p2][1]), "signs:sign_text")
@@ -103,21 +104,21 @@ local function check_text(pos, wall)
 end
 
 minetest.register_lbm({
-        label = "Check for sign text",
-        name = "signs:sign_text",
-        nodenames = {"signs:sign"},
-        run_at_every_load = true,
-        action = function(pos, node)
-                check_text(pos, false)
-        end,
+		label = "Check for sign text",
+		name = "signs:sign_text",
+		nodenames = {"signs:sign"},
+		run_at_every_load = true,
+		action = function(pos, node)
+				check_text(pos, false)
+		end,
 })
 
 minetest.register_lbm({
-        label = "Check for sign text (Wall)",
-        name = "signs:wall_sign_text",
-        nodenames = {"signs:wall_sign"},
-        run_at_every_load = true,
-        action = function(pos, node)
+		label = "Check for sign text (Wall)",
+		name = "signs:wall_sign_text",
+		nodenames = {"signs:wall_sign"},
+		run_at_every_load = true,
+		action = function(pos, node)
 		check_text(pos, true)
 	end,
 })
@@ -191,7 +192,7 @@ minetest.register_node("signs:sign", {
 			end
 		end
 		if not found then
-			local obj = minetest.add_entity(vector.add(pos, 
+			local obj = minetest.add_entity(vector.add(pos,
 				signs.sign_positions[p2][1]), "signs:sign_text")
 			obj:set_properties({
 				textures = {signs.generate_sign_texture(fields.text), "blank.png"}
@@ -212,7 +213,7 @@ minetest.register_node("signs:wall_sign", {
 	paramtype2 = "wallmounted",
 	node_box = {
 		type = "wallmounted",
-		wall_top    = {-0.4375, 0.4375, -0.3125, 0.4375, 0.5, 0.3125},
+		wall_top	= {-0.4375, 0.4375, -0.3125, 0.4375, 0.5, 0.3125},
 		wall_bottom = {-0.4375, -0.5, -0.3125, 0.4375, -0.4375, 0.3125},
 		wall_side   = {-0.5, -0.3125, -0.4375, -0.4375, 0.3125, 0.4375},
 	},
@@ -231,8 +232,8 @@ minetest.register_node("signs:wall_sign", {
 		end
 	end,
 	on_punch = function(pos)
-                check_text(pos, true)
-        end,
+				check_text(pos, true)
+		end,
 	on_receive_fields = function(pos, formname, fields, sender)
 		if not fields.text then
 			return
@@ -254,7 +255,7 @@ minetest.register_node("signs:wall_sign", {
 			end
 		end
 		if not found then
-			local obj = minetest.add_entity(vector.add(pos, 
+			local obj = minetest.add_entity(vector.add(pos,
 				signs.wall_sign_positions[p2][1]), "signs:sign_text")
 			obj:set_properties({
 				textures = {signs.generate_sign_texture(fields.text), "blank.png"}
@@ -269,4 +270,3 @@ minetest.register_node("signs:wall_sign", {
 })
 
 dofile(minetest.get_modpath("signs") .. "/legacy.lua")
-

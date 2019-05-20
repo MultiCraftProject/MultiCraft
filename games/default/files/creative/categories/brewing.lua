@@ -1,0 +1,17 @@
+return {
+	"potionspack:antigravity",
+	"potionspack:speed",
+	"potionspack:speedii",
+	"potionspack:whatwillthisdo",
+	"potionspack:harmingii",
+	"potionspack:regenii",
+	"potionspack:regen",
+	"potionspack:instanthealthii",
+	"potionspack:instanthealth",
+	"potionspack:confusion",
+	"potionspack:inversion",
+	"potionspack:harming",
+	"vessels:glass_bottle",
+	"potions:glass_bottle",
+	"potionspack:antigravityii",
+}

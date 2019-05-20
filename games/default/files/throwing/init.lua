@@ -1,15 +1,15 @@
-
-
-dofile(minetest.get_modpath("throwing").."/arrow.lua")
-
 arrows = {
     {"throwing:arrow", "throwing:arrow_entity"},
 }
 
+local creative = minetest.settings:get_bool("creative_mode")
+
 local throwing_shoot_arrow = function(itemstack, player)
     for _,arrow in ipairs(arrows) do
         if player:get_inventory():get_stack("main", player:get_wield_index()+1):get_name() == arrow[1] then
+			if not creative then
                 player:get_inventory():remove_item("main", arrow[1])
+			end
             local playerpos = player:get_pos()
             local obj = minetest.add_entity({x=playerpos.x,y=playerpos.y+1.5,z=playerpos.z}, arrow[2])
             local dir = player:get_look_dir()
@@ -27,11 +27,11 @@ local throwing_shoot_arrow = function(itemstack, player)
     return false
 end
 
+local wear
 minetest.register_tool("throwing:bow", {
     description = "Bow",
     inventory_image = "throwing_bow.png",
     stack_max = 1,
-    groups = {combat = 1},
     on_place = function(itemstack, placer, pointed_thing)
         wear = itemstack:get_wear()
         itemstack:replace("throwing:bow_0")
@@ -42,7 +42,7 @@ minetest.register_tool("throwing:bow", {
         wear = itemstack:get_wear()
         itemstack:add_wear(wear)
         if throwing_shoot_arrow(itemstack, user, pointed_thing) then
-            if not minetest.setting_getbool("creative_mode") then
+            if not creative then
                 itemstack:add_wear(65535/385)
             end
         end
@@ -65,7 +65,7 @@ minetest.register_tool("throwing:bow_0", {
         wear = itemstack:get_wear()
         itemstack:add_wear(wear)
         if throwing_shoot_arrow(itemstack, user, pointed_thing) then
-            if not minetest.setting_getbool("creative_mode") then
+            if not creative then
                 itemstack:add_wear(65535/385)
             end
         end
@@ -88,7 +88,7 @@ minetest.register_tool("throwing:bow_1", {
         wear = itemstack:get_wear()
         itemstack:add_wear(wear)
         if throwing_shoot_arrow(itemstack, user, pointed_thing) then
-            if not minetest.setting_getbool("creative_mode") then
+            if not creative then
                 itemstack:add_wear(65535/385)
             end
         end
@@ -106,7 +106,7 @@ minetest.register_tool("throwing:bow_2", {
         itemstack:replace("throwing:bow")
         itemstack:add_wear(wear)
         if throwing_shoot_arrow(itemstack, user, pointed_thing) then
-            if not minetest.setting_getbool("creative_mode") then
+            if not creative then
                 itemstack:add_wear(65535/385)
             end
         end
@@ -123,3 +123,4 @@ minetest.register_craft({
     }
 })
 
+dofile(minetest.get_modpath("throwing").."/arrow.lua")

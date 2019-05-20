@@ -266,12 +266,13 @@ void GUIFormSpecMenu::parseSize(parserData* data, const std::string &element)
 		data->invsize.Y = MYMAX(0, stof(parts[1]));
 
 		lockSize(false);
+#if !defined(__ANDROID__) && !defined(__IOS__)
 		if (parts.size() == 3) {
 			if (parts[2] == "true") {
 				lockSize(true,v2u32(800,600));
 			}
 		}
-
+#endif
 		data->explicit_size = true;
 		return;
 	}
@@ -2120,8 +2121,19 @@ void GUIFormSpecMenu::regenerateGui(v2u32 screensize)
 			// the image size can't be less than 0.3 inch
 			// multiplied by gui_scaling, even if this means
 			// the form doesn't fit the screen.
-			double prefer_imgsize = mydata.screensize.Y / 15 *
-							gui_scaling;
+#if defined(__ANDROID__) || defined(__IOS__)
+			// For mobile devices these magic numbers are
+			// different and forms should always use the
+			// maximum screen space available.
+			double prefer_imgsize = mydata.screensize.Y / 10 * gui_scaling;
+			double fitx_imgsize = mydata.screensize.X /
+				((12.0 / 8.0) * (0.5 + mydata.invsize.X));
+			double fity_imgsize = mydata.screensize.Y /
+				((15.0 / 11.0) * (0.85 + mydata.invsize.Y));
+			use_imgsize = MYMIN(prefer_imgsize,
+				MYMIN(fitx_imgsize, fity_imgsize));
+#else
+			double prefer_imgsize = mydata.screensize.Y / 15 * gui_scaling;
 			double fitx_imgsize = mydata.screensize.X /
 				((5.0/4.0) * (0.5 + mydata.invsize.X));
 			double fity_imgsize = mydata.screensize.Y /
@@ -2130,6 +2142,7 @@ void GUIFormSpecMenu::regenerateGui(v2u32 screensize)
 			double min_imgsize = 0.3 * screen_dpi * gui_scaling;
 			use_imgsize = MYMAX(min_imgsize, MYMIN(prefer_imgsize,
 				MYMIN(fitx_imgsize, fity_imgsize)));
+#endif
 		}
 
 		// Everything else is scaled in proportion to the

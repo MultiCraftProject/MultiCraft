@@ -2,6 +2,9 @@ project 'MultiCraft/MultiCraft.xcodeproj'
 platform :ios, '9.0'
 
 target 'MultiCraft' do
+	source 'https://github.com/CocoaPods/Specs.git'
+	source 'https://github.com/appodeal/CocoaPods.git'
+
 	pod 'SSZipArchive'
 	pod 'SDVersion', :git => 'https://github.com/MoNTE48/SDVersion'
 	pod 'LuaJITPod', :git => 'https://github.com/MoNTE48/LuaJITPod'

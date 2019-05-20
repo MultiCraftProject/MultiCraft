@@ -1,6 +1,4 @@
-
 -- Spider by AspireMint (fishyWET (CC-BY-SA 3.0 license for texture)
-
 mobs:register_mob("mobs_monster:spider", {
 	docile_by_day = true,
 	group_attack = true,
@@ -29,8 +27,9 @@ mobs:register_mob("mobs_monster:spider", {
 	view_range = 15,
 	floats = 0,
 	drops = {
-		{name = "farming:string",
-		chance = 1, min = 1, max = 2},	},
+		{name = "farming:string", chance = 1, min = 1, max = 1},
+		{name = "farming:string", chance = 2, min = 1, max = 1}
+	},
 	water_damage = 5,
 	lava_damage = 5,
 	light_damage = 0,
@@ -69,7 +68,7 @@ mobs:spawn({
 	max_height = 31000,
 })
 
-mobs:register_egg("mobs_monster:spider", "Spider", "mobs_cobweb.png", 1)
+mobs:register_egg("mobs_monster:spider", "Spider", "mobs_chicken_egg.png^mobs_cobweb.png", 1)
 
 mobs:alias_mob("mobs:spider", "mobs_monster:spider") -- compatibility
 
@@ -104,8 +103,8 @@ mobs:register_mob("mobs_monster:small_spider", {
 	view_range = 10,
 	floats = 0,
 	drops = {
-		{name = "farming:string",
-		chance = 1, min = 1, max = 1},	},
+		{name = "farming:string", chance = 1, min = 1, max = 1}
+	},
 	water_damage = 5,
 	lava_damage = 5,
 	light_damage = 0,

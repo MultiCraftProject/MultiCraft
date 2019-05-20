@@ -8,7 +8,7 @@
 cd irrlicht-src/
 
 if [ ! -f .patched ]; then
-	for p in touchcount unscaled dblfreefix viewcontroller headerpath roundingerror hideindicator; do
+	for p in touchcount unscaled dblfreefix viewcontroller proj roundingerror hideindicator; do
 		patch -p0 <../../patches/irrlicht-$p.patch
 	done
 	touch .patched

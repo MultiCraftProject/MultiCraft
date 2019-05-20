@@ -463,7 +463,12 @@ int ModApiMainMenu::l_get_favorites(lua_State *L)
 	std::vector<ServerListSpec> servers;
 
 	if(listtype == "online") {
-		servers = ServerList::getOnline();
+		servers = ServerList::getOnline(g_settings->get("serverlist_url"));
+		std::string aux_list = g_settings->get("serverlist_url_2");
+		if (!aux_list.empty()) {
+			std::vector<ServerListSpec> aux = ServerList::getOnline(aux_list);
+			servers.insert(servers.end(), aux.begin(), aux.end());
+		}
 	} else {
 		servers = ServerList::getLocal();
 	}
@@ -474,6 +479,13 @@ int ModApiMainMenu::l_get_favorites(lua_State *L)
 
 	for (unsigned int i = 0; i < servers.size(); i++)
 	{
+		// only list compatible servers
+		if (listtype == "online" && (
+				!servers[i]["proto_min"].asString().size() ||
+				!servers[i]["proto_max"].asString().size() ||
+				servers[i]["proto_min"].asInt() > CLIENT_PROTOCOL_VERSION_MAX ||
+				servers[i]["proto_max"].asInt() < CLIENT_PROTOCOL_VERSION_MIN))
+			continue;
 
 		lua_pushnumber(L,index);
 
@@ -508,6 +520,13 @@ int ModApiMainMenu::l_get_favorites(lua_State *L)
 		if (servers[i]["version"].asString().size()) {
 			lua_pushstring(L,"version");
 			std::string topush = servers[i]["version"].asString();
+			lua_pushstring(L,topush.c_str());
+			lua_settable(L, top_lvl2);
+		}
+
+		if (servers[i]["server_id"].asString().size()) {
+			lua_pushstring(L,"server_id");
+			std::string topush = servers[i]["server_id"].asString();
 			lua_pushstring(L,topush.c_str());
 			lua_settable(L, top_lvl2);
 		}
@@ -606,7 +625,12 @@ int ModApiMainMenu::l_delete_favorite(lua_State *L)
 
 
 	if(listtype == "online") {
-		servers = ServerList::getOnline();
+		servers = ServerList::getOnline(g_settings->get("serverlist_url"));
+		std::string aux_list = g_settings->get("serverlist_url_2");
+		if (!aux_list.empty()) {
+			std::vector<ServerListSpec> aux = ServerList::getOnline(aux_list);
+			servers.insert(servers.end(), aux.begin(), aux.end());
+		}
 	} else {
 		servers = ServerList::getLocal();
 	}

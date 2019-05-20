@@ -82,11 +82,18 @@ function ui.update()
 
 	-- handle errors
 	if gamedata ~= nil and gamedata.reconnect_requested then
+		if core.settings:get_bool("auto_connect") == true then
+			gamedata.reconnect_requested = false
+			gamedata.errormessage = nil
+			gamedata.do_reconnect = true
+			core.start()
+			return
+		end
 		formspec = wordwrap_quickhack(gamedata.errormessage or "")
 		formspec = "size[12,5]" ..
 				"label[0.5,0;" .. fgettext("The server has requested a reconnect:") ..
 				"]textlist[0.2,0.8;11.5,3.5;;" .. formspec ..
-				"]button[6,4.6;3,0.5;btn_reconnect_no;" .. fgettext("Main menu") .. "]" ..
+				"]button[6,4.6;3,0.5;btn_reconnect_no;" .. fgettext("Close") .. "]" ..
 				"button[3,4.6;3,0.5;btn_reconnect_yes;" .. fgettext("Reconnect") .. "]"
 	elseif gamedata ~= nil and gamedata.errormessage ~= nil then
 		formspec = wordwrap_quickhack(gamedata.errormessage)
@@ -96,10 +103,16 @@ function ui.update()
 		else
 			error_title = fgettext("An error occured:")
 		end
+		if core.settings:get("maintab_LAST") == "local" then
+			restart_btn = "]button[6,4.6;3,0.5;btn_reconnect_no;" .. fgettext("Close") .. "]" ..
+				"button[3,4.6;3,0.5;btn_reconnect_yes;" .. fgettext("Restart") .. "]"
+		else
+			restart_btn = "]button[4.5,4.6;3,0.5;btn_error_confirm;" .. fgettext("Close") .. "]"
+		end
 		formspec = "size[12,5]" ..
 				"label[0.5,0;" .. error_title ..
 				"]textlist[0.2,0.8;11.5,3.5;;" .. formspec ..
-				"]button[4.5,4.6;3,0.5;btn_error_confirm;" .. fgettext("Ok") .. "]"
+				restart_btn
 	else
 		local active_toplevel_ui_elements = 0
 		for key,value in pairs(ui.childlist) do
@@ -177,6 +190,11 @@ end
 --------------------------------------------------------------------------------
 core.button_handler = function(fields)
 	if fields["btn_reconnect_yes"] then
+		if core.settings:get("maintab_LAST") == "local" then
+			gamedata.singleplayer = true
+			gamedata.selected_world =
+				tonumber(core.settings:get("mainmenu_last_selected_world"))
+		end
 		gamedata.reconnect_requested = false
 		gamedata.errormessage = nil
 		gamedata.do_reconnect = true

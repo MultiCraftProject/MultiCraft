@@ -1,23 +1,16 @@
-=== THROWING-MOD for multicraft-C55 ===
+MultiCraft game mod: throwing
 by PilzAdam
 
 Inroduction:
-This mod adds bows and arrows to minetest.
+This mod adds bows and arrows to Minetest.
 
-How to install:
-Unzip the archive an place it in multicraft-base-directory/mods/multicraft/
-if you have a windows client or a linux run-in-place client. If you have
-a linux system-wide instalation place it in ~/.multicraft/mods/multicraft/.
-If you want to install this mod only in one world create the folder
-worldmods/ in your worlddirectory.
-For further information or help see:
-http://wiki.minetest.com/wiki/Installing_Mods
+
 
 How to use the mod:
 Craft a bow with the strings from the farming mod:
-     wood string
-wood      string
-     wood string
+     stick string
+stick      string
+     stick string
 Craft arrows with:
 flint
 stick

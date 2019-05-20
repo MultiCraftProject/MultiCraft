@@ -1,4 +1,4 @@
--- MultiCraft mod: default
+-- MultiCraft game mod: default
 -- See README.txt for licensing and other information.
 
 -- The API documentation in here was moved into doc/lua_api.txt
@@ -9,20 +9,24 @@ default = {}
 default.LIGHT_MAX = 14
 
 -- Load files
-dofile(minetest.get_modpath("default").."/functions.lua")
-dofile(minetest.get_modpath("default").."/nodes.lua")
-dofile(minetest.get_modpath("default").."/tools.lua")
-dofile(minetest.get_modpath("default").."/craftitems.lua")
-dofile(minetest.get_modpath("default").."/crafting.lua")
-dofile(minetest.get_modpath("default").."/mapgen.lua")
-dofile(minetest.get_modpath("default").."/player.lua")
-dofile(minetest.get_modpath("default").."/trees.lua")
-dofile(minetest.get_modpath("default").."/aliases.lua")
-dofile(minetest.get_modpath("default").."/furnace.lua")
-dofile(minetest.get_modpath("default").."/workbench.lua")
+local default_path = minetest.get_modpath("default")
 
-minetest.register_on_newplayer(function (player)
-		player:get_inventory():add_item('main', 'default:sword_steel')
-		player:get_inventory():add_item('main', 'default:torch 8')
-		player:get_inventory():add_item('main', 'default:wood 64')
-end)
+dofile(default_path.."/functions.lua")
+dofile(default_path.."/trees.lua")
+dofile(default_path.."/nodes.lua")
+dofile(default_path.."/chests.lua")
+dofile(default_path.."/furnace.lua")
+dofile(default_path.."/tools.lua")
+dofile(default_path.."/craftitems.lua")
+dofile(default_path.."/crafting.lua")
+dofile(default_path.."/mapgen.lua")
+dofile(default_path.."/aliases.lua")
+dofile(default_path.."/torch.lua")
+
+if not minetest.setting_getbool("creative_mode") then
+	minetest.register_on_newplayer(function (player)
+			player:get_inventory():add_item('main', 'default:sword_steel')
+			player:get_inventory():add_item('main', 'default:torch 8')
+			player:get_inventory():add_item('main', 'default:wood 64')
+	end)
+end

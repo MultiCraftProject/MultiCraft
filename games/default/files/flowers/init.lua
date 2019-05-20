@@ -1,4 +1,4 @@
--- MultiCraft mod: default
+-- MultiCraft game mod: default
 -- See README.txt for licensing and other information.
 
 
@@ -142,11 +142,14 @@ function flowers.flower_spread(pos, node)
 	if num_soils >= 1 then
 		for si = 1, math.min(3, num_soils) do
 			local soil = soils[math.random(num_soils)]
+			local soil_name = minetest.get_node(soil).name
 			local soil_above = {x = soil.x, y = soil.y + 1, z = soil.z}
 			light = minetest.get_node_light(soil_above)
 			if light and light >= 13 and
+					-- Only spread to same surface node
+					soil_name == under.name and
 					-- Desert sand is in the soil group
-					minetest.get_node(soil).name ~= "default:desert_sand" then
+					soil_name ~= "default:desert_sand" then
 				minetest.set_node(soil_above, {name = node.name})
 			end
 		end
@@ -170,10 +173,10 @@ minetest.register_abm({
 
 minetest.register_node("flowers:mushroom_red", {
 	description = "Red Mushroom",
-	tiles = {"flowers_mushroom_red.png"},
-	inventory_image = "flowers_mushroom_red.png",
-	wield_image = "flowers_mushroom_red.png",
-	drawtype = "plantlike",
+	tiles = {"3dmushrooms_red.png"},
+	inventory_image = "3dmushrooms_red_inv.png",
+	drawtype = "mesh",
+	mesh = "3dmushrooms.obj",
 	paramtype = "light",
 	sunlight_propagates = true,
 	walkable = false,
@@ -183,35 +186,37 @@ minetest.register_node("flowers:mushroom_red", {
 	on_use = minetest.item_eat(-5),
 	selection_box = {
 		type = "fixed",
-		fixed = {-4 / 16, -0.5, -4 / 16, 4 / 16, -1 / 16, 4 / 16},
-	}
+		fixed = {-0.3, -0.5, -0.3, 0.3, 0, 0.3}
+	},	
 })
 
 minetest.register_node("flowers:mushroom_brown", {
 	description = "Brown Mushroom",
-	tiles = {"flowers_mushroom_brown.png"},
-	inventory_image = "flowers_mushroom_brown.png",
-	wield_image = "flowers_mushroom_brown.png",
-	drawtype = "plantlike",
+	tiles = {"3dmushrooms_brown.png"},
+	inventory_image = "3dmushrooms_brown_inv.png",
+	drawtype = "mesh",
+	mesh = "3dmushrooms.obj",
 	paramtype = "light",
 	sunlight_propagates = true,
 	walkable = false,
 	buildable_to = true,
-	groups = {snappy = 3, attached_node = 1, flammable = 1},
+	groups = {food_mushroom = 1, snappy = 3, attached_node = 1, flammable = 1},
 	sounds = default.node_sound_leaves_defaults(),
 	on_use = minetest.item_eat(1),
 	selection_box = {
 		type = "fixed",
-		fixed = {-3 / 16, -0.5, -3 / 16, 3 / 16, -2 / 16, 3 / 16},
-	}
+		fixed = {-0.3, -0.5, -0.3, 0.3, 0, 0.3}
+	},
 })
 
 
 -- Mushroom spread and death
 
 function flowers.mushroom_spread(pos, node)
+	if minetest.get_node_light(pos, 0.5) > 3 then
 	if minetest.get_node_light(pos, nil) == 15 then
 		minetest.remove_node(pos)
+		end
 		return
 	end
 	local positions = minetest.find_nodes_in_area_under_air(
@@ -223,8 +228,7 @@ function flowers.mushroom_spread(pos, node)
 	end
 	local pos2 = positions[math.random(#positions)]
 	pos2.y = pos2.y + 1
-	if minetest.get_node_light(pos, 0.5) <= 3 and
-			minetest.get_node_light(pos2, 0.5) <= 3 then
+	if minetest.get_node_light(pos2, 0.5) <= 3 then
 		minetest.set_node(pos2, {name = node.name})
 	end
 end
@@ -265,7 +269,6 @@ minetest.register_node("flowers:waterlily", {
 	liquids_pointable = true,
 	walkable = false,
 	buildable_to = true,
-	sunlight_propagates = true,
 	floodable = true,
 	groups = {snappy = 3, flower = 1, flammable = 1},
 	sounds = default.node_sound_leaves_defaults(),

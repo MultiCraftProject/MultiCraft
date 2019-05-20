@@ -98,8 +98,9 @@ end)
 
 potions.register_potion("Regen", "purple", 35,
 function(itemstack, user, pointed_thing)
-	regen_I = true
+	local regen_I = true
 	minetest.chat_send_player(user:get_player_name(), "Regeneration I for 35 seconds")
+	local regen_II
 	if regen_II == true then
 		local regen
 		regen = function ( )
@@ -116,12 +117,12 @@ function(itemstack, user, pointed_thing)
 end,
 
 function(itemstack, user, pointed_thing)
-	regen_I = false
+	local regen_I = false
 end)
 
 potions.register_potion("Regen II", "purple", 30,
 function(itemstack, user, pointed_thing)
-	regen_II = true
+	local regen_II = true
 	minetest.chat_send_player(user:get_player_name(), "Regeneration II for 30 seconds")
 	if regen_II == true then
 		local regen
@@ -139,7 +140,7 @@ function(itemstack, user, pointed_thing)
 end,
 
 function(itemstack, user, pointed_thing)
-	regen_II = false
+	local regen_II = false
 end)
 
 potions.register_potion("Harming", "red", 1,

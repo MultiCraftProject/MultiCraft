@@ -70,14 +70,14 @@ VORBIS_TIMESTAMP = $(VORBIS_DIR)/timestamp
 VORBIS_TIMESTAMP_INT = $(ANDR_ROOT)/deps/vorbis_timestamp
 VORBIS_URL_GIT = https://github.com/MoNTE48/libvorbis-android
 
-IRRLICHT_COMMIT = 990d475fbbb2653c95b992937906eb49960d02fb
+IRRLICHT_COMMIT = 237eb07bf4b6957f2e103adcaf835e6a2afe3486
 IRRLICHT_DIR = $(ANDR_ROOT)/deps/irrlicht
 IRRLICHT_LIB = $(IRRLICHT_DIR)/lib/Android/libIrrlicht.a
 IRRLICHT_TIMESTAMP = $(IRRLICHT_DIR)/timestamp
 IRRLICHT_TIMESTAMP_INT = $(ANDR_ROOT)/deps/irrlicht_timestamp
 IRRLICHT_URL_HTTP = https://github.com/zaki/irrlicht/archive/$(IRRLICHT_COMMIT).zip
 
-CURL_VERSION = 7.64.0
+CURL_VERSION = 7.64.1
 CURL_DIR = $(ANDR_ROOT)/deps/curl
 CURL_LIB = $(CURL_DIR)/lib/.libs/libcurl.a
 CURL_TIMESTAMP = $(CURL_DIR)/timestamp
@@ -89,10 +89,9 @@ FREETYPE_DIR = $(ANDR_ROOT)/deps/freetype
 FREETYPE_LIB = $(FREETYPE_DIR)/objs/.libs/libfreetype.a
 FREETYPE_TIMESTAMP = $(FREETYPE_DIR)/timestamp
 FREETYPE_TIMESTAMP_INT = $(ANDR_ROOT)/deps/freetype_timestamp
-FREETYPE_URL_HTTP = https://sourceforge.net/projects/freetype/files/freetype2/2.10.0/freetype-$(FREETYPE_VERSION).tar.bz2
+FREETYPE_URL_HTTP = https://sourceforge.net/projects/freetype/files/freetype2/$(FREETYPE_VERSION)/freetype-$(FREETYPE_VERSION).tar.bz2
 
-
-ICONV_VERSION = 1.15
+ICONV_VERSION = 1.16
 ICONV_DIR = $(ANDR_ROOT)/deps/libiconv
 ICONV_URL_HTTP = https://ftp.gnu.org/pub/gnu/libiconv/libiconv-$(ICONV_VERSION).tar.gz
 

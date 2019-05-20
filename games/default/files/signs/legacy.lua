@@ -9,7 +9,7 @@ minetest.register_node(":default:sign_wall_wood", {
 		oddly_breakable_by_hand = 3, not_in_creative_inventory = 1},
 	legacy_wallmounted = true,
 })
-	
+
 minetest.register_lbm({
 	label = "Upgrade legacy signs",
 	name = "signs:sign_wall_update",

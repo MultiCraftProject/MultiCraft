@@ -449,12 +449,19 @@ function core.item_drop(itemstack, dropper, pos)
 	local obj = core.add_item(p, item)
 	if obj then
 		if dropper_is_player then
+			local vel = dropper:get_player_velocity()
 			local dir = dropper:get_look_dir()
-			dir.x = dir.x * 2.9
-			dir.y = dir.y * 2.9 + 2
-			dir.z = dir.z * 2.9
+			dir.x = vel.x + dir.x * 4
+			dir.y = vel.y + dir.y * 4 + 2
+			dir.z = vel.z + dir.z * 4
 			obj:set_velocity(dir)
 			obj:get_luaentity().dropped_by = dropper:get_player_name()
+		else
+			obj:set_velocity({
+				x = math.random(-2.5, 2.5),
+				y = math.random(1, 4),
+				z = math.random(-2.5, 2.5)
+			})
 		end
 		return itemstack
 	end
@@ -494,6 +501,27 @@ end
 function core.item_eat(hp_change, replace_with_item)
 	return function(itemstack, user, pointed_thing)  -- closure
 		if user then
+			local pos = user:getpos()
+			pos.y = pos.y + 1.5
+			local itemname = itemstack:get_name()
+			local texture = minetest.registered_items[itemname].inventory_image
+			minetest.add_particlespawner({
+				amount = 20,
+				time = 0.1,
+				minpos = {x = pos.x, y = pos.y, z = pos.z},
+				maxpos = {x = pos.x, y = pos.y, z = pos.z},
+				minvel = {x = -1, y = 1, z = -1},
+				maxvel = {x = 1, y = 2, z = 1},
+				minacc = {x = 0, y = -5, z = 0},
+				maxacc = {x = 0, y = -9, z = 0},
+				minexptime = 1,
+				maxexptime = 1,
+				minsize = 1,
+				maxsize = 1,
+				collisiondetection = true,
+				vertical = false,
+				texture = texture,
+			})
 			return core.do_item_eat(hp_change, replace_with_item, itemstack, user, pointed_thing)
 		end
 	end
@@ -514,7 +542,7 @@ function core.handle_node_drops(pos, drops, digger)
 	-- Add dropped items to object's inventory
 	local inv = digger and digger:get_inventory()
 	local give_item
-	if inv then
+	if inv and core.settings:get_bool("creative_mode") then
 		give_item = function(item)
 			return inv:add_item("main", item)
 		end
@@ -528,12 +556,7 @@ function core.handle_node_drops(pos, drops, digger)
 	for _, dropped_item in pairs(drops) do
 		local left = give_item(dropped_item)
 		if not left:is_empty() then
-			local p = {
-				x = pos.x + math.random()/2-0.25,
-				y = pos.y + math.random()/2-0.25,
-				z = pos.z + math.random()/2-0.25,
-			}
-			core.add_item(p, left)
+			core.item_drop(left, nil, pos)
 		end
 	end
 end

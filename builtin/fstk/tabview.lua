@@ -67,7 +67,7 @@ end
 local function get_formspec(self)
 	local formspec = ""
 	local name = self.tablist[self.last_tab_index].name
-	local tabname = name == "local" and name or nil
+	local tabname = name == "local" and name or name == "online" and name or nil
 
 	if not self.hidden and (self.parent == nil or not self.parent.hidden) then
 		if self.parent == nil then

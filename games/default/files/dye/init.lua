@@ -3,21 +3,21 @@ dye = {}
 -- Make dye names and descriptions available globally
 
 dye.dyes = {
-	{"white",      "White"},
-	{"grey",       "Grey"},
-	{"dark_grey",  "Dark grey"},
-	{"black",      "Black"},
-	{"violet",     "Violet"},
-	{"blue",       "Blue"},
-	{"cyan",       "Cyan"},
-	{"dark_green", "Dark green"},
-	{"green",      "Green"},
-	{"yellow",     "Yellow"},
-	{"brown",      "Brown"},
-	{"orange",     "Orange"},
-	{"red",        "Red"},
-	{"magenta",    "Magenta"},
-	{"pink",       "Pink"},
+	{"white",		"White"},
+	{"grey",		"Grey"},
+	{"dark_grey",	"Dark grey"},
+	{"black",		"Black"},
+	{"violet",		"Violet"},
+	{"blue",		"Blue"},
+	{"cyan",		"Cyan"},
+	{"dark_green",	"Dark green"},
+	{"green",		"Green"},
+	{"yellow",		"Yellow"},
+	{"brown",		"Brown"},
+	{"orange",		"Orange"},
+	{"red",			"Red"},
+	{"magenta",		"Magenta"},
+	{"pink",		"Pink"},
 }
 
 -- Define items
@@ -35,18 +35,20 @@ for _, row in ipairs(dye.dyes) do
 	})
 
 	minetest.register_craft({
-		type = "shapeless",
 		output = "dye:" .. name .. " 4",
-		recipe = {"group:flower,color_" .. name},
+		recipe = {
+			{"group:flower,color_" .. name}
+		},
 	})
 end
 
 -- Manually add coal -> black dye
 
 minetest.register_craft({
-	type = "shapeless",
 	output = "dye:black 4",
-	recipe = {"group:coal"},
+	recipe = {
+		{"group:coal"}
+	},
 })
 
 -- Mix recipes

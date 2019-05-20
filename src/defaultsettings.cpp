@@ -35,7 +35,8 @@ void set_default_settings(Settings *settings)
 	settings->setDefault("language", "");
 	settings->setDefault("name", "");
 	settings->setDefault("bind_address", "");
-	settings->setDefault("serverlist_url", "servers.minetest.net");
+	settings->setDefault("serverlist_url", "servers.multicraft.world");
+	settings->setDefault("serverlist_url_2", "servers.minetest.net");
 
 	// Client
 	settings->setDefault("address", "");
@@ -349,7 +350,7 @@ void set_default_settings(Settings *settings)
 	settings->setDefault("liquid_update", "1.0");
 
 	// Mapgen
-	settings->setDefault("mg_name", "v6");
+	settings->setDefault("mg_name", "v7p");
 	settings->setDefault("water_level", "1");
 	settings->setDefault("mapgen_limit", "31000");
 	settings->setDefault("chunksize", "5");
@@ -469,7 +470,7 @@ void set_default_settings(Settings *settings)
 	} else if (([SDVersion deviceSize] == Screen5Dot8inch) || ([SDVersion deviceSize] == Screen6Dot1inch) || ([SDVersion deviceSize] == Screen6Dot5inch)) {
 		// 5.8+" (iPhone X-series)
 		settings->setDefault("hud_scaling", "0.8");
-		settings->setDefault("gui_scaling", "1.2");
+		settings->setDefault("gui_scaling", "1.3");
 		settings->setDefault("mouse_sensitivity", "0.35");
 	} else {
 		// iPad

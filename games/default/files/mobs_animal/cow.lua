@@ -22,7 +22,7 @@ mobs:register_mob("mobs_animal:cow", {
 	walk_velocity = 1,
 	run_velocity = 2,
 	jump = true,
-	jump_height = 6,
+	jump_height = 4,
 	pushable = true,
 	drops = {
 		{name = "mobs:meat_raw", chance = 1, min = 1, max = 1},
@@ -115,7 +115,7 @@ mobs:register_mob("mobs_animal:cow", {
 			self.gotten = false
 		end
 	end,
-	
+
 		after_activate = function(self, staticdata, def, dtime)
 			-- replace cow using the old directx model
 			if self.mesh == "mobs_cow.x" then

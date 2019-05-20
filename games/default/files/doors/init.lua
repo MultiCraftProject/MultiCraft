@@ -174,9 +174,9 @@ function doors:register_door(name, def)
             if check_player_priv(pos, clicker) then
             on_rightclick(pos, 1, name.."_t_1", name.."_b_2", name.."_t_2", {1,2,3,0})
                 if is_right(pos, clicker) then
-                    minetest.sound_play("door_close", {pos = pos, gain = 0.3, max_hear_distance = 10})
+                    minetest.sound_play("doors_door_close", {pos = pos, gain = 0.3, max_hear_distance = 10})
                 else
-                    minetest.sound_play("door_open", {pos = pos, gain = 0.3, max_hear_distance = 10})
+                    minetest.sound_play("doors_door_open", {pos = pos, gain = 0.3, max_hear_distance = 10})
                 end
             end
         end,
@@ -209,9 +209,9 @@ function doors:register_door(name, def)
             if check_player_priv(pos, clicker) then
                 on_rightclick(pos, -1, name.."_b_1", name.."_t_2", name.."_b_2", {1,2,3,0})
                 if is_right(pos, clicker) then
-                    minetest.sound_play("door_close", {pos = pos, gain = 0.3, max_hear_distance = 10})
+                    minetest.sound_play("doors_door_close", {pos = pos, gain = 0.3, max_hear_distance = 10})
                 else
-                    minetest.sound_play("door_open", {pos = pos, gain = 0.3, max_hear_distance = 10})
+                    minetest.sound_play("doors_door_open", {pos = pos, gain = 0.3, max_hear_distance = 10})
                 end
             end
         end,
@@ -244,9 +244,9 @@ function doors:register_door(name, def)
             if check_player_priv(pos, clicker) then
                 on_rightclick(pos, 1, name.."_t_2", name.."_b_1", name.."_t_1", {3,0,1,2})
                 if is_right(pos, clicker) then
-                    minetest.sound_play("door_open", {gain = 0.3, max_hear_distance = 10})
+                    minetest.sound_play("doors_door_open", {pos = pos, gain = 0.3, max_hear_distance = 10})
                 else
-                    minetest.sound_play("door_close", {gain = 0.3, max_hear_distance = 10})
+                    minetest.sound_play("doors_door_close", {pos = pos, gain = 0.3, max_hear_distance = 10})
                 end
             end
         end,
@@ -279,9 +279,9 @@ function doors:register_door(name, def)
             if check_player_priv(pos, clicker) then
                 on_rightclick(pos, -1, name.."_b_2", name.."_t_1", name.."_b_1", {3,0,1,2})
                 if is_right(pos, clicker) then
-                    minetest.sound_play("door_open", {pos=pos, gain = 0.3, max_hear_distance = 10})
+                    minetest.sound_play("doors_door_open", {pos=pos, gain = 0.3, max_hear_distance = 10})
                 else
-                    minetest.sound_play("door_close", {gain = 0.3, max_hear_distance = 10})
+                    minetest.sound_play("doors_door_close", {gain = 0.3, max_hear_distance = 10})
                 end
             end
         end,
@@ -296,7 +296,7 @@ doors:register_door("doors:door_wood", {
     description = "Wooden Door",
     inventory_image = "door_wood.png",
     stack_max = 16,
-    groups = {snappy = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2,door=1, mese = 1},
+    groups = {snappy = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2, door = 1},
     tiles_bottom = {"door_wood_b.png", "door_brown.png"},
     tiles_top = {"door_wood_a.png", "door_brown.png"},
 })
@@ -315,7 +315,7 @@ doors:register_door("doors:door_acacia", {
     description = "Wooden Acacia Door",
     inventory_image = "door_acacia.png",
     stack_max = 16,
-    groups = {snappy = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2,door=1, mese=1},
+    groups = {snappy = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2, door=1},
     tiles_bottom = {"door_acacia_b.png", "door_brown.png"},
     tiles_top = {"door_acacia_a.png", "door_brown.png"},
 })
@@ -334,7 +334,7 @@ doors:register_door("doors:door_birch", {
     description = "Wooden Birch Door",
     stack_max = 16,
     inventory_image = "door_birch.png",
-    groups = {snappy = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2,door=1, mese = 1},
+    groups = {snappy = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2,door=1},
     tiles_bottom = {"door_birch_b.png", "door_brown.png"},
     tiles_top = {"door_birch_a.png", "door_brown.png"},
 })
@@ -344,7 +344,7 @@ doors:register_door("doors:door_dark_oak", {
     description = "Wooden Dark Oak Door",
     inventory_image = "door_dark_oak.png",
     stack_max = 16,
-    groups = {snappy = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2,door=1, mese=1},
+    groups = {snappy = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2, door=1},
     tiles_bottom = {"door_dark_oak_b.png", "door_brown.png"},
     tiles_top = {"door_dark_oak_a.png", "door_brown.png"},
 })
@@ -354,7 +354,7 @@ doors:register_door("doors:door_jungle", {
     description = "Wooden Jungle Door",
     stack_max = 16,
     inventory_image = "door_jungle.png",
-    groups = {snappy = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2,door=1, mese=1},
+    groups = {snappy = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2, door=1},
     tiles_bottom = {"door_jungle_b.png", "door_brown.png"},
     tiles_top = {"door_jungle_a.png", "door_brown.png"},
 })
@@ -374,7 +374,7 @@ doors:register_door("doors:door_steel", {
     description = "Steel Door",
     stack_max = 16,
     inventory_image = "door_steel.png",
-    groups = {snappy = 1,bendy=2,cracky=1,melty=2,level=2,door=1,mesecon_effector_on=1, mese=1},
+    groups = {snappy = 1,bendy=2,cracky=1,melty=2,level=2,door=1, mesecon_effector_on=1},
     tiles_bottom = {"door_steel_b.png", "door_grey.png"},
     tiles_top = {"door_steel_a.png", "door_grey.png"},
     only_placer_can_open = true,
@@ -412,15 +412,15 @@ local function punch(pos)
     me = minetest.get_node(pos)
     local tmp_node
     local tmp_node2
-    oben = {x=pos.x, y=pos.y+1, z=pos.z}
+--  oben = {x=pos.x, y=pos.y+1, z=pos.z}
         if state == 1 then
             state = 0
-            minetest.sound_play("door_close", {pos = pos, gain = 0.3, max_hear_distance = 10})
+            minetest.sound_play("doors_door_close", {pos = pos, gain = 0.3, max_hear_distance = 10})
             tmp_node = {name="doors:trapdoor", param1=me.param1, param2=me.param2}
         else
             state = 1
-            minetest.sound_play("door_open", {pos = pos, gain = 0.3, max_hear_distance = 10})
-            tmp_node = {name="doors:trapdoor_open", param1=me.param1, param2=me.param2}
+            minetest.sound_play("doors_door_open", {pos = pos, gain = 0.3, max_hear_distance = 10})
+            tmp_node = {name="doors:trapdoors_door_open", param1=me.param1, param2=me.param2}
         end
         update_door(pos, tmp_node)
         meta:set_int("state", state)
@@ -434,7 +434,7 @@ minetest.register_node("doors:trapdoor", {
     paramtype = "light",
     stack_max = 16,
     paramtype2 = "facedir",
-    groups = {snappy = 1, choppy = 2, oddly_breakable_by_hand = 2,mesecon_effector_on=1, flammable = 2,door=1,mese=1},
+    groups = {snappy = 1, choppy = 2, oddly_breakable_by_hand = 2,mesecon_effector_on=1, flammable = 2, door=1},
     sounds = default.node_sound_wood_defaults(),
     drop = "doors:trapdoor",
     node_box = {
@@ -473,7 +473,7 @@ minetest.register_node("doors:trapdoor", {
 })
 
 
-minetest.register_node("doors:trapdoor_open", {
+minetest.register_node("doors:trapdoors_door_open", {
     drawtype = "nodebox",
     tiles = {"default_wood.png", "default_wood.png",  "default_wood.png",  "default_wood.png", "door_trapdoor.png", "door_trapdoor.png"},
     paramtype = "light",
@@ -529,15 +529,15 @@ local function punch(pos)
     me = minetest.get_node(pos)
     local tmp_node
     local tmp_node2
-    oben = {x=pos.x, y=pos.y+1, z=pos.z}
+--  oben = {x=pos.x, y=pos.y+1, z=pos.z}
         if state == 1 then
             state = 0
-            minetest.sound_play("door_close", {pos = pos, gain = 0.3, max_hear_distance = 10})
+            minetest.sound_play("doors_door_close", {pos = pos, gain = 0.3, max_hear_distance = 10})
             tmp_node = {name="doors:iron_trapdoor", param1=me.param1, param2=me.param2}
         else
             state = 1
-            minetest.sound_play("door_open", {pos = pos, gain = 0.3, max_hear_distance = 10})
-            tmp_node = {name="doors:iron_trapdoor_open", param1=me.param1, param2=me.param2}
+            minetest.sound_play("doors_door_open", {pos = pos, gain = 0.3, max_hear_distance = 10})
+            tmp_node = {name="doors:iron_trapdoors_door_open", param1=me.param1, param2=me.param2}
         end
         update_door(pos, tmp_node)
         meta:set_int("state", state)
@@ -551,7 +551,7 @@ minetest.register_node("doors:iron_trapdoor", {
     paramtype = "light",
     stack_max = 16,
     paramtype2 = "facedir",
-    groups = {snappy = 1, choppy = 2, oddly_breakable_by_hand = 2,mesecon_effector_on=1, flammable = 0,door=1, mese=1},
+    groups = {snappy = 1, choppy = 2, oddly_breakable_by_hand = 2,mesecon_effector_on=1, flammable = 0, door=1},
     sounds = default.node_sound_wood_defaults(),
     drop = "doors:iron_trapdoor",
     node_box = {
@@ -587,7 +587,7 @@ minetest.register_node("doors:iron_trapdoor", {
 })
 
 
-minetest.register_node("doors:iron_trapdoor_open", {
+minetest.register_node("doors:iron_trapdoors_door_open", {
     drawtype = "nodebox",
     tiles = {"default_steel_block.png", "default_steel_block.png",  "default_steel_block.png",  "default_steel_block.png", "iron_trapdoor.png", "iron_trapdoor.png"},
     paramtype = "light",

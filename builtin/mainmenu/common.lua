@@ -59,7 +59,9 @@ function image_column(tooltip, flagname)
 		"2=" .. core.formspec_escape(defaulttexturedir .. "server_ping_4.png") .. "," ..
 		"3=" .. core.formspec_escape(defaulttexturedir .. "server_ping_3.png") .. "," ..
 		"4=" .. core.formspec_escape(defaulttexturedir .. "server_ping_2.png") .. "," ..
-		"5=" .. core.formspec_escape(defaulttexturedir .. "server_ping_1.png")
+		"5=" .. core.formspec_escape(defaulttexturedir .. "server_ping_1.png") .. "," ..
+		"6=" .. core.formspec_escape(defaulttexturedir .. "server_flags_mc.png") .. "," ..
+		"7=" .. core.formspec_escape(defaulttexturedir .. "server_flags_mt.png")
 end
 
 --------------------------------------------------------------------------------
@@ -82,7 +84,7 @@ function order_favorite_list(list)
 end
 
 --------------------------------------------------------------------------------
-function render_serverlist_row(spec, is_favorite)
+function render_serverlist_row(spec, is_favorite, is_approved)
 	local text = ""
 	if spec.name then
 		text = text .. core.formspec_escape(spec.name:trim())
@@ -96,11 +98,18 @@ function render_serverlist_row(spec, is_favorite)
 	local details = ""
 	local grey_out = not is_server_protocol_compat(spec.proto_min, spec.proto_max)
 
-	if is_favorite then
-		details = "1,"
+	if is_approved then
+		details = "6,"
 	else
-		details = "0,"
+		details = "7,"
 	end
+
+	if is_favorite then
+		details = details .. "1,"
+	else
+		details = details .. "0,"
+	end
+
 
 	if spec.ping then
 		local ping = spec.ping * 1000
