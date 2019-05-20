@@ -656,3 +656,8 @@ function core.pointed_thing_to_face_pos(placer, pointed_thing)
 	end
 	return fine_pos
 end
+
+-- Allow mods to define a platform.
+function core.get_platform()
+  return PLATFORM
+end

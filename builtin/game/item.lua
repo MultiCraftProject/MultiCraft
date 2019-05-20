@@ -501,27 +501,26 @@ end
 function core.item_eat(hp_change, replace_with_item)
 	return function(itemstack, user, pointed_thing)  -- closure
 		if user then
-			local pos = user:getpos()	
-			pos.y = pos.y + 1.5	
-			local itemname = itemstack:get_name()	
-			local texture = minetest.registered_items[itemname].inventory_image	
-			minetest.add_item(pos, drop)	
-			minetest.add_particlespawner({	
-				amount = 10,	
-				time = 0.1,	
-				minpos = {x = pos.x, y = pos.y, z = pos.z},	
-				maxpos = {x = pos.x, y = pos.y, z = pos.z},	
-				minvel = {x = -1, y = 1, z = -1},	
-				maxvel = {x = 1, y = 2, z = 1},	
-				minacc = {x = 0, y = -5, z = 0},	
-				maxacc = {x = 0, y = -9, z = 0},	
-				minexptime = 1,	
-				maxexptime = 1,	
-				minsize = 1,	
-				maxsize = 2,	
-				collisiondetection = true,	
-				vertical = false,	
-				texture = texture,	
+			local pos = user:getpos()
+			pos.y = pos.y + 1.5
+			local itemname = itemstack:get_name()
+			local texture = minetest.registered_items[itemname].inventory_image
+			minetest.add_particlespawner({
+				amount = 20,
+				time = 0.1,
+				minpos = {x = pos.x, y = pos.y, z = pos.z},
+				maxpos = {x = pos.x, y = pos.y, z = pos.z},
+				minvel = {x = -1, y = 1, z = -1},
+				maxvel = {x = 1, y = 2, z = 1},
+				minacc = {x = 0, y = -5, z = 0},
+				maxacc = {x = 0, y = -9, z = 0},
+				minexptime = 1,
+				maxexptime = 1,
+				minsize = 1,
+				maxsize = 1,
+				collisiondetection = true,
+				vertical = false,
+				texture = texture,
 			})
 			return core.do_item_eat(hp_change, replace_with_item, itemstack, user, pointed_thing)
 		end
