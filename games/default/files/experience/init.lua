@@ -22,14 +22,14 @@ local function init_data(player, reset)
 	local name = player:get_player_name()
 	local _xp  = minetest.deserialize(player:get_attribute("xp"))
 
-	if not _xp or reset then
+	if not _xp or reset or not xp[name] then
 		xp[name] = {
 			xp_bar    = 0,
 			xp_total  = 0,
 			xp_number = 0,
 			level     = 0,
 		}
-	else
+	elseif _xp then
 		xp[name] = _xp
 	end
 end
