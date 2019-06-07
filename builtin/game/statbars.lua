@@ -174,7 +174,7 @@ local function add_text(player)
 	hud[player_name] = player:hud_add({
 		hud_elem_type = "text",
 		position = {x = 0.5, y = 0.975},
-		offset = {x = 0, y = -75},
+		offset = {x = 0, y = -88},
 		alignment = {x = 0, y = 0},
 		number = 0xFFFFFF,
 		text = "",
