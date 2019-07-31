@@ -302,6 +302,7 @@ function villages.evaluate_heightmap()
 	for j = 1, 40, 1 do
 		for i = square_start, square_end, 1 do
 			-- skip buggy heightmaps, return high value
+			if heightmap[i] == nil then return end
 			if heightmap[i] == -31000 or
 				heightmap[i] == 31000 then
 				return max_height_difference + 1

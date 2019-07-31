@@ -17,7 +17,7 @@
     <string name="location">Location permission provide you better interaction with game</string>
     <string name="close_game">Close game</string>
     <string name="settings">App settings</string>
-    <string name="denied">You cannot use MultiCraft without storage permission. \nPlease turn on it at [Settings] -> [Permissions]></string>
+    <string name="denied">You cannot play MultiCraft without storage permission. \nPlease turn on it at [Settings] -> [Permissions]></string>
     <!-- rate input_dialog -->
     <string name="rta_dialog_title">Please, rate MultiCraft!</string>
     <string name="rate_title">Title</string>
@@ -29,8 +29,6 @@
     <string name="update">Update</string>
     <string name="later">Later</string>
     <string name="ignore">Ignore</string>
-
-    <!-- reminder -->
 
     <!-- no connection dialog -->
     <string name="conn_message">MultiCraft requires an internet connection to use all game features.\nOtherwise, you will not get updates and multiplayer will be not available!</string>

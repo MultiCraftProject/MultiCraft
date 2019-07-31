@@ -13,7 +13,7 @@
     <string name="location">Доступ к местоположению обеспечивает Вам лучшее взаимодействие с игрой</string>
     <string name="close_game">Закрыть игру</string>
     <string name="settings">Настройки</string>
-    <string name="denied">Вы не можете использовать MultiCraft без разрешения на запись. \nПожалуйста, включите его в [Настройки] -> [Разрешения]></string>
+    <string name="denied">Вы не можете играть в MultiCraft без разрешения на запись. \nПожалуйста, включите его в [Настройки] -> [Разрешения]></string>
     <!-- диалог оценки -->
     <string name="rta_dialog_title">Оцените MultiCraft!</string>
     <string name="rate_title">Название</string>
@@ -24,8 +24,6 @@
     <string name="ignore">Игнорировать</string>
     <string name="later">Позже</string>
     <string name="update">Обновить</string>
-
-    <!-- reminder -->
 
     <!-- no connection dialog -->
     <string name="conn_message">Для полноценной игры, MultiCraft требует подключение к интернету.\nВ противном случае невозможно обновление игры, а так же не доступен мультиплеер!</string>
