@@ -7,17 +7,17 @@ android {
 		targetSdkVersion 29
 		externalNativeBuild {
 			ndkBuild {
-				arguments "-j12",
-						"APP_STL=c++_shared",
-						"COMPILER_VERSION=clang",
-						"APP_SHORT_COMMANDS=true"
+				arguments '-j12',
+						'APP_STL=c++_shared',
+						'COMPILER_VERSION=clang',
+						'APP_SHORT_COMMANDS=true'
 			}
 		}
 	}
 
 	externalNativeBuild {
 		ndkBuild {
-			path file("jni/Android.mk")
+			path file('jni/Android.mk')
 		}
 	}
 
@@ -26,12 +26,16 @@ android {
 		abi {
 			enable true
 			reset()
-			include "armeabi-v7a", "arm64-v8a" /*, "x86"*/
+			include 'armeabi-v7a', 'arm64-v8a'//, 'x86'*/
 		}
 	}
 	buildTypes {
-		debug {
-		debuggable = false
+		release {
+			externalNativeBuild {
+				ndkBuild {
+					arguments 'NDEBUG=1'
+				}
+			}
 		}
 	}
 }

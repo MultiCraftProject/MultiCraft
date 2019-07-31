@@ -1,1 +1,1 @@
-include ':native'
+include ':app', ':native'

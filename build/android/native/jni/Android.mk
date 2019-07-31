@@ -306,14 +306,14 @@ LOCAL_SRC_FILES += \
 	deps/Android/libiconv/libcharset/lib/localcharset.c
 
 # GMP
-ifneq ($(APP_ABI),arm64-v8a)
+#ifneq ($(APP_ABI),arm64-v8a)
 	LOCAL_C_INCLUDES += ../../../lib/gmp
 	LOCAL_SRC_FILES  += ../../../lib/gmp/mini-gmp.c
-else
-	LOCAL_CFLAGS += -DUSE_SYSTEM_GMP=1
-	LOCAL_C_INCLUDES += deps/Android/gmp/include
-	LOCAL_STATIC_LIBRARIES := gmp
-endif
+#else
+#	LOCAL_CFLAGS += -DUSE_SYSTEM_GMP=1
+#	LOCAL_C_INCLUDES += deps/Android/gmp/include
+#	LOCAL_STATIC_LIBRARIES := gmp
+#endif
 
 LOCAL_STATIC_LIBRARIES += Irrlicht LevelDB Curl Freetype OpenAL Vorbis LuaJIT android_native_app_glue $(PROFILER_LIBS)
 

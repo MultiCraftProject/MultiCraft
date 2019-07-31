@@ -92,7 +92,7 @@ cmake-build-release/
 
 ## Android build files
 build/android/src/main/assets
-build/android/build
+build/android/app/build
 build/android/deps
 build/android/libs
 build/android/jni/lib

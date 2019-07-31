@@ -21,7 +21,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
-import androidx.core.content.ContextCompat;
 import android.text.method.LinkMovementMethod;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
@@ -33,6 +32,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.core.content.ContextCompat;
 
 import com.crashlytics.android.Crashlytics;
 import com.gun0912.tedpermission.PermissionListener;
@@ -61,7 +62,7 @@ public class MainActivity extends Activity implements WVersionManager.ActivityLi
     private final static String WORLDS = EXTERNAL_STORAGE + "/worlds.zip";
     private final static String GAMES = EXTERNAL_STORAGE + "/games.zip";
     private final static String NOMEDIA = ".nomedia";
-    private static final String UPDATE_LINK = "https://raw.githubusercontent.com/ubulem/coronahtml5/master/ver.txt";
+    private static final String UPDATE_LINK = "https://raw.githubusercontent.com/MoNTE48/MultiCraft-links/master/Android.json";
     private static final String[] EU_COUNTRIES = new String[]{
             "AT", "BE", "BG", "HR", "CY", "CZ",
             "DK", "EE", "FI", "FR", "DE", "GR",
@@ -485,7 +486,7 @@ public class MainActivity extends Activity implements WVersionManager.ActivityLi
         if (isAll) {
             dt.execute(unzipLocation);
         } else {
-            dt.execute(unzipLocation + "builtin", unzipLocation + "games", unzipLocation + "textures"/*, unzipLocation + "debug.txt"*/);
+            dt.execute(unzipLocation + "builtin", unzipLocation + "games", unzipLocation + "debug.txt");
         }
     }
 
@@ -562,7 +563,7 @@ public class MainActivity extends Activity implements WVersionManager.ActivityLi
         tv.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
-    void showConnectionDialog() {
+    private void showConnectionDialog() {
         AlertDialogHelper dialogHelper = new AlertDialogHelper(this);
         dialogHelper.setListener(this);
         dialogHelper.setMessage(getString(R.string.conn_message));

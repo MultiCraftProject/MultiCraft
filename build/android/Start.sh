@@ -5,7 +5,7 @@ if [ ! -d gradle ]; then
 	exit 1
 fi
 
-FOLDER=$(pwd)/src/main/assets
+FOLDER=$(pwd)/app/src/main/assets
 DEST=$(mktemp -d)
 
 echo
@@ -16,7 +16,7 @@ echo "=> Getting precompiled dependencies:"
 if [ ! -d native/deps ]
 then
   echo
-  git clone https://github.com/MultiCraft/deps native/deps
+  git clone --depth 1 https://github.com/MultiCraft/deps native/deps
   echo
   echo "* Done!"
 else
