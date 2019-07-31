@@ -54,6 +54,7 @@ minetest.register_on_generated(function(minp, maxp)
 		-- don't build villages on (too) uneven terrain
 		local height_difference = villages.evaluate_heightmap(minp, maxp)
 		--	local height_difference = villages.determine_heightmap(data, va, minp, maxp)
+		if height_difference == nil then return end
 		if height_difference > max_height_difference then
 			return
 		end
