@@ -10,9 +10,6 @@ android {
 		targetSdkVersion 29
 		versionCode 19
 		multiDexEnabled true
-		ndk {
-			abiFilters 'armeabi-v7a', 'arm64-v8a'
-		}
 	}
 	Properties props = new Properties()
 	props.load(new FileInputStream(file('../local.properties')))
@@ -41,13 +38,13 @@ android {
 		targetCompatibility JavaVersion.VERSION_1_8
 	}
 	// for multiple APKs
-    /* splits {
+	splits {
 		abi {
 			enable true
 			reset()
-			include 'armeabi-v7a', 'arm64-v8a'//, 'x86'
+			include 'armeabi-v7a', 'arm64-v8a'
 		}
-	}*/
+	}
 }
 
 dependencies {
