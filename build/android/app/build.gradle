@@ -9,7 +9,7 @@ android {
 		minSdkVersion 16
 		targetSdkVersion 29
 		versionCode 19
-		multiDexEnabled true
+		/*multiDexEnabled true*/
 	}
 	Properties props = new Properties()
 	props.load(new FileInputStream(file('../local.properties')))
@@ -48,7 +48,7 @@ android {
 }
 
 dependencies {
-	implementation 'androidx.multidex:multidex:2.0.1'
+	/*implementation 'androidx.multidex:multidex:2.0.1'*/
 	implementation "androidx.preference:preference:1.1.0"
 	// MultiCraft Native
 	implementation project(':native')

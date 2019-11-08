@@ -40,6 +40,8 @@ public class GameActivity extends NativeActivity {
     private int messageReturnCode;
     private String messageReturnValue;
     private int height, width;
+    /*private boolean consent;
+    private boolean isMultiPlayer;*/
 
     public static native void putMessageBoxResult(String text);
 
@@ -52,7 +54,7 @@ public class GameActivity extends NativeActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         messageReturnCode = -1;
         messageReturnValue = "";
-//        new AdInitTask().execute();
+        /*new AdInitTask().execute();*/
     }
 
     private void makeFullScreen() {

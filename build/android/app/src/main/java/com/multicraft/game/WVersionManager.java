@@ -6,11 +6,11 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.AsyncTask;
-import androidx.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.Html;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import com.bugsnag.android.Bugsnag;
 
