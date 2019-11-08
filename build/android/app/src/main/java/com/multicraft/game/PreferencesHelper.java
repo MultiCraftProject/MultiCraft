@@ -26,9 +26,8 @@ class PreferencesHelper {
     static PreferencesHelper getInstance(Context context) {
         if (instance == null) {
             synchronized (PreferencesHelper.class) {
-                if (instance == null) {
+                if (instance == null)
                     instance = new PreferencesHelper(context.getApplicationContext());
-                }
             }
         }
         return instance;
@@ -51,7 +50,7 @@ class PreferencesHelper {
     }
 
     boolean isWorldsCopied() {
-        return sharedPreferences.getBoolean(TAG_COPY_WORLDS, true);
+        return sharedPreferences.getBoolean(TAG_COPY_WORLDS, false);
     }
 
     String getBuildNumber() {
@@ -63,7 +62,7 @@ class PreferencesHelper {
     }
 
     int getAdsDelay() {
-        return sharedPreferences.getInt(ADS_DELAY, 300);
+        return sharedPreferences.getInt(ADS_DELAY, 600);
     }
 
     int getAdsRepeat() {

@@ -1,6 +1,5 @@
 package com.multicraft.game;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -8,17 +7,20 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.View;
 
-import com.crashlytics.android.Crashlytics;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.bugsnag.android.Bugsnag;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 
 public class CopyZipTask extends AsyncTask<String, Void, String[]> implements DialogsCallback {
 
-    private WeakReference<Context> contextRef;
+    private final WeakReference<Context> contextRef;
     private CallBackListener listener;
     private boolean isCancel = false;
 
@@ -27,9 +29,8 @@ public class CopyZipTask extends AsyncTask<String, Void, String[]> implements Di
     }
 
     protected String[] doInBackground(String... params) {
-        while (!isCancel) {
+        while (!isCancel)
             copyAssets(params);
-        }
         return params;
     }
 
@@ -42,10 +43,8 @@ public class CopyZipTask extends AsyncTask<String, Void, String[]> implements Di
 
     private void copyAsset(String zipName) throws IOException {
         String filename = zipName.substring(zipName.lastIndexOf("/") + 1);
-        InputStream in;
-        OutputStream out;
-        in = contextRef.get().getAssets().open(filename);
-        out = new FileOutputStream(zipName);
+        InputStream in = contextRef.get().getAssets().open(filename);
+        OutputStream out = new FileOutputStream(zipName);
         copyFile(in, out);
         in.close();
         out.flush();
@@ -54,47 +53,38 @@ public class CopyZipTask extends AsyncTask<String, Void, String[]> implements Di
 
     private void copyAssets(String[] zips) {
         try {
-            for (String zipName : zips) {
+            for (String zipName : zips)
                 copyAsset(zipName);
-            }
             isCancel = true;
         } catch (IOException e) {
-            Crashlytics.logException(e);
+            Bugsnag.notify(e);
             isCancel = true;
             cancel(true);
-            if (e.getMessage().contains("ENOSPC")) {
+            if (Objects.requireNonNull(e.getMessage()).contains("ENOSPC"))
                 showRestartDialog("ENOSPC");
-            } else {
+            else
                 showRestartDialog("UKNWN");
-            }
         }
     }
 
     private void copyFile(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];
         int read;
-        while ((read = in.read(buffer)) != -1) {
+        while ((read = in.read(buffer)) != -1)
             out.write(buffer, 0, read);
-        }
     }
 
     private void showRestartDialog(final String source) {
         String message;
-        if ("ENOSPC".equals(source)) {
+        if ("ENOSPC".equals(source))
             message = contextRef.get().getString(R.string.no_space);
-        } else {
+        else
             message = contextRef.get().getString(R.string.restart);
-        }
-        final AlertDialogHelper dialogHelper = new AlertDialogHelper((Activity) contextRef.get());
+        final AlertDialogHelper dialogHelper = new AlertDialogHelper((AppCompatActivity) contextRef.get());
         dialogHelper.setListener(this);
         dialogHelper.setMessage(message);
         dialogHelper.setButtonPositive(contextRef.get().getString(android.R.string.ok));
-        ((Activity) contextRef.get()).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                dialogHelper.showAlert(source);
-            }
-        });
+        ((AppCompatActivity) contextRef.get()).runOnUiThread(() -> dialogHelper.showAlert(source));
     }
 
     private void startUnzipService(String[] file) {
@@ -102,7 +92,6 @@ public class CopyZipTask extends AsyncTask<String, Void, String[]> implements Di
         Intent intentMyIntentService = new Intent(contextRef.get(), UnzipService.class);
         intentMyIntentService.putExtra(UnzipService.EXTRA_KEY_IN_FILE, file);
         contextRef.get().startService(intentMyIntentService);
-
     }
 
     private void restartApp() {
@@ -111,9 +100,8 @@ public class CopyZipTask extends AsyncTask<String, Void, String[]> implements Di
         int mPendingIntentId = 1337;
         PendingIntent mPendingIntent = PendingIntent.getActivity(context, mPendingIntentId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (mgr != null) {
+        if (mgr != null)
             mgr.set(AlarmManager.RTC, System.currentTimeMillis(), mPendingIntent);
-        }
         System.exit(0);
     }
 
@@ -128,11 +116,9 @@ public class CopyZipTask extends AsyncTask<String, Void, String[]> implements Di
 
     @Override
     public void onNegative(String source) {
-
     }
 
     @Override
     public void onNeutral(String source) {
-
     }
 }

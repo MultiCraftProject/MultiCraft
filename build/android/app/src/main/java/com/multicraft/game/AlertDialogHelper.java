@@ -1,13 +1,13 @@
 package com.multicraft.game;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
-import android.view.ContextThemeWrapper;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 
-public class AlertDialogHelper {
+class AlertDialogHelper {
+    private final AppCompatActivity activity;
     private DialogsCallback sCallback = null;
     private Drawable icon = null;
     private String title = null;
@@ -15,9 +15,8 @@ public class AlertDialogHelper {
     private String buttonPositive = null;
     private String buttonNegative = null;
     private String buttonNeutral = null;
-    private Activity activity;
 
-    AlertDialogHelper(Activity activity) {
+    AlertDialogHelper(AppCompatActivity activity) {
         this.activity = activity;
     }
 
@@ -74,36 +73,19 @@ public class AlertDialogHelper {
     }
 
     void showAlert(final String source) {
-        ContextThemeWrapper ctw = new ContextThemeWrapper(activity, R.style.CustomLollipopDialogStyle);
-        AlertDialog.Builder builder = new AlertDialog.Builder(ctw);
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         if (getIcon() != null) builder.setIcon(getIcon());
         if (getTitle() != null) builder.setTitle(getTitle());
         if (getMessage() != null) builder.setMessage(getMessage());
         if (getButtonPositive() != null)
-            builder.setPositiveButton(getButtonPositive(), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    sCallback.onPositive(source);
-                }
-            });
+            builder.setPositiveButton(getButtonPositive(), (dialogInterface, i) -> sCallback.onPositive(source));
         if (getButtonNegative() != null)
-            builder.setNegativeButton(getButtonNegative(), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    sCallback.onNegative(source);
-                }
-            });
+            builder.setNegativeButton(getButtonNegative(), (dialogInterface, i) -> sCallback.onNegative(source));
         if (getButtonNeutral() != null)
-            builder.setNeutralButton(getButtonNeutral(), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    sCallback.onNeutral(source);
-                }
-            });
+            builder.setNeutralButton(getButtonNeutral(), (dialogInterface, i) -> sCallback.onNeutral(source));
         builder.setCancelable(false);
         final AlertDialog dialog = builder.create();
-        if (!activity.isFinishing()) {
+        if (!activity.isFinishing())
             dialog.show();
-        }
     }
 }

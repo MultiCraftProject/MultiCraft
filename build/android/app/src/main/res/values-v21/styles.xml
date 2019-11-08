@@ -1,19 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar.Fullscreen">
-        <item name="android:windowNoTitle">true</item>
-    </style>
+    <style name="RateMe" parent="android:Theme.Material.Light.Dialog" />
 
-    <style name="DialogTheme" parent="android:Theme.Material.Light.Dialog" />
-
-    <style name="Theme.Transparent" parent="@android:style/Theme.Material.NoActionBar.Fullscreen">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
-
-    <style name="CustomLollipopDialogStyle" parent="android:Theme.Material.Light.Dialog.Alert" />
-
-    <style name="IndeterminateProgressBar" parent="android:Widget.Material.ProgressBar.Large" />
 </resources>

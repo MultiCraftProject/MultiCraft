@@ -7,20 +7,19 @@
     <string name="notification_title">Загрузка MultiCraft</string>
     <string name="notification_description">Осталось меньше минуты&#8230;</string>
     <string name="restart">Произошла ошибка, игра будет перезапущена автоматически</string>
-    <string name="no_space">Недостаточно места для записи файлов игры, пожалуйста освободите место SD карте</string>
+    <string name="no_space">Недостаточно места для записи файлов игры, пожалуйста освободите место в памяти</string>
+
     <!-- разрешения -->
-    <string name="explain">Разрешение на запись необходимо для распаковки текстур и игровых файлов.</string>
-    <string name="location">Доступ к местоположению обеспечивает Вам лучшее взаимодействие с игрой</string>
-    <string name="close_game">Закрыть игру</string>
-    <string name="settings">Настройки</string>
-    <string name="denied">Вы не можете играть в MultiCraft без разрешения на запись. \nПожалуйста, включите его в [Настройки] -> [Разрешения]></string>
+
     <!-- диалог оценки -->
     <string name="rta_dialog_title">Оцените MultiCraft!</string>
     <string name="rate_title">Название</string>
     <string name="rate_description">Описание</string>
     <string name="rate_submit">ОЦЕНИТЬ</string>
     <string name="sad">Нам жаль, что Вам не понравилась игра!</string>
+
     <!-- обновление -->
+    <string name="available">Доступна Новая Версия!</string>
     <string name="ignore">Игнорировать</string>
     <string name="later">Позже</string>
     <string name="update">Обновить</string>
