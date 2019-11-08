@@ -384,6 +384,9 @@ public class MainActivity extends AppCompatActivity implements WVersionManager.A
                 checkUrlVersion();
             else
                 showConnectionDialog();
+        /*} else if ("Permissions".equals(source)) {
+            if ("askGdpr".equals(param)) askGdpr();
+            else finish();*/
         }
     }
 
