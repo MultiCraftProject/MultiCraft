@@ -50,7 +50,7 @@ class PreferencesHelper {
     }
 
     boolean isWorldsCopied() {
-        return sharedPreferences.getBoolean(TAG_COPY_WORLDS, true);
+        return sharedPreferences.getBoolean(TAG_COPY_WORLDS, false);
     }
 
     String getBuildNumber() {
@@ -62,7 +62,7 @@ class PreferencesHelper {
     }
 
     int getAdsDelay() {
-        return sharedPreferences.getInt(ADS_DELAY, 300);
+        return sharedPreferences.getInt(ADS_DELAY, 600);
     }
 
     int getAdsRepeat() {

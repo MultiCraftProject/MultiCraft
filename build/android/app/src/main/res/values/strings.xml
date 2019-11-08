@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name" translatable="false">MultiCraft</string>
-    <string name="ver" translatable="false">1.6.0g</string>
+    <string name="ver" translatable="false">1.6.0</string>
 
     <!-- preparation for start -->
     <string name="rm_old">Preparing to update&#8230;</string>

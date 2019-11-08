@@ -8,7 +8,7 @@ android {
 		applicationId 'com.multicraft.game'
 		minSdkVersion 16
 		targetSdkVersion 29
-		versionCode 19
+		versionCode 21
 		/*multiDexEnabled true*/
 	}
 	Properties props = new Properties()
@@ -49,7 +49,7 @@ android {
 
 dependencies {
 	/*implementation 'androidx.multidex:multidex:2.0.1'*/
-	implementation "androidx.preference:preference:1.1.0"
+	implementation 'androidx.preference:preference:1.1.0'
 	// MultiCraft Native
 	implementation project(':native')
 	//noinspection GradleDependency

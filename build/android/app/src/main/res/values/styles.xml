@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="p">shortEdges
@@ -9,7 +10,7 @@
 
     <style name="RateMe" parent="android:Theme.Holo.Light.Dialog" />
 
-    <style name="InputTheme" parent="Theme.AppCompat.Light.Dialog">
+    <style name="InputTheme" parent="Theme.AppCompat.DayNight.Dialog">
         <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
@@ -22,4 +23,5 @@
     </style>
 
     <style name="IndeterminateProgressBar" parent="Widget.AppCompat.ProgressBar" />
+
 </resources>

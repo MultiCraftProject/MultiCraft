@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -80,9 +81,9 @@ public class MainActivity extends AppCompatActivity implements WVersionManager.A
                 }
             } else {
                 createNomedia();
-                File folder = new File(getExternalFilesDir(null) + "/worlds");
+                File folder = new File(Environment.getExternalStorageDirectory() + "/Android/data/mobi.MultiCraft/files/worlds");
                 if (folder.exists() && !pf.isWorldsCopied())
-                    copyWorldsToNewFolder();
+                    copyWorldsToNewFolder(folder);
                 runGame();
             }
         }
@@ -102,9 +103,9 @@ public class MainActivity extends AppCompatActivity implements WVersionManager.A
             return;
         }
         addLaunchTimes();
-        /*PermissionHelper ph = new PermissionHelper();
-        ph.setListener(this);
-        ph.askPermissions();*/
+        /*PermissionHelper permission = new PermissionHelper(this);
+        permission.setListener(this);
+        permission.askPermissions();*/
         askGdpr();
     }
 
@@ -140,8 +141,8 @@ public class MainActivity extends AppCompatActivity implements WVersionManager.A
             return false;
     }
 
-    private void copyWorldsToNewFolder() {
-        File source = new File(getExternalFilesDir(null) + "/worlds");
+    private void copyWorldsToNewFolder(File folder) {
+        File source = new File(String.valueOf(folder));
         File dest = new File(unzipLocation + "worlds");
         try {
             FileUtils.copyDirectory(source, dest);
