@@ -8,24 +8,27 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
-import com.crashlytics.android.Crashlytics;
+import com.bugsnag.android.Bugsnag;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
+import static com.multicraft.game.MainActivity.zipLocations;
+
 public class UnzipService extends IntentService {
-    public static final String ACTION_UPDATE = "mobi.MultiCraft.UPDATE";
+    public static final String ACTION_UPDATE = "com.multicraft.game.UPDATE";
     public static final String EXTRA_KEY_IN_FILE = "file";
-    public static final String EXTRA_KEY_IN_LOCATION = "location";
     public static final String ACTION_PROGRESS = "progress";
+    private final int id = 1;
     private NotificationManager mNotifyManager;
-    private int id = 1;
 
     public UnzipService() {
         super("com.multicraft.game.UnzipService");
@@ -34,35 +37,33 @@ public class UnzipService extends IntentService {
     private void isDir(String dir, String unzipLocation) {
         File f = new File(unzipLocation + dir);
 
-        if (!f.isDirectory()) {
+        if (!f.isDirectory())
             f.mkdirs();
-        }
     }
-
 
     @Override
     protected void onHandleIntent(Intent intent) {
         createNotification();
         unzip(intent);
+    }
 
+    private String getSettings() {
+        return getString(R.string.gdpr_main_text);
     }
 
     private void createNotification() {
         // There are hardcoding only for show it's just strings
-        String name = "mobi.MultiCraft";
+        String name = "com.multicraft.game";
         String channelId = "MultiCraft channel"; // The user-visible name of the channel.
         String description = "notifications from MultiCraft"; // The user-visible description of the channel.
         Notification.Builder builder;
-        if (mNotifyManager == null) {
-            mNotifyManager =
-                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        }
+        if (mNotifyManager == null)
+            mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             int importance = NotificationManager.IMPORTANCE_LOW;
             NotificationChannel mChannel = null;
-            if (mNotifyManager != null) {
+            if (mNotifyManager != null)
                 mChannel = mNotifyManager.getNotificationChannel(channelId);
-            }
             if (mChannel == null) {
                 mChannel = new NotificationChannel(channelId, name, importance);
                 mChannel.setDescription(description);
@@ -74,54 +75,45 @@ public class UnzipService extends IntentService {
             }
             builder = new Notification.Builder(this, channelId);
             builder.setContentTitle(getString(R.string.notification_title))  // required
-                    .setSmallIcon(R.mipmap.update) // required
+                    .setSmallIcon(R.drawable.update) // required
                     .setContentText(getString(R.string.notification_description)); // required
         } else {
             builder = new Notification.Builder(this);
             builder.setContentTitle(getString(R.string.notification_title))
                     .setContentText(getString(R.string.notification_description))
-                    .setSmallIcon(R.mipmap.update);
+                    .setSmallIcon(R.drawable.update);
         }
         mNotifyManager.notify(id, builder.build());
     }
 
     private void unzip(Intent intent) {
-        String[] file = intent.getStringArrayExtra(EXTRA_KEY_IN_FILE);
-        String location = intent.getStringExtra(EXTRA_KEY_IN_LOCATION);
+        String[] zips = intent.getStringArrayExtra(EXTRA_KEY_IN_FILE);
         int per = 0;
-        int size = getSummarySize(file);
-        for (String f : file) {
-            try {
-                try {
-                    FileInputStream fin = new FileInputStream(f);
-                    ZipInputStream zin = new ZipInputStream(fin);
-                    ZipEntry ze;
-                    while ((ze = zin.getNextEntry()) != null) {
-                        if (ze.isDirectory()) {
-                            per++;
-                            isDir(ze.getName(), location);
-                        } else {
-                            per++;
-                            int progress = 100 * per / size;
-                            // send update
-                            publishProgress(progress);
-                            FileOutputStream f_out = new FileOutputStream(location + ze.getName());
-                            byte[] buffer = new byte[8192];
-                            int len;
-                            while ((len = zin.read(buffer)) != -1) {
-                                f_out.write(buffer, 0, len);
+        int size = getSummarySize(Objects.requireNonNull(zips));
+        for (String zip : zips) {
+            File zipFile = new File(zip);
+            int readLen;
+            byte[] readBuffer = new byte[8192];
+            try (FileInputStream fileInputStream = new FileInputStream(zipFile);
+                 ZipInputStream zipInputStream = new ZipInputStream(fileInputStream)) {
+                ZipEntry ze;
+                while ((ze = zipInputStream.getNextEntry()) != null) {
+                    if (ze.isDirectory()) {
+                        ++per;
+                        isDir(ze.getName(), zipLocations.get(zip));
+                    } else {
+                        publishProgress(100 * ++per / size);
+                        try (OutputStream outputStream = new FileOutputStream(zipLocations.get(zip) + ze.getName())) {
+                            while ((readLen = zipInputStream.read(readBuffer)) != -1) {
+                                outputStream.write(readBuffer, 0, readLen);
                             }
-                            f_out.close();
-                            zin.closeEntry();
-                            f_out.close();
                         }
                     }
-                    zin.close();
-                } catch (FileNotFoundException e) {
-                    Crashlytics.logException(e);
                 }
+            } catch (FileNotFoundException e) {
+                Bugsnag.notify(e);
             } catch (IOException e) {
-                Crashlytics.logException(e);
+                Bugsnag.notify(e);
             }
         }
     }
@@ -139,7 +131,7 @@ public class UnzipService extends IntentService {
                 ZipFile zipSize = new ZipFile(z);
                 size += zipSize.size();
             } catch (IOException e) {
-                Crashlytics.logException(e);
+                Bugsnag.notify(e);
             }
         }
         return size;

@@ -26,9 +26,8 @@ class PreferencesHelper {
     static PreferencesHelper getInstance(Context context) {
         if (instance == null) {
             synchronized (PreferencesHelper.class) {
-                if (instance == null) {
+                if (instance == null)
                     instance = new PreferencesHelper(context.getApplicationContext());
-                }
             }
         }
         return instance;

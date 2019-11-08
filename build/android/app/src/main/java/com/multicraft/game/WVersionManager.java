@@ -1,19 +1,18 @@
 package com.multicraft.game;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.Html;
 
-import com.crashlytics.android.Crashlytics;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.bugsnag.android.Bugsnag;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,23 +29,21 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.Locale;
 
+import static com.multicraft.game.MainActivity.UPDATE_LINK;
 
 class WVersionManager implements DialogsCallback {
+    private final CustomTagHandler customTagHandler;
+    private final String PREF_IGNORE_VERSION_CODE = "w.ignore.version.code";
+    private final String PREF_REMINDER_TIME = "w.reminder.time";
+    private final String PREF_LAUNCH_TIMES = "w.launch.times";
+    private final AppCompatActivity activity;
+    private final ActivityListener al;
     private DialogsCallback sCallback = null;
-    private CustomTagHandler customTagHandler;
-    private String PREF_IGNORE_VERSION_CODE = "w.ignore.version.code";
-    private String PREF_REMINDER_TIME = "w.reminder.time";
-    private String PREF_LAUNCH_TIMES = "w.launch.times";
-    private Activity activity;
-    private Drawable icon;
-    private String title;
     private String message;
     private String updateUrl;
-    private String versionContentUrl;
     private int mVersionCode;
-    private ActivityListener al;
 
-    WVersionManager(Activity act) {
+    WVersionManager(AppCompatActivity act) {
         this.activity = act;
         al = (ActivityListener) act;
         this.customTagHandler = new CustomTagHandler();
@@ -57,38 +54,26 @@ class WVersionManager implements DialogsCallback {
         sCallback = callback;
     }
 
-    private Drawable getDefaultAppIcon() {
-        return activity.getApplicationInfo().loadIcon(activity.getPackageManager());
-    }
-
     void checkVersion() {
-        String versionContentUrl = getVersionContentUrl();
-        if (versionContentUrl == null) {
-            Crashlytics.log("Please set versionContentUrl first");
-            return;
-        }
-
         Calendar c = Calendar.getInstance();
         long currentTimeStamp = c.getTimeInMillis();
         long reminderTimeStamp = getReminderTime();
         if (currentTimeStamp > reminderTimeStamp) {
             // fire request to get update version content
-            VersionContentRequest request = new VersionContentRequest(activity);
-            request.execute(getVersionContentUrl());
-        } else {
+            VersionContentRequest request = new VersionContentRequest();
+            request.execute(UPDATE_LINK);
+        } else
             al.isShowUpdateDialog(false);
-        }
     }
 
     void showDialog() {
         AlertDialogHelper dialogHelper = new AlertDialogHelper(activity);
         dialogHelper.setListener(this);
-        dialogHelper.setIcon(getIcon());
-        dialogHelper.setTitle(getTitle());
+        dialogHelper.setIcon(activity.getResources().getDrawable(R.mipmap.ic_launcher));
+        dialogHelper.setTitle(activity.getString(R.string.available));
         dialogHelper.setMessage(Html.fromHtml(getMessage(), null, getCustomTagHandler()));
-        dialogHelper.setButtonPositive(getUpdateNowLabel());
-        dialogHelper.setButtonNeutral(getRemindMeLaterLabel());
-        dialogHelper.setButtonNegative(getIgnoreThisVersionLabel());
+        dialogHelper.setButtonPositive(activity.getString(R.string.update));
+        dialogHelper.setButtonNeutral(activity.getString(R.string.later));
         dialogHelper.showAlert("WVersionManager");
     }
 
@@ -97,18 +82,6 @@ class WVersionManager implements DialogsCallback {
         launchTimes++;
         PreferenceManager.getDefaultSharedPreferences(activity).edit().putInt(PREF_LAUNCH_TIMES, launchTimes)
                 .apply();
-    }
-
-    private String getUpdateNowLabel() {
-        return activity.getString(R.string.update);
-    }
-
-    private String getRemindMeLaterLabel() {
-        return activity.getString(R.string.later);
-    }
-
-    private String getIgnoreThisVersionLabel() {
-        return activity.getString(R.string.ignore);
     }
 
     private String getMessage() {
@@ -120,41 +93,12 @@ class WVersionManager implements DialogsCallback {
         this.message = message;
     }
 
-    private String getTitle() {
-        String defaultTitle = "New Update Available";
-        return title != null ? title : defaultTitle;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    private Drawable getIcon() {
-        return icon != null ? icon : getDefaultAppIcon();
-    }
-
-    public void setIcon(Drawable icon) {
-        this.icon = icon;
-    }
-
     String getUpdateUrl() {
         return updateUrl != null ? updateUrl : getGooglePlayStoreUrl();
     }
 
     private void setUpdateUrl(String updateUrl) {
         this.updateUrl = updateUrl;
-    }
-
-    private String getVersionContentUrl() {
-        return versionContentUrl;
-    }
-
-    void setVersionContentUrl(String versionContentUrl) {
-        this.versionContentUrl = versionContentUrl;
-    }
-
-    int getReminderTimer() {
-        return 1;
     }
 
     void updateNow(String url) {
@@ -164,18 +108,16 @@ class WVersionManager implements DialogsCallback {
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 activity.startActivity(intent);
             } catch (Exception e) {
-                Crashlytics.logException(e);
+                Bugsnag.notify(e);
             }
         }
 
     }
 
-    void remindMeLater(int reminderTimer) {
+    void remindMeLater() {
         Calendar c = Calendar.getInstance();
-
-        c.add(Calendar.MINUTE, reminderTimer);
+        c.add(Calendar.MINUTE, 1);
         long reminderTimeStamp = c.getTimeInMillis();
-
         setReminderTime(reminderTimeStamp);
     }
 
@@ -241,22 +183,30 @@ class WVersionManager implements DialogsCallback {
         void isShowUpdateDialog(boolean flag);
     }
 
+    private static class CustomTagHandler implements Html.TagHandler {
+        @Override
+        public void handleTag(boolean opening, String tag, Editable output,
+                              XMLReader xmlReader) {
+            // you may add more tag handler which are not supported by android here
+            if ("li".equals(tag)) {
+                if (opening)
+                    output.append(" \u2022 ");
+                else
+                    output.append("\n");
+            }
+        }
+    }
+
     @SuppressLint("StaticFieldLeak")
     private class VersionContentRequest extends AsyncTask<String, Void, String> {
-        Context context;
-
-        VersionContentRequest(Context context) {
-            this.context = context;
-        }
-
         @Override
         protected String doInBackground(String... uri) {
-            String path = getVersionContentUrl();
             String result = null;
             try {
-                URL u = new URL(path);
+                URL u = new URL(UPDATE_LINK);
                 HttpURLConnection c = (HttpURLConnection) u.openConnection();
                 c.setRequestMethod("GET");
+                c.setConnectTimeout(5000);
                 c.connect();
                 InputStream in = c.getInputStream();
                 final ByteArrayOutputStream bo = new ByteArrayOutputStream();
@@ -266,11 +216,11 @@ class WVersionManager implements DialogsCallback {
                 result = bo.toString();
                 bo.close();
             } catch (MalformedURLException e) {
-                Crashlytics.logException(e);
+                Bugsnag.notify(e);
             } catch (ProtocolException e) {
-                Crashlytics.logException(e);
+                Bugsnag.notify(e);
             } catch (IOException e) {
-                Crashlytics.logException(e);
+                // nothing
             }
             return result;
         }
@@ -290,11 +240,10 @@ class WVersionManager implements DialogsCallback {
                     JSONObject json = (JSONObject) new JSONTokener(mResult).nextValue();
                     mVersionCode = json.optInt("version_code");
                     String lang = Locale.getDefault().getLanguage();
-                    if (lang.equals("ru")) {
+                    if (lang.equals("ru"))
                         content = json.optString("content_ru");
-                    } else {
+                    else
                         content = json.optString("content_en");
-                    }
                     String packageName = json.optString("package");
                     setUpdateUrl("market://details?id=" + packageName);
                     int adsDelay = json.optInt("ads_delay");
@@ -311,38 +260,19 @@ class WVersionManager implements DialogsCallback {
                                     .apply();
                             setMessage(content);
                             al.isShowUpdateDialog(true);
-                        } else {
+                        } else
                             al.isShowUpdateDialog(false);
-                        }
-                    } else {
+                    } else
                         al.isShowUpdateDialog(false);
-                    }
                 } catch (JSONException e) {
-                    Crashlytics.logException(e);
+                    Bugsnag.notify(e);
                     al.isShowUpdateDialog(false);
                 } catch (Exception e) {
-                    Crashlytics.logException(e);
+                    Bugsnag.notify(e);
                     al.isShowUpdateDialog(false);
                 }
-            } else {
+            } else
                 al.isShowUpdateDialog(false);
-            }
-        }
-    }
-
-    private class CustomTagHandler implements Html.TagHandler {
-
-        @Override
-        public void handleTag(boolean opening, String tag, Editable output,
-                              XMLReader xmlReader) {
-            // you may add more tag handler which are not supported by android here
-            if ("li".equals(tag)) {
-                if (opening) {
-                    output.append(" \u2022 ");
-                } else {
-                    output.append("\n");
-                }
-            }
         }
     }
 }

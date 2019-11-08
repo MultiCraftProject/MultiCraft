@@ -1,33 +1,17 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.bugsnag.android.gradle'
 android {
 	compileSdkVersion 29
-	buildToolsVersion "29.0.2"
+	buildToolsVersion '29.0.2'
 
 	defaultConfig {
 		applicationId 'com.multicraft.game'
 		minSdkVersion 16
 		targetSdkVersion 29
-		versionCode 8
-	}
-	Properties props = new Properties()
-	props.load(new FileInputStream(file('../local.properties')))
-
-	if (props.getProperty('keystore') != null) {
-		signingConfigs {
-			release {
-				storeFile file(props['keystore'])
-				storePassword props['keystore.password']
-				keyAlias props['key']
-				keyPassword props['key.password']
-			}
-		}
-
-		buildTypes {
-			release {
-				minifyEnabled false
-				proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-				signingConfig signingConfigs.release
-			}
+		versionCode 19
+		multiDexEnabled true
+		ndk {
+			abiFilters 'armeabi-v7a', 'arm64-v8a'
 		}
 	}
 
@@ -35,36 +19,18 @@ android {
 		sourceCompatibility JavaVersion.VERSION_1_8
 		targetCompatibility JavaVersion.VERSION_1_8
 	}
-// for multiple APKs
-	splits {
-		abi {
-			enable true
-			reset()
-			include 'armeabi-v7a', 'arm64-v8a'//, 'x86'
-		}
-	}
 }
 
-// Map for the version code that gives each ABI a value.
-/*import com.android.build.OutputFile
-
-def abiCodes = ['armeabi-v7a': 0, 'arm64-v8a': 1] //['armeabi-v7a': 0, 'arm64-v8a': 1, 'x86': 2*]
-android.applicationVariants.all { variant ->
-	variant.outputs.each {
-		output ->
-			def abiName = output.getFilter(OutputFile.ABI)
-			output.versionCodeOverride = abiCodes.get(abiName, 0) + variant.versionCode
-	}
-}*/
-
 dependencies {
+	implementation 'androidx.multidex:multidex:2.0.1'
+	implementation "androidx.preference:preference:1.1.0"
 	// MultiCraft Native
-	implementation project(':native')
+	//implementation project(':native')
 	// Analytics libraries
-	implementation 'com.google.firebase:firebase-core:17.2.0'
-	implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
-	// Third-party libraries
-	implementation 'com.itlgl:iosdialog:1.0.0'
-	implementation 'gun0912.ted:tedpermission:2.2.2'
-	implementation group: 'commons-io', name: 'commons-io', version: '2.4'
+	//noinspection GradleDynamicVersion
+	implementation('com.bugsnag:bugsnag-android:4.+') {
+		exclude group: 'com.bugsnag', module: 'bugsnag-plugin-android-ndk'
+	}
+	//noinspection GradleDependency
+	implementation 'commons-io:commons-io:2.5'
 }

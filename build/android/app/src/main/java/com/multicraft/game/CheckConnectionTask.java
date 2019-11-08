@@ -3,16 +3,13 @@ package com.multicraft.game;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.crashlytics.android.Crashlytics;
-
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class CheckConnectionTask extends AsyncTask<Void, Void, Boolean> {
-
-    private WeakReference<Context> contextRef;
+class CheckConnectionTask extends AsyncTask<Void, Void, Boolean> {
+    private final WeakReference<Context> contextRef;
     private CallBackListener listener;
 
     CheckConnectionTask(Context context) {
@@ -34,24 +31,23 @@ public class CheckConnectionTask extends AsyncTask<Void, Void, Boolean> {
         listener.onEvent("CheckConnectionTask", isStart.toString());
     }
 
-    private boolean isGoogleAvailable(String url, int timeout) {
+    private boolean isInternetAvailable(String url) {
         try {
             HttpURLConnection urlc = (HttpURLConnection)
                     (new URL(url)
                             .openConnection());
-            urlc.setRequestProperty("User-Agent", "Android");
             urlc.setRequestProperty("Connection", "close");
-            urlc.setConnectTimeout(timeout);
+            urlc.setConnectTimeout(1500);
             urlc.connect();
-            return urlc.getResponseCode() == HttpURLConnection.HTTP_NO_CONTENT && urlc.getContentLength() == 0;
+            return urlc.getResponseCode() == HttpURLConnection.HTTP_NO_CONTENT || urlc.getResponseCode() == HttpURLConnection.HTTP_OK;
         } catch (IOException e) {
-            Crashlytics.logException(e);
+            // nothing
         }
         return false;
     }
 
     private boolean isReachable() {
-        return isGoogleAvailable("http://clients3.google.com/generate_204", 1500) ||
-                isGoogleAvailable("http://g.cn/generate_204", 1000);
+        return isInternetAvailable("http://clients3.google.com/generate_204") ||
+                isInternetAvailable("http://servers.multicraft.world");
     }
 }

@@ -2,22 +2,18 @@
 <resources>
 
     <string name="app_name" translatable="false">MultiCraft</string>
-    <string name="ver" translatable="false">1.6.0</string>
-    <!-- preparation for start -->
+    <string name="ver" translatable="false">1.6.0g</string>
 
+    <!-- preparation for start -->
     <string name="rm_old">Preparing to update&#8230;</string>
     <string name="loading">Loading&#8230;</string>
     <string name="notification_title">Loading MultiCraft</string>
     <string name="notification_description">Less than 1 minute&#8230;</string>
     <string name="restart">Unexpected issue, the game will be restarted automatically</string>
-    <string name="no_space">No space left for game files, please free space on SD card</string>
+    <string name="no_space">No space left for game files, please free space in the memory</string>
 
     <!-- permission block -->
-    <string name="explain">Storage permissions is necessary to unpack textures and game data.</string>
-    <string name="location">Location permission provide you better interaction with game</string>
-    <string name="close_game">Close game</string>
-    <string name="settings">App settings</string>
-    <string name="denied">You cannot play MultiCraft without storage permission. \nPlease turn on it at [Settings] -> [Permissions]></string>
+
     <!-- rate input_dialog -->
     <string name="rta_dialog_title">Please, rate MultiCraft!</string>
     <string name="rate_title">Title</string>
@@ -26,6 +22,7 @@
     <string name="sad">We are sorry that you did not like the game!</string>
 
     <!--update input_dialog -->
+    <string name="available">New Version Available!</string>
     <string name="update">Update</string>
     <string name="later">Later</string>
     <string name="ignore">Ignore</string>
@@ -36,8 +33,8 @@
     <string name="conn_mobile">Mobile Data</string>
 
     <!-- GDPR -->
-    <string name="gdpr_main_text" translatable="false"><b>We care about your privacy and data security. We keep this app free by showing ads.</b>\n\n<b>Can we continue to use your data to tailor ads for you?</b>\n\n<small>Our partners will collect data and use a unique identifier on your device to show you ads. By agreeing, you confirm that you are 16 years old. You can learn how we and our partners collect and use data on\n<b><a href="https://www.appodeal.com/privacy-policy">Privacy Policy</a></b>.</small></string>
-    <string name="gdpr_agree" translatable="false">Agree</string>
-    <string name="gdpr_disagree" translatable="false">Disagree</string>
+    <string name="gdpr_main_text" translatable="false"><b>We care about your privacy and data security. We keep this app free by showing ads.\n<big>Can we continue to use your data to tailor ads for you?</big></b>\n\n<small>Our partners will collect data and use a unique identifier on your device to show you ads. By agreeing, you confirm that you are 16 years old. You can learn how we and our partners collect and use data on <a href="https://www.appodeal.com/privacy-policy">Privacy Policy</a>.</small></string>
+    <string name="gdpr_agree" translatable="false">Yes, I allow</string>
+    <string name="gdpr_disagree" translatable="false">No</string>
 
 </resources>
