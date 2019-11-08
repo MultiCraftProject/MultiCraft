@@ -1,9 +1,11 @@
 package com.multicraft.game;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.NativeActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +15,11 @@ import com.bugsnag.android.Bugsnag;
 
 import static com.multicraft.game.PreferencesHelper.TAG_BUILD_NUMBER;
 import static com.multicraft.game.PreferencesHelper.getInstance;
+
+/*import static com.multicraft.game.AdManager.initAd;
+import static com.multicraft.game.AdManager.setAdsCallback;
+import static com.multicraft.game.AdManager.startAd;
+import static com.multicraft.game.AdManager.stopAd;*/
 
 public class GameActivity extends NativeActivity {
     static {
@@ -45,6 +52,7 @@ public class GameActivity extends NativeActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         messageReturnCode = -1;
         messageReturnValue = "";
+//        new AdInitTask().execute();
     }
 
     private void makeFullScreen() {
@@ -128,7 +136,9 @@ public class GameActivity extends NativeActivity {
         }
     }
 
-    public void notifyServerConnect(boolean isMultiplayer) {
+    public void notifyServerConnect(boolean isMultiPlayer) {
+         /*isMultiPlayer = isMultiPlayer;
+        if (isMultiPlayer) stopAd();*/
     }
 
     public void notifyAbortLoading() {
@@ -137,5 +147,22 @@ public class GameActivity extends NativeActivity {
     }
 
     public void notifyExitGame() {
+        /*if (isMultiPlayer)
+            startAd(this, false, true);*/
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    class AdInitTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            /*initAd(GameActivity.this, consent);*/
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            /*setAdsCallback(GameActivity.this);*/
+        }
     }
 }

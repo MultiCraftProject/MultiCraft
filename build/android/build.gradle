@@ -18,9 +18,6 @@ allprojects {
 	repositories {
 		google()
 		jcenter()
-		flatDir { dirs 'libs-aar' }
-		maven { url "https://dl.bintray.com/ironsource-mobile/android-sdk" }
-		maven { url "https://adcolony.bintray.com/AdColony" }
 	}
 }
 

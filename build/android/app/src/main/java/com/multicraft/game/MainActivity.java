@@ -102,6 +102,9 @@ public class MainActivity extends AppCompatActivity implements WVersionManager.A
             return;
         }
         addLaunchTimes();
+        /*PermissionHelper ph = new PermissionHelper();
+        ph.setListener(this);
+        ph.askPermissions();*/
         askGdpr();
     }
 
