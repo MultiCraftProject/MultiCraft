@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.bugsnag.android.gradle'
 android {
 	compileSdkVersion 29
 	buildToolsVersion '29.0.2'
