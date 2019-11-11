@@ -9,6 +9,8 @@ class PreferencesHelper {
     static final String TAG_LAUNCH_TIMES = "launchTimes";
     static final String TAG_CONSENT_ASKED = "consentAsked";
     static final String TAG_COPY_WORLDS = "copyWorlds";
+    static final String IS_LOADED = "interstitialLoaded";
+    static final String RV_LOADED = "rewardedVideoLoaded";
     static final String ADS_DELAY = "adsDelay";
     static final String ADS_REPEAT = "adsRepeat";
     private static final String SETTINGS = "MultiCraftSettings";
@@ -35,8 +37,20 @@ class PreferencesHelper {
         return sharedPreferences.getBoolean(TAG_SHORTCUT_CREATED, true);
     }
 
+    boolean isInterstitialLoaded() {
+        return sharedPreferences.getBoolean(IS_LOADED, false);
+    }
+
+    boolean isVideoLoaded() {
+        return sharedPreferences.getBoolean(RV_LOADED, false);
+    }
+
     boolean isAskConsent() {
         return sharedPreferences.getBoolean(TAG_CONSENT_ASKED, true);
+    }
+
+    boolean isWorldsCopied() {
+        return sharedPreferences.getBoolean(TAG_COPY_WORLDS, false);
     }
 
     String getBuildNumber() {
