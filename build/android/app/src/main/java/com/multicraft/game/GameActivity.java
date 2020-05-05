@@ -44,6 +44,8 @@ public class GameActivity extends NativeActivity {
 
     public static native void putMessageBoxResult(String text);
 
+    public static native void pauseGame();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

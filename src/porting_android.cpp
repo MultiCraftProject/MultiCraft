@@ -34,6 +34,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #endif
 
 extern int main(int argc, char *argv[]);
+extern void external_pause_game();
 
 void android_main(android_app *app) {
 	int retval = 0;
@@ -63,11 +64,16 @@ void android_main(android_app *app) {
 /* TODO this doesn't work as expected, no idea why but there's a workaround   */
 /* for it right now */
 extern "C" {
-JNIEXPORT void JNICALL Java_com_multicraft_game_GameActivity_putMessageBoxResult(
+JNIEXPORT void JNICALL
+Java_com_multicraft_game_GameActivity_putMessageBoxResult(
 		JNIEnv *env, jclass j_this, jstring text) {
 	errorstream << "Java_com_multicraft_game_GameActivity_putMessageBoxResult got: "
 	            << std::string((const char *) env->GetStringChars(text, nullptr))
 	            << std::endl;
+}
+JNIEXPORT void JNICALL
+Java_com_multicraft_game_GameActivity_pauseGame(JNIEnv *env, jclass clazz) {
+	external_pause_game();
 }
 }
 
