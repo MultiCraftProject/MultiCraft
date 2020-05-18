@@ -59,11 +59,13 @@ end
 --------------------------------------------------------------------------------
 function order_favorite_list(list, mobile)
 	local res = {}
+	local non_mobile_servers = {}
 	-- orders the multicraft list before support
 	for i = 1, #list do
 		local fav = list[i]
-		if (mobile and fav.mobile_friendly or not mobile) and
-				fav.server_id == "multicraft" then
+		if mobile and not fav.mobile_friendly then
+			non_mobile_servers[("%s:%s"):format(fav.address, fav.port)] = fav
+		elseif fav.server_id == "multicraft" then
 			res[#res + 1] = fav
 		end
 	end
@@ -75,11 +77,17 @@ function order_favorite_list(list, mobile)
 			res[#res + 1] = fav
 		end
 	end
-	return res
+	return res, non_mobile_servers
 end
 
 --------------------------------------------------------------------------------
 function render_serverlist_row(spec, is_favorite, is_approved)
+	-- Get information from non_mobile_servers.
+	if is_favorite and not spec.proto_min and menudata.non_mobile_servers then
+		local id = ("%s:%s"):format(spec.address, spec.port)
+		spec = menudata.non_mobile_servers[id] or spec
+	end
+
 	local text = ""
 	if spec.name then
 		text = text .. core.formspec_escape(spec.name:trim())
@@ -241,11 +249,12 @@ function asyncOnlineFavourites(mobile)
 		nil,
 		function(result)
 			menudata.public_downloading = nil
-			local favs = order_favorite_list(result, mobile)
+			local favs, non_mobile = order_favorite_list(result, mobile)
 			if favs[1] then
 				menudata.public_known = favs
 				menudata.favorites = menudata.public_known
 				menudata.favorites_is_public = true
+				menudata.non_mobile_servers = non_mobile
 			end
 			core.event_handler("Refresh")
 		end
