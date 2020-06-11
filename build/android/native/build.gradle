@@ -63,9 +63,9 @@ task getDeps(dependsOn: downloadDeps, type: Copy) {
 }
 
 // get libiconv
-task downloadIconv(type: Download) {
+task downloadIconv(dependsOn: getDeps, type: Download) {
 	src 'https://github.com/MoNTE48/ndk_iconv/archive/mc.zip'
-	dest new File(buildDir, 'sqlite.zip')
+	dest new File(buildDir, 'iconv.zip')
 	overwrite false
 }
 
