@@ -1,22 +1,26 @@
-package com.multicraft.game;
+package com.multicraft.game.helpers;
 
 import android.graphics.drawable.Drawable;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.multicraft.game.callbacks.DialogsCallback;
 
-class AlertDialogHelper {
+
+public class AlertDialogHelper {
     private final AppCompatActivity activity;
     private DialogsCallback sCallback = null;
     private Drawable icon = null;
     private String title = null;
     private CharSequence message = null;
+    private TextView tv = null;
     private String buttonPositive = null;
     private String buttonNegative = null;
     private String buttonNeutral = null;
 
-    AlertDialogHelper(AppCompatActivity activity) {
+    public AlertDialogHelper(AppCompatActivity activity) {
         this.activity = activity;
     }
 
@@ -40,15 +44,23 @@ class AlertDialogHelper {
         return message;
     }
 
-    void setMessage(CharSequence message) {
+    public void setMessage(CharSequence message) {
         this.message = message;
+    }
+
+    private TextView getTV() {
+        return tv;
+    }
+
+    public void setTV(TextView tv) {
+        this.tv = tv;
     }
 
     private String getButtonPositive() {
         return buttonPositive;
     }
 
-    void setButtonPositive(String buttonPositive) {
+    public void setButtonPositive(String buttonPositive) {
         this.buttonPositive = buttonPositive;
     }
 
@@ -56,7 +68,7 @@ class AlertDialogHelper {
         return buttonNegative;
     }
 
-    void setButtonNegative(String buttonNegative) {
+    public void setButtonNegative(String buttonNegative) {
         this.buttonNegative = buttonNegative;
     }
 
@@ -64,19 +76,20 @@ class AlertDialogHelper {
         return buttonNeutral;
     }
 
-    void setButtonNeutral(String buttonNeutral) {
+    public void setButtonNeutral(String buttonNeutral) {
         this.buttonNeutral = buttonNeutral;
     }
 
-    void setListener(DialogsCallback callback) {
+    public void setListener(DialogsCallback callback) {
         sCallback = callback;
     }
 
-    void showAlert(final String source) {
+    public void showAlert(final String source) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         if (getIcon() != null) builder.setIcon(getIcon());
         if (getTitle() != null) builder.setTitle(getTitle());
         if (getMessage() != null) builder.setMessage(getMessage());
+        if (getTV() != null) builder.setView(getTV());
         if (getButtonPositive() != null)
             builder.setPositiveButton(getButtonPositive(), (dialogInterface, i) -> {
                 dialogInterface.dismiss();

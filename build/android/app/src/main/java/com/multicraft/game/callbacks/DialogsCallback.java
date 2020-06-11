@@ -1,6 +1,6 @@
-package com.multicraft.game;
+package com.multicraft.game.callbacks;
 
-interface DialogsCallback {
+public interface DialogsCallback {
     void onPositive(String source);
 
     void onNegative(String source);

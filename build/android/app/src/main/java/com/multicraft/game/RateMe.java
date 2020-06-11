@@ -2,57 +2,52 @@ package com.multicraft.game;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
 import android.view.View;
 import android.widget.RatingBar;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.bugsnag.android.Bugsnag;
+import com.multicraft.game.callbacks.DialogsCallback;
+import com.multicraft.game.helpers.PreferencesHelper;
 
 import java.lang.ref.WeakReference;
 import java.util.Date;
 import java.util.Objects;
 
+import static com.multicraft.game.helpers.ApiLevelHelper.isGreaterOrEqualKitkat;
+
 class RateMe {
     private static final int INSTALL_DAYS = 5;
-    private static final int LAUNCH_TIMES = 3;
-    private static final String GOOGLE_PLAY = "https://play.google.com/store/apps/details?id=";
+    private static final int LAUNCH_TIMES = 4;
     private static final String PREF_NAME = "RateMe";
     private static final String KEY_INSTALL_DATE = "rta_install_date";
-    private static final String KEY_LAUNCH_TIMES = "rta_launch_times";
     private static final String KEY_OPT_OUT = "rta_opt_out";
     private static Date mInstallDate = new Date();
-    private static int mLaunchTimes = 0;
     private static boolean mOptOut = false;
     private static DialogsCallback sCallback = null;
 
-    private static WeakReference<AppCompatActivity> mainActivityRef = null;
+    private static WeakReference<AppCompatActivity> activityRef = null;
 
     static void setListener(DialogsCallback callback) {
         sCallback = callback;
     }
 
-    static void onStart(Context context) {
-        mainActivityRef = new WeakReference<>((AppCompatActivity) context);
-        SharedPreferences pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+    static void onStart(AppCompatActivity activity) {
+        activityRef = new WeakReference<>(activity);
+        SharedPreferences pref = activity.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         Editor editor = pref.edit();
         // If it is the first launch, save the date in shared preference.
         if (pref.getLong(KEY_INSTALL_DATE, 0) == 0L)
-            storeInstallDate(context, editor);
-        // Increment launch times
-        int launchTimes = pref.getInt(KEY_LAUNCH_TIMES, 0);
-        launchTimes++;
-        editor.putInt(KEY_LAUNCH_TIMES, launchTimes);
-
+            storeInstallDate(activity, editor);
         editor.apply();
 
         mInstallDate = new Date(pref.getLong(KEY_INSTALL_DATE, 0));
-        mLaunchTimes = pref.getInt(KEY_LAUNCH_TIMES, 0);
         mOptOut = pref.getBoolean(KEY_OPT_OUT, false);
     }
 
@@ -60,7 +55,7 @@ class RateMe {
         if (mOptOut)
             return false;
         else {
-            if (mLaunchTimes >= LAUNCH_TIMES)
+            if (PreferencesHelper.getInstance(activityRef.get()).getLaunchTimes() % LAUNCH_TIMES == 0)
                 return true;
             long threshold = INSTALL_DAYS * 24 * 60 * 60 * 1000L;
             return new Date().getTime() - mInstallDate.getTime() >= threshold;
@@ -68,69 +63,58 @@ class RateMe {
     }
 
     static void showRateDialog() {
-        final AppCompatActivity activity = mainActivityRef.get();
+        final AppCompatActivity activity = activityRef.get();
         final Dialog dialog = new Dialog(activity, R.style.RateMe);
-        dialog.setCanceledOnTouchOutside(false);
-        if (Build.VERSION.SDK_INT >= 19)
+        dialog.setCancelable(false);
+        if (isGreaterOrEqualKitkat())
             Objects.requireNonNull(dialog.getWindow()).getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         dialog.setContentView(R.layout.rate_dialog);
-        dialog.setTitle(R.string.rta_dialog_title);
-
         RatingBar ratingBar = dialog.findViewById(R.id.ratingBar);
         ratingBar.setOnRatingBarChangeListener((ratingBar1, rating, fromUser) -> {
             if (rating >= 4) {
-                if (sCallback != null)
-                    sCallback.onPositive("RateMe");
+                sCallback.onPositive("RateMe");
                 dialog.dismiss();
-                String appPackage = activity.getPackageName();
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(GOOGLE_PLAY + appPackage));
-                activity.startActivity(intent);
                 setOptOut(activity);
             } else {
-                if (sCallback != null)
-                    sCallback.onNegative("RateMe");
+                sCallback.onNegative("RateMe");
                 dialog.dismiss();
+                Toast.makeText(activity, R.string.sad, Toast.LENGTH_LONG).show();
                 clearSharedPreferences(activity);
             }
         });
         dialog.setOnCancelListener(dialog1 -> {
-            if (sCallback != null)
-                sCallback.onNeutral("RateMe");
+            sCallback.onNeutral("RateMe");
             clearSharedPreferences(activity);
         });
         if (!activity.isFinishing())
             dialog.show();
-        else if (sCallback != null)
+        else
             sCallback.onNegative("RateMe");
     }
 
-    private static void clearSharedPreferences(AppCompatActivity context) {
-        SharedPreferences pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        Editor editor = pref.edit();
+    private static void clearSharedPreferences(AppCompatActivity activity) {
+        Editor editor = activity.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit();
         editor.remove(KEY_INSTALL_DATE);
-        editor.remove(KEY_LAUNCH_TIMES);
         editor.apply();
     }
 
-    private static void setOptOut(final AppCompatActivity context) {
-        SharedPreferences pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        Editor editor = pref.edit();
+    private static void setOptOut(final AppCompatActivity activity) {
+        Editor editor = activity.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit();
         editor.putBoolean(KEY_OPT_OUT, true);
         editor.apply();
-        mOptOut = true;
     }
 
-    private static void storeInstallDate(final Context context, SharedPreferences.Editor editor) {
+    private static void storeInstallDate(final AppCompatActivity activity, Editor editor) {
         Date installDate = new Date();
-        PackageManager packMan = context.getPackageManager();
+        PackageManager packageManager = activity.getPackageManager();
         try {
-            PackageInfo pkgInfo = packMan.getPackageInfo(context.getPackageName(), 0);
+            PackageInfo pkgInfo = packageManager.getPackageInfo(activity.getPackageName(), 0);
             installDate = new Date(pkgInfo.firstInstallTime);
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            Bugsnag.notify(e);
         }
         editor.putLong(KEY_INSTALL_DATE, installDate.getTime());
     }

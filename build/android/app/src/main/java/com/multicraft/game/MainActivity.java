@@ -1,71 +1,124 @@
 package com.multicraft.game;
 
-import android.app.ActivityManager;
-import android.app.Dialog;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
+import android.content.IntentSender;
+import android.graphics.BlendMode;
+import android.graphics.BlendModeColorFilter;
+import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
+import android.graphics.drawable.LayerDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.Environment;
 import android.provider.Settings;
-import android.text.TextUtils;
+import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.bugsnag.android.Bugsnag;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.InstallStateUpdatedListener;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.InstallStatus;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.Task;
+import com.multicraft.game.callbacks.CallBackListener;
+import com.multicraft.game.callbacks.DialogsCallback;
+import com.multicraft.game.helpers.AlertDialogHelper;
+import com.multicraft.game.helpers.PermissionHelper;
+import com.multicraft.game.helpers.PreferencesHelper;
+import com.multicraft.game.helpers.Utilities;
+import com.multicraft.game.helpers.VersionManagerHelper;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
-import static com.multicraft.game.PreferencesHelper.TAG_BUILD_NUMBER;
-import static com.multicraft.game.PreferencesHelper.TAG_CONSENT_ASKED;
-import static com.multicraft.game.PreferencesHelper.TAG_LAUNCH_TIMES;
-import static com.multicraft.game.PreferencesHelper.TAG_SHORTCUT_CREATED;
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity implements WVersionManager.ActivityListener, CallBackListener, DialogsCallback {
+import static com.multicraft.game.helpers.ApiLevelHelper.isGreaterOrEqual;
+import static com.multicraft.game.helpers.ApiLevelHelper.isGreaterOrEqualLollipop;
+import static com.multicraft.game.helpers.ApiLevelHelper.isGreaterOrEqualOreo;
+import static com.multicraft.game.helpers.ApiLevelHelper.isGreaterOrEqualQ;
+import static com.multicraft.game.helpers.OldVersionHelper.REQUEST_UNINSTALL;
+import static com.multicraft.game.helpers.OldVersionHelper.isOldVersionExists;
+import static com.multicraft.game.helpers.OldVersionHelper.uninstallOldVersion;
+import static com.multicraft.game.helpers.PreferencesHelper.TAG_BUILD_NUMBER;
+import static com.multicraft.game.helpers.PreferencesHelper.TAG_CONSENT_ASKED;
+import static com.multicraft.game.helpers.PreferencesHelper.TAG_LAUNCH_TIMES;
+import static com.multicraft.game.helpers.Utilities.addShortcut;
+import static com.multicraft.game.helpers.Utilities.deleteFiles;
+import static com.multicraft.game.helpers.Utilities.getIcon;
+import static com.multicraft.game.helpers.Utilities.getStoreUrl;
+import static com.multicraft.game.helpers.Utilities.isArm64;
+import static com.multicraft.game.helpers.Utilities.makeFullScreen;
+
+public class MainActivity extends AppCompatActivity implements CallBackListener, DialogsCallback {
     public final static Map<String, String> zipLocations = new HashMap<>();
-    public static final String UPDATE_LINK = "http://updates.multicraft.world/Android.json";
+    private final static String SERVER_URL = "http://updates.multicraft.world/";
+    public final static String UPDATE_LINK = SERVER_URL + "Android.json";
     private final static int REQUEST_CONNECTION = 104;
-    private final static String CREATE_SHORTCUT = "com.android.launcher.action.INSTALL_SHORTCUT";
-    private static final String[] EU_COUNTRIES = new String[]{
+    private final static int REQUEST_UPDATE = 102;
+    private final static List<String> EU_COUNTRIES = Arrays.asList(
             "AT", "BE", "BG", "HR", "CY", "CZ",
             "DK", "EE", "FI", "FR", "DE", "GR",
             "HU", "IE", "IT", "LV", "LT", "LU",
             "MT", "NL", "PL", "PT", "RO", "SK",
-            "SI", "ES", "SE", "GB", "IS", "LI", "NO"};
-    private static String FILES, WORLDS, GAMES;
+            "SI", "ES", "SE", "GB", "IS", "LI", "NO");
+    private static String FILES, WORLDS, GAMES, CACHE;
     private final String versionName = BuildConfig.VERSION_NAME;
-    private String unzipLocation;
-    private String appData;
+    private String unzipLocation, appData;
     private int height, width;
     private boolean consent;
-    private ProgressBar mProgressBar;
-    private ProgressBar mProgressBarIndeterminate;
+    private ProgressBar mProgressBar, mProgressBarIndeterminate;
     private TextView mLoading;
-    private WVersionManager versionManager = null;
+    private VersionManagerHelper versionManagerHelper = null;
     private PreferencesHelper pf;
+    private AppUpdateManager appUpdateManager;
+    final InstallStateUpdatedListener listener = state -> {
+        if (state.installStatus() == InstallStatus.DOWNLOADING) {
+            if (mProgressBar != null) {
+                int progress = (int) (state.bytesDownloaded() * 100 / state.totalBytesToDownload());
+                showProgress(R.string.downloading, R.string.downloadingp, progress);
+            }
+        } else if (state.installStatus() == InstallStatus.DOWNLOADED) {
+            appUpdateManager.completeUpdate();
+        }
+    };
+    private Disposable connectionSub;
     private final BroadcastReceiver myReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -74,22 +127,31 @@ public class MainActivity extends AppCompatActivity implements WVersionManager.A
                 progress = intent.getIntExtra(UnzipService.ACTION_PROGRESS, 0);
             if (progress >= 0) {
                 if (mProgressBar != null) {
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    mProgressBar.setProgress(progress);
+                    showProgress(R.string.loading, R.string.loadingp, progress);
                 }
             } else {
-                createNomedia();
-                runGame();
+                if (isOldVersionExists(MainActivity.this, unzipLocation)) {
+                    showUninstallDialog();
+                } else {
+                    runGame();
+                }
             }
         }
     };
+    private Disposable versionManagerSub;
+    private Disposable cleanSub;
+    private Disposable copySub;
+    private Task<AppUpdateInfo> appUpdateInfoTask;
 
+    // helpful utilities
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
         pf = PreferencesHelper.getInstance(this);
+        appUpdateManager = AppUpdateManagerFactory.create(this);
+        appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
         IntentFilter filter = new IntentFilter(UnzipService.ACTION_UPDATE);
         registerReceiver(myReceiver, filter);
         if (!isTaskRoot()) {
@@ -97,33 +159,69 @@ public class MainActivity extends AppCompatActivity implements WVersionManager.A
             return;
         }
         addLaunchTimes();
-        /*PermissionHelper permission = new PermissionHelper(this);
+        PermissionHelper permission = new PermissionHelper(this);
         permission.setListener(this);
-        permission.askPermissions();*/
-        askGdpr();
+        permission.askPermissions();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        makeFullScreen();
+        makeFullScreen(this);
+        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+            if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED)
+                appUpdateManager.completeUpdate();
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Prevent abrupt interruption when copy game files from assets
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (connectionSub != null) connectionSub.dispose();
+        if (versionManagerSub != null) versionManagerSub.dispose();
+        if (cleanSub != null) cleanSub.dispose();
+        if (copySub != null) copySub.dispose();
+        appUpdateManager.unregisterListener(listener);
         unregisterReceiver(myReceiver);
     }
 
-    private void initZipLocations() {
-        unzipLocation = getExternalFilesDir(null) + "/";
-        appData = getFilesDir() + "/";
-        FILES = getCacheDir() + "/Files.zip";
-        WORLDS = getCacheDir() + "/worlds.zip";
-        GAMES = getCacheDir() + "/games.zip";
+    private void initZipLocations() throws Exception {
+        /* Temporary solution! */
+        // sdcard
+        File externalDir = getExternalFilesDir(null); // /sdcard/Android/data/*
+        unzipLocation = externalDir + File.separator;
+        if (externalDir == null) {
+            externalDir = Environment.getExternalStorageDirectory();  // /sdcard
+            unzipLocation = externalDir + File.separator + "Android/data/com.multicraft.game" + File.separator;
+            Bugsnag.leaveBreadcrumb("The show begins... externalDir = " + externalDir);
+        }
+        if (externalDir == null) {
+            Bugsnag.leaveBreadcrumb("PIZDEC... The show is canceled. externalDir = null");
+            throw new Exception("WTF");
+        }
+        // data/data
+        appData = getFilesDir() + File.separator;
+        // cache
+        File cacheDir = getCacheDir(); // /data/data/*/cache/
+        String cachePath = cacheDir + File.separator;
+        if (cacheDir == null) {
+            cachePath = unzipLocation + "cache" + File.separator;
+            Bugsnag.leaveBreadcrumb("The show begins... cachePath = " + cachePath);
+        }
+
+        FILES = cachePath + "Files.zip";
+        WORLDS = cachePath + "worlds.zip";
+        GAMES = cachePath + "games.zip";
+        CACHE = cachePath + "cache.zip";
         zipLocations.put(FILES, appData);
         zipLocations.put(GAMES, appData);
         zipLocations.put(WORLDS, unzipLocation);
+        zipLocations.put(CACHE, unzipLocation);
     }
 
     private void addLaunchTimes() {
@@ -134,67 +232,33 @@ public class MainActivity extends AppCompatActivity implements WVersionManager.A
 
     private void createDataFolder() {
         File folder = new File(unzipLocation);
-        if (!(folder.exists()))
-            folder.mkdirs();
+        if (!folder.mkdirs() && !folder.isDirectory())
+            Bugsnag.leaveBreadcrumb(folder + " (unzipLocation) folder was not created");
     }
 
-    private void deleteZip(String... filesArray) {
-        for (String fileName : filesArray) {
-            File file = new File(fileName);
-            if (file.exists())
-                file.delete();
-        }
-    }
-
-    private void createNomedia() {
-        File myFile = new File(unzipLocation, ".nomedia");
-        if (!myFile.exists())
-            try {
-                myFile.createNewFile();
-            } catch (IOException e) {
-                Bugsnag.notify(e);
-            }
-    }
-
-    //interface
-    private void addShortcut() {
-        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        int size = 0;
-        if (activityManager != null)
-            size = activityManager.getLauncherLargeIconSize();
-        try {
-            Drawable icon = getPackageManager().getApplicationIcon(getPackageName());
-            Bitmap shortcutIconBitmap = ((BitmapDrawable) icon).getBitmap();
-            Bitmap temp;
-            if (shortcutIconBitmap.getWidth() == size && shortcutIconBitmap.getHeight() == size)
-                temp = shortcutIconBitmap;
+    // interface
+    private void showProgress(int textMessage, int progressMessage, int progress) {
+        if (mProgressBar.getVisibility() == View.GONE)
+            updateViews(textMessage, View.VISIBLE, View.GONE, View.VISIBLE);
+        else if (progress > 0) {
+            mLoading.setText(String.format(getResources().getString(progressMessage), progress));
+            mProgressBar.setProgress(progress);
+            // colorize the progress bar
+            Drawable progressDrawable = ((LayerDrawable)
+                    mProgressBar.getProgressDrawable()).getDrawable(1);
+            int color = Color.rgb(255 - progress * 2, progress * 2, 25);
+            if (isGreaterOrEqualQ())
+                progressDrawable.setColorFilter(new BlendModeColorFilter(color, BlendMode.SRC_IN));
             else
-                temp = Bitmap.createScaledBitmap(shortcutIconBitmap, size, size, true);
-            pf.saveSettings(TAG_SHORTCUT_CREATED, false);
-            Intent shortcutIntent = new Intent(getApplicationContext(), MainActivity.class);
-            shortcutIntent.setAction(Intent.ACTION_MAIN);
-            Intent addIntent = new Intent();
-            addIntent.putExtra("duplicate", false);
-            addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-            addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getString(R.string.app_name));
-            addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON, temp);
-            addIntent.setAction(CREATE_SHORTCUT);
-            getApplicationContext().sendBroadcast(addIntent);
-        } catch (PackageManager.NameNotFoundException e) {
-            Bugsnag.notify(e);
+                progressDrawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
         }
     }
 
-    private void hideViews() {
-        mProgressBar.setVisibility(View.GONE);
-        mProgressBarIndeterminate.setVisibility(View.GONE);
-        mLoading.setVisibility(View.GONE);
-    }
-
+    // real screen resolution
     private void getDefaultResolution() {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+        if (isGreaterOrEqual(Build.VERSION_CODES.JELLY_BEAN_MR1))
             display.getRealSize(size);
         else
             display.getSize(size);
@@ -202,87 +266,107 @@ public class MainActivity extends AppCompatActivity implements WVersionManager.A
         width = Math.max(size.x, size.y);
     }
 
-    private void makeFullScreen() {
-        if (Build.VERSION.SDK_INT >= 19)
-            this.getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-    }
-
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus)
-            makeFullScreen();
+            makeFullScreen(this);
     }
 
+    // GDPR check
     private void askGdpr() {
         if (pf.isAskConsent() && isGdprSubject())
             showGdprDialog();
         else {
             consent = true;
-            init();
+            startNative();
         }
     }
 
     private void init() {
-        initZipLocations();
+        try {
+            initZipLocations();
+        } catch (Exception e) {
+            showRestartDialog("");
+        }
         mProgressBar = findViewById(R.id.PB1);
         mProgressBarIndeterminate = findViewById(R.id.PB2);
-        mLoading = findViewById(R.id.tv_progress_circle);
-        Drawable draw = ContextCompat.getDrawable(this, R.drawable.custom_progress_bar);
-        mProgressBar.setProgressDrawable(draw);
+        mLoading = findViewById(R.id.tv_progress);
         RateMe.onStart(this);
-        if (pf.isCreateShortcut() && Build.VERSION.SDK_INT < 26)
-            addShortcut();
-        createDataFolder();
+        if (!pf.isCreateShortcut() && !isGreaterOrEqualOreo())
+            addShortcut(this);
         checkAppVersion();
     }
 
-    //game logic
+    // game logic
     private void checkRateDialog() {
         if (RateMe.shouldShowRateDialog()) {
-            hideViews();
+            updateViews(R.string.empty, View.GONE, View.GONE, View.GONE);
             RateMe.showRateDialog();
             RateMe.setListener(this);
         } else
-            getNativeResolutionAndStart();
+            askGdpr();
     }
 
-    @Override
-    public void isShowUpdateDialog(boolean flag) {
-        if (flag) {
-            versionManager.showDialog();
-            versionManager.setListener(this);
-        } else
-            checkRateDialog();
+    void showUpdateDialog() {
+        AlertDialogHelper dialogHelper = new AlertDialogHelper(this);
+        dialogHelper.setListener(this);
+        dialogHelper.setIcon(getIcon(this));
+        dialogHelper.setTitle(getString(R.string.available));
+        dialogHelper.setMessage(Html.fromHtml(versionManagerHelper.getMessage(), null, versionManagerHelper.getCustomTagHandler()));
+        dialogHelper.setButtonPositive(getString(R.string.update));
+        dialogHelper.setButtonNeutral(getString(R.string.later));
+        dialogHelper.showAlert("VersionManager");
+    }
+
+    public void startUpdate() {
+        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+                try {
+                    appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.FLEXIBLE, this, REQUEST_UPDATE);
+                } catch (IntentSender.SendIntentException e) {
+                    Bugsnag.notify(e);
+                    showUpdateDialog();
+                }
+            } else {
+                showUpdateDialog();
+            }
+        });
+        appUpdateInfoTask.addOnFailureListener(e -> {
+            Bugsnag.notify(e);
+            showUpdateDialog();
+        });
     }
 
     private void checkUrlVersion() {
-        versionManager = new WVersionManager(this);
-        versionManager.checkVersion();
-    }
-
-    private void getNativeResolutionAndStart() {
-        getDefaultResolution();
-        startNative();
+        versionManagerHelper = new VersionManagerHelper(this);
+        if (versionManagerHelper.isCheckVersion())
+            versionManagerSub = Observable.fromCallable(() -> versionManagerHelper.getJson())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .timeout(3000, TimeUnit.MILLISECONDS)
+                    .subscribe(result -> isShowDialog(versionManagerHelper.isShow(result)),
+                            throwable -> runOnUiThread(() -> isShowDialog(false)));
+        else isShowDialog(false);
     }
 
     private void runGame() {
-        deleteZip(FILES, WORLDS, GAMES);
+        deleteFiles(Arrays.asList(FILES, WORLDS, GAMES, CACHE));
         pf.saveSettings(TAG_BUILD_NUMBER, versionName);
-        final CheckConnectionTask cct = new CheckConnectionTask(this);
-        cct.setListener(this);
-        cct.execute();
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-            if (cct.getStatus() == AsyncTask.Status.RUNNING) {
-                cct.cancel(true);
-                onEvent("CheckConnectionTask", "false");
-            }
-        }, 4000);
+        connectionSub = checkConnection();
+    }
+
+    private void showUninstallDialog() {
+        AlertDialogHelper dialogHelper = new AlertDialogHelper(this);
+        dialogHelper.setListener(this);
+        dialogHelper.setMessage(getString(R.string.del_message));
+        dialogHelper.setButtonPositive(getString(android.R.string.ok));
+        dialogHelper.showAlert("UninstallDialog");
     }
 
     private void startNative() {
+        getDefaultResolution();
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtra("height", height);
         intent.putExtra("width", width);
@@ -293,101 +377,171 @@ public class MainActivity extends AppCompatActivity implements WVersionManager.A
 
     private boolean isGdprSubject() {
         String locale;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        if (isGreaterOrEqual(Build.VERSION_CODES.N))
             locale = getResources().getConfiguration().getLocales().get(0).getCountry();
         else
             locale = getResources().getConfiguration().locale.getCountry();
-        return Arrays.asList(EU_COUNTRIES).contains(locale.toUpperCase());
+        return EU_COUNTRIES.contains(locale.toUpperCase());
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        getNativeResolutionAndStart();
+        if (requestCode == REQUEST_UNINSTALL)
+            runGame();
+        else if (requestCode == REQUEST_CONNECTION) {
+            checkUrlVersion();
+        } else if (requestCode == REQUEST_UPDATE) {
+            if (resultCode == RESULT_OK)
+                appUpdateManager.registerListener(listener);
+            else
+                checkRateDialog();
+        }
     }
 
-    private void prepareToRun(boolean isAll) {
-        DeleteTask dt = new DeleteTask();
-        dt.setListener(this);
+    private void cleanUpOldFiles(boolean isAll) {
+        updateViews(R.string.preparing, View.VISIBLE, View.VISIBLE, View.GONE);
+        List<String> filesList;
         if (isAll)
-            dt.execute(unzipLocation);
+            filesList = Collections.singletonList(unzipLocation);
         else {
-            dt.execute(
+            filesList = Arrays.asList(unzipLocation + "cache",
                     unzipLocation + "builtin", appData + "builtin",
                     unzipLocation + "games", appData + "games",
-                    unzipLocation + "debug.txt"
-                );
+                    unzipLocation + "debug.txt");
         }
+        cleanSub = Observable.fromCallable(() -> deleteFiles(filesList))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> startCopy(isAll));
     }
 
     private void checkAppVersion() {
         if (pf.getBuildNumber().equals(versionName)) {
             mProgressBarIndeterminate.setVisibility(View.VISIBLE);
             runGame();
-        } else if (pf.getBuildNumber().equals("0"))
-            prepareToRun(true);
-        else
-            prepareToRun(false);
-
-    }
-
-    @Override
-    public void updateViews(int text, int textVisibility, int progressVisibility) {
-        mProgressBarIndeterminate.setVisibility(progressVisibility);
-        mLoading.setVisibility(textVisibility);
-        mLoading.setText(text);
-    }
-
-    @Override
-    public void onEvent(String source, String param) {
-        if (isFinishing()) return;
-        if ("DeleteTask".equals(source)) {
-            CopyZipTask cpt = new CopyZipTask(this);
-            cpt.setListener(this);
-            if (unzipLocation.equals(param))
-                cpt.execute(FILES, WORLDS, GAMES);
-            else
-                cpt.execute(FILES, GAMES);
-        } else if ("CheckConnectionTask".equals(source)) {
-            if ("true".equals(param))
-                checkUrlVersion();
-            else
-                showConnectionDialog();
-        /*} else if ("Permissions".equals(source)) {
-            if ("askGdpr".equals(param)) askGdpr();
-            else finish();*/
+        } else if (pf.getBuildNumber().equals("0")) {
+            createDataFolder();
+            cleanUpOldFiles(true);
+        } else {
+            createDataFolder();
+            cleanUpOldFiles(false);
         }
     }
 
+    public void updateViews(int text, int textVisibility, int progressIndetermVisibility, int progressVisibility) {
+        mLoading.setText(text);
+        mLoading.setVisibility(textVisibility);
+        mProgressBarIndeterminate.setVisibility(progressIndetermVisibility);
+        mProgressBar.setVisibility(progressVisibility);
+    }
+
+    public void isShowDialog(boolean flag) {
+        if (flag) {
+            updateViews(R.string.loading, View.VISIBLE, View.VISIBLE, View.GONE);
+            if (isGreaterOrEqualLollipop())
+                startUpdate();
+            else
+                showUpdateDialog();
+        } else
+            checkRateDialog();
+    }
+
+    private Disposable checkConnection() {
+        return Observable.fromCallable(Utilities::isReachable)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .timeout(4000, TimeUnit.MILLISECONDS)
+                .subscribe(result -> {
+                            if (result) checkUrlVersion();
+                            else showConnectionDialog();
+                        },
+                        throwable -> runOnUiThread(this::showConnectionDialog));
+    }
+
+    private void startCopy(boolean isAll) {
+        String[] zips;
+        if (isAll) {
+            if (isArm64())
+                zips = new String[]{FILES, WORLDS, GAMES, CACHE};
+            else
+                zips = new String[]{FILES, WORLDS, GAMES};
+        } else {
+            if (isArm64())
+                zips = new String[]{FILES, GAMES, CACHE};
+            else
+                zips = new String[]{FILES, GAMES};
+        }
+        copySub = Completable.fromAction(() -> copyAssets(zips))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> startUnzipService(zips),
+                        throwable -> {
+                            if (Objects.requireNonNull(throwable.getLocalizedMessage()).contains("ENOSPC"))
+                                showRestartDialog("ENOSPC");
+                            else showRestartDialog("UKNWN");
+                        });
+    }
+
+    private void copyAssets(String[] zips) throws IOException {
+        for (String zipName : zips) {
+            String filename = FilenameUtils.getName(zipName);
+            try (InputStream in = getAssets().open(filename)) {
+                FileUtils.copyInputStreamToFile(in, new File(zipName));
+            }
+        }
+    }
+
+    private void startUnzipService(String[] file) {
+        Intent intent = new Intent(this, UnzipService.class);
+        intent.putExtra(UnzipService.EXTRA_KEY_IN_FILE, file);
+        startService(intent);
+    }
+
+    private void showRestartDialog(final String source) {
+        String message;
+        if ("ENOSPC".equals(source))
+            message = getString(R.string.no_space);
+        else
+            message = getString(R.string.restart);
+        final AlertDialogHelper dialogHelper = new AlertDialogHelper(this);
+        dialogHelper.setListener(this);
+        dialogHelper.setMessage(message);
+        dialogHelper.setButtonPositive(getString(android.R.string.ok));
+        dialogHelper.showAlert("Restart");
+    }
+
+    private void restartApp() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        int mPendingIntentId = 1337;
+        PendingIntent mPendingIntent = PendingIntent.getActivity(getApplicationContext(), mPendingIntentId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        if (mgr != null)
+            mgr.set(AlarmManager.RTC, System.currentTimeMillis(), mPendingIntent);
+        System.exit(0);
+    }
+
+    @Override
+    public void onEvent(boolean isContinue) {
+        if (isFinishing()) return;
+        if (isContinue) init();
+        else finish();
+    }
+
     private void showGdprDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setIcon(R.mipmap.ic_launcher);
-        builder.setTitle(R.string.app_name);
-        EditText dialogView = new EditText(this);
-        builder.setView(dialogView)
-                .setPositiveButton(R.string.gdpr_agree, (dialog, id) -> {
-                    pf.saveSettings(TAG_CONSENT_ASKED, false);
-                    dialog.dismiss();
-                    consent = true;
-                    init();
-                })
-                .setNegativeButton(R.string.gdpr_disagree, (dialog, id) -> {
-                    pf.saveSettings(TAG_CONSENT_ASKED, false);
-                    dialog.dismiss();
-                    consent = false;
-                    init();
-                });
+        AlertDialogHelper dialogHelper = new AlertDialogHelper(this);
+        dialogHelper.setListener(this);
+        dialogHelper.setIcon(getIcon(this));
+        dialogHelper.setTitle(getString(R.string.app_name));
         TextView tv = new TextView(this);
-        builder.setView(tv);
         tv.setText(R.string.gdpr_main_text);
         tv.setPadding(20, 0, 20, 0);
         tv.setGravity(Gravity.CENTER);
-        Dialog dialog = builder.create();
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setCancelable(false);
-        if (!this.isFinishing())
-            dialog.show();
         tv.setMovementMethod(LinkMovementMethod.getInstance());
+        dialogHelper.setTV(tv);
+        dialogHelper.setButtonPositive(getString(R.string.gdpr_agree));
+        dialogHelper.setButtonNegative(getString(R.string.gdpr_disagree));
+        dialogHelper.showAlert("GdprDialog");
     }
 
     private void showConnectionDialog() {
@@ -402,37 +556,59 @@ public class MainActivity extends AppCompatActivity implements WVersionManager.A
 
     @Override
     public void onPositive(String source) {
-        if ("RateMe".equals(source))
+        if ("RateMe".equals(source)) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getStoreUrl()));
+            startActivity(intent);
+            Toast.makeText(this, R.string.thank, Toast.LENGTH_LONG).show();
             finish();
+        } else if ("Restart".equals(source))
+            restartApp();
         else if ("ConnectionDialog".equals(source))
-            startActivityForResult(new Intent(Settings.ACTION_WIFI_SETTINGS), REQUEST_CONNECTION);
-        else {
-            versionManager.updateNow(versionManager.getUpdateUrl());
+            try {
+                startActivityForResult(new Intent(Settings.ACTION_WIFI_SETTINGS), REQUEST_CONNECTION);
+            } catch (ActivityNotFoundException e) {
+                Bugsnag.notify(e);
+                askGdpr();
+            }
+        else if ("UninstallDialog".equals(source))
+            uninstallOldVersion(this);
+        else if ("GdprDialog".equals(source)) {
+            pf.saveSettings(TAG_CONSENT_ASKED, false);
+            consent = true;
+            startNative();
+        } else {
+            versionManagerHelper.updateNow(versionManagerHelper.getUpdateUrl());
             finish();
         }
     }
 
     @Override
     public void onNegative(String source) {
-        if ("RateMe".equals(source)) {
-            Toast.makeText(MainActivity.this, R.string.sad, Toast.LENGTH_LONG).show();
-            getNativeResolutionAndStart();
-        } else if ("ConnectionDialog".equals(source))
-            startActivityForResult(new Intent(Settings.ACTION_WIRELESS_SETTINGS), REQUEST_CONNECTION);
-        else {
-            versionManager.ignoreThisVersion();
+        if ("RateMe".equals(source))
+            askGdpr();
+        else if ("ConnectionDialog".equals(source))
+            try {
+                startActivityForResult(new Intent(Settings.ACTION_WIRELESS_SETTINGS), REQUEST_CONNECTION);
+            } catch (ActivityNotFoundException e) {
+                Bugsnag.notify(e);
+                askGdpr();
+            }
+        else if ("GdprDialog".equals(source)) {
+            pf.saveSettings(TAG_CONSENT_ASKED, false);
+            consent = false;
+            startNative();
+        } else
             checkRateDialog();
-        }
     }
 
     @Override
     public void onNeutral(String source) {
         if ("RateMe".equals(source))
-            getNativeResolutionAndStart();
+            askGdpr();
         else if ("ConnectionDialog".equals(source))
-            getNativeResolutionAndStart();
+            askGdpr();
         else {
-            versionManager.remindMeLater();
+            versionManagerHelper.remindMeLater();
             checkRateDialog();
         }
     }

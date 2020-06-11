@@ -12,7 +12,7 @@ public class Bugsnag {
         Log.d("Bugsnag", s);
     }
 
-    public static void init(Application application) {
+    public static void start(Application application) {
         Log.d("Bugsnag", "Bugsnag initialized");
     }
 

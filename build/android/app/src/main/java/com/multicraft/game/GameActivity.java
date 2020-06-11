@@ -1,46 +1,57 @@
 package com.multicraft.game;
 
-import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.NativeActivity;
 import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
+import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.bugsnag.android.Bugsnag;
+import com.multicraft.game.helpers.PreferencesHelper;
 
-import static com.multicraft.game.PreferencesHelper.TAG_BUILD_NUMBER;
-import static com.multicraft.game.PreferencesHelper.getInstance;
+import java.util.Objects;
 
-/*import static com.multicraft.game.AdManager.initAd;
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
+import static com.multicraft.game.AdManager.initAd;
 import static com.multicraft.game.AdManager.setAdsCallback;
 import static com.multicraft.game.AdManager.startAd;
-import static com.multicraft.game.AdManager.stopAd;*/
+import static com.multicraft.game.AdManager.stopAd;
+import static com.multicraft.game.helpers.PreferencesHelper.TAG_BUILD_NUMBER;
+import static com.multicraft.game.helpers.PreferencesHelper.getInstance;
+import static com.multicraft.game.helpers.Utilities.makeFullScreen;
 
 public class GameActivity extends NativeActivity {
     static {
         try {
             System.loadLibrary("MultiCraft");
-        } catch (UnsatisfiedLinkError e) {
+        } catch (UnsatisfiedLinkError | OutOfMemoryError e) {
             Bugsnag.notify(e);
+            System.exit(0);
         } catch (IllegalArgumentException i) {
             Bugsnag.notify(i);
-        } catch (OutOfMemoryError e) {
-            Bugsnag.notify(e);
+            System.exit(0);
         } catch (Error | Exception error) {
             Bugsnag.notify(error);
+            System.exit(0);
         }
     }
 
-    private int messageReturnCode;
-    private String messageReturnValue;
+    private int messageReturnCode = -1;
+    private String messageReturnValue = "";
     private int height, width;
-    /*private boolean consent;
-    private boolean isMultiPlayer;*/
+    private boolean consent, isMultiPlayer;
+    private PreferencesHelper pf;
+    private Disposable adInitSub;
 
     public static native void putMessageBoxResult(String text);
 
@@ -52,58 +63,80 @@ public class GameActivity extends NativeActivity {
         Bundle bundle = getIntent().getExtras();
         height = bundle != null ? bundle.getInt("height", 0) : getResources().getDisplayMetrics().heightPixels;
         width = bundle != null ? bundle.getInt("width", 0) : getResources().getDisplayMetrics().widthPixels;
-        /*consent = bundle == null || bundle.getBoolean("consent", true);*/
+        consent = bundle == null || bundle.getBoolean("consent", true);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        messageReturnCode = -1;
-        messageReturnValue = "";
-        /*new AdInitTask().execute();*/
-    }
-
-    private void makeFullScreen() {
-        if (Build.VERSION.SDK_INT >= 19)
-            this.getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        pf = getInstance(this);
+        if (pf.isAdsEnable()) {
+            adInitSub = Completable.fromAction(() -> initAd(this, consent))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(() -> setAdsCallback(this));
+        }
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus)
-            makeFullScreen();
+            makeFullScreen(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        makeFullScreen();
+        makeFullScreen(this);
     }
 
     @Override
     public void onBackPressed() {
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 101) {
-            if (resultCode == RESULT_OK) {
-                String text = data.getStringExtra("text");
-                messageReturnCode = 0;
-                messageReturnValue = text;
-            } else
-                messageReturnCode = 1;
-        }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        adInitSub.dispose();
     }
 
     public void showDialog(String acceptButton, String hint, String current, int editType) {
-        Intent intent = new Intent(this, InputDialogActivity.class);
-        Bundle params = new Bundle();
-        params.putString("acceptButton", acceptButton);
-        params.putString("hint", hint);
-        params.putString("current", current);
-        params.putInt("editType", editType);
-        intent.putExtras(params);
-        startActivityForResult(intent, 101);
-        messageReturnValue = "";
-        messageReturnCode = -1;
+        runOnUiThread(() -> showDialogUI(hint, current, editType));
+    }
+
+    private void showDialogUI(String hint, String current, int editType) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        EditText editText = new CustomEditText(this);
+        builder.setView(editText);
+        AlertDialog alertDialog = builder.create();
+        editText.requestFocus();
+        editText.setHint(hint);
+        editText.setText(current);
+        final InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        Objects.requireNonNull(imm).toggleSoftInput(InputMethodManager.SHOW_FORCED,
+                InputMethodManager.HIDE_IMPLICIT_ONLY);
+        if (editType == 1)
+            editText.setInputType(InputType.TYPE_CLASS_TEXT |
+                    InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        else if (editType == 3)
+            editText.setInputType(InputType.TYPE_CLASS_TEXT |
+                    InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        else
+            editText.setInputType(InputType.TYPE_CLASS_TEXT);
+        editText.setSelection(editText.getText().length());
+        editText.setOnKeyListener((view, KeyCode, event) -> {
+            if (KeyCode == KeyEvent.KEYCODE_ENTER) {
+                imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+                messageReturnCode = 0;
+                messageReturnValue = editText.getText().toString();
+                alertDialog.dismiss();
+                return true;
+            }
+            return false;
+        });
+        alertDialog.show();
+        alertDialog.setOnCancelListener(dialog -> {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+            messageReturnValue = current;
+            messageReturnCode = -1;
+        });
     }
 
     public int getDialogState() {
@@ -130,41 +163,27 @@ public class GameActivity extends NativeActivity {
     public float getMemoryMax() {
         ActivityManager actManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         ActivityManager.MemoryInfo memInfo = new ActivityManager.MemoryInfo();
+        float memory = 1.0f;
         if (actManager != null) {
             actManager.getMemoryInfo(memInfo);
-            double memory = memInfo.totalMem * 1.0f / (1024 * 1024 * 1024);
-            return (Math.round(memory * 100) / 100.0f);
-        } else {
-            Bugsnag.leaveBreadcrumb("RAM: Cannot get RAM");
-            return 1;
+            memory = memInfo.totalMem * 1.0f / (1024 * 1024 * 1024);
+            memory = Math.round(memory * 100) / 100.0f;
         }
+        return memory;
     }
 
-    public void notifyServerConnect(boolean isMultiplayer) {
-        /*isMultiPlayer = isMultiplayer;
-        if (isMultiplayer) stopAd();*/
+    public void notifyServerConnect(boolean multiplayer) {
+        isMultiPlayer = multiplayer;
+        if (isMultiPlayer)
+            stopAd();
     }
 
     public void notifyAbortLoading() {
-        PreferencesHelper pf = getInstance(this);
         pf.saveSettings(TAG_BUILD_NUMBER, "1");
     }
 
     public void notifyExitGame() {
-        /*if (isMultiPlayer) startAd(this, false, true);*/
+        if (isMultiPlayer && pf.isAdsEnable())
+            startAd(this, false, true);
     }
-
-    /*@SuppressLint("StaticFieldLeak")
-    class AdInitTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... voids) {
-            initAd(GameActivity.this, consent);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            setAdsCallback(GameActivity.this);
-        }
-    }*/
 }
