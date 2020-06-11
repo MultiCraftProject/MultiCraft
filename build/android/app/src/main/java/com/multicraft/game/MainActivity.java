@@ -1,3 +1,20 @@
+/*
+MultiCraft
+Copyright (C) 2014-2020 MoNTE48, Maksim Gamarnik <MoNTE48@mail.ua>
+Copyright (C) 2014-2020 ubulem,  Bektur Mambetov <berkut87@gmail.com>
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation; either version 3.0 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+You should have received a copy of the GNU Lesser General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
 package com.multicraft.game;
 
 import android.app.AlarmManager;
@@ -7,7 +24,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.IntentSender;
 import android.graphics.BlendMode;
 import android.graphics.BlendModeColorFilter;
 import android.graphics.Color;
@@ -33,14 +49,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bugsnag.android.Bugsnag;
-import com.google.android.play.core.appupdate.AppUpdateInfo;
-import com.google.android.play.core.appupdate.AppUpdateManager;
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
-import com.google.android.play.core.install.InstallStateUpdatedListener;
-import com.google.android.play.core.install.model.AppUpdateType;
-import com.google.android.play.core.install.model.InstallStatus;
-import com.google.android.play.core.install.model.UpdateAvailability;
-import com.google.android.play.core.tasks.Task;
 import com.multicraft.game.callbacks.CallBackListener;
 import com.multicraft.game.callbacks.DialogsCallback;
 import com.multicraft.game.helpers.AlertDialogHelper;
@@ -70,12 +78,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.multicraft.game.helpers.ApiLevelHelper.isGreaterOrEqual;
-import static com.multicraft.game.helpers.ApiLevelHelper.isGreaterOrEqualLollipop;
 import static com.multicraft.game.helpers.ApiLevelHelper.isGreaterOrEqualOreo;
 import static com.multicraft.game.helpers.ApiLevelHelper.isGreaterOrEqualQ;
-import static com.multicraft.game.helpers.OldVersionHelper.REQUEST_UNINSTALL;
-import static com.multicraft.game.helpers.OldVersionHelper.isOldVersionExists;
-import static com.multicraft.game.helpers.OldVersionHelper.uninstallOldVersion;
 import static com.multicraft.game.helpers.PreferencesHelper.TAG_BUILD_NUMBER;
 import static com.multicraft.game.helpers.PreferencesHelper.TAG_CONSENT_ASKED;
 import static com.multicraft.game.helpers.PreferencesHelper.TAG_LAUNCH_TIMES;
@@ -91,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements CallBackListener,
     private final static String SERVER_URL = "http://updates.multicraft.world/";
     public final static String UPDATE_LINK = SERVER_URL + "Android.json";
     private final static int REQUEST_CONNECTION = 104;
-    private final static int REQUEST_UPDATE = 102;
     private final static List<String> EU_COUNTRIES = Arrays.asList(
             "AT", "BE", "BG", "HR", "CY", "CZ",
             "DK", "EE", "FI", "FR", "DE", "GR",
@@ -107,18 +110,8 @@ public class MainActivity extends AppCompatActivity implements CallBackListener,
     private TextView mLoading;
     private VersionManagerHelper versionManagerHelper = null;
     private PreferencesHelper pf;
-    private AppUpdateManager appUpdateManager;
-    final InstallStateUpdatedListener listener = state -> {
-        if (state.installStatus() == InstallStatus.DOWNLOADING) {
-            if (mProgressBar != null) {
-                int progress = (int) (state.bytesDownloaded() * 100 / state.totalBytesToDownload());
-                showProgress(R.string.downloading, R.string.downloadingp, progress);
-            }
-        } else if (state.installStatus() == InstallStatus.DOWNLOADED) {
-            appUpdateManager.completeUpdate();
-        }
-    };
     private Disposable connectionSub;
+    private Disposable versionManagerSub;
     private final BroadcastReceiver myReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -130,18 +123,12 @@ public class MainActivity extends AppCompatActivity implements CallBackListener,
                     showProgress(R.string.loading, R.string.loadingp, progress);
                 }
             } else {
-                if (isOldVersionExists(MainActivity.this, unzipLocation)) {
-                    showUninstallDialog();
-                } else {
-                    runGame();
-                }
+                runGame();
             }
         }
     };
-    private Disposable versionManagerSub;
     private Disposable cleanSub;
     private Disposable copySub;
-    private Task<AppUpdateInfo> appUpdateInfoTask;
 
     // helpful utilities
     @Override
@@ -150,8 +137,6 @@ public class MainActivity extends AppCompatActivity implements CallBackListener,
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
         pf = PreferencesHelper.getInstance(this);
-        appUpdateManager = AppUpdateManagerFactory.create(this);
-        appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
         IntentFilter filter = new IntentFilter(UnzipService.ACTION_UPDATE);
         registerReceiver(myReceiver, filter);
         if (!isTaskRoot()) {
@@ -168,10 +153,6 @@ public class MainActivity extends AppCompatActivity implements CallBackListener,
     protected void onResume() {
         super.onResume();
         makeFullScreen(this);
-        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
-            if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED)
-                appUpdateManager.completeUpdate();
-        });
     }
 
     @Override
@@ -186,7 +167,6 @@ public class MainActivity extends AppCompatActivity implements CallBackListener,
         if (versionManagerSub != null) versionManagerSub.dispose();
         if (cleanSub != null) cleanSub.dispose();
         if (copySub != null) copySub.dispose();
-        appUpdateManager.unregisterListener(listener);
         unregisterReceiver(myReceiver);
     }
 
@@ -319,26 +299,6 @@ public class MainActivity extends AppCompatActivity implements CallBackListener,
         dialogHelper.showAlert("VersionManager");
     }
 
-    public void startUpdate() {
-        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
-            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
-                try {
-                    appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.FLEXIBLE, this, REQUEST_UPDATE);
-                } catch (IntentSender.SendIntentException e) {
-                    Bugsnag.notify(e);
-                    showUpdateDialog();
-                }
-            } else {
-                showUpdateDialog();
-            }
-        });
-        appUpdateInfoTask.addOnFailureListener(e -> {
-            Bugsnag.notify(e);
-            showUpdateDialog();
-        });
-    }
-
     private void checkUrlVersion() {
         versionManagerHelper = new VersionManagerHelper(this);
         if (versionManagerHelper.isCheckVersion())
@@ -355,14 +315,6 @@ public class MainActivity extends AppCompatActivity implements CallBackListener,
         deleteFiles(Arrays.asList(FILES, WORLDS, GAMES, CACHE));
         pf.saveSettings(TAG_BUILD_NUMBER, versionName);
         connectionSub = checkConnection();
-    }
-
-    private void showUninstallDialog() {
-        AlertDialogHelper dialogHelper = new AlertDialogHelper(this);
-        dialogHelper.setListener(this);
-        dialogHelper.setMessage(getString(R.string.del_message));
-        dialogHelper.setButtonPositive(getString(android.R.string.ok));
-        dialogHelper.showAlert("UninstallDialog");
     }
 
     private void startNative() {
@@ -387,16 +339,9 @@ public class MainActivity extends AppCompatActivity implements CallBackListener,
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_UNINSTALL)
-            runGame();
-        else if (requestCode == REQUEST_CONNECTION) {
+        if (requestCode == REQUEST_CONNECTION) {
             checkUrlVersion();
-        } else if (requestCode == REQUEST_UPDATE) {
-            if (resultCode == RESULT_OK)
-                appUpdateManager.registerListener(listener);
-            else
-                checkRateDialog();
-        }
+        } else askGdpr();
     }
 
     private void cleanUpOldFiles(boolean isAll) {
@@ -439,10 +384,7 @@ public class MainActivity extends AppCompatActivity implements CallBackListener,
     public void isShowDialog(boolean flag) {
         if (flag) {
             updateViews(R.string.loading, View.VISIBLE, View.VISIBLE, View.GONE);
-            if (isGreaterOrEqualLollipop())
-                startUpdate();
-            else
-                showUpdateDialog();
+            showUpdateDialog();
         } else
             checkRateDialog();
     }
@@ -570,8 +512,6 @@ public class MainActivity extends AppCompatActivity implements CallBackListener,
                 Bugsnag.notify(e);
                 askGdpr();
             }
-        else if ("UninstallDialog".equals(source))
-            uninstallOldVersion(this);
         else if ("GdprDialog".equals(source)) {
             pf.saveSettings(TAG_CONSENT_ASKED, false);
             consent = true;
