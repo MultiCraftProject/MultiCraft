@@ -15,5 +15,4 @@ public class Bugsnag {
     public static void start(Application application) {
         Log.d("Bugsnag", "Bugsnag initialized");
     }
-
 }

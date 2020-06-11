@@ -20,9 +20,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 package com.multicraft.game;
 
-import com.bugsnag.android.Bugsnag;
-
 import androidx.multidex.MultiDexApplication;
+
+import com.bugsnag.android.Bugsnag;
 
 public class MyApplication extends MultiDexApplication {
     @Override

@@ -9,7 +9,7 @@ android {
 		targetSdkVersion 29
 		versionCode 61
 		versionName "1.9.4"
-		/*multiDexEnabled true*/
+		multiDexEnabled true
 	}
 
 	// load properties
@@ -33,6 +33,10 @@ android {
 				shrinkResources true
 				minifyEnabled false
 				signingConfig signingConfigs.release
+			}
+			debug {
+				debuggable true
+				minifyEnabled false
 			}
 		}
 	}
@@ -67,9 +71,6 @@ dependencies {
 	implementation 'commons-io:commons-io:2.5'
 	implementation 'gun0912.ted:tedpermission-rx2:2.2.3'
 	implementation 'net.lingala.zip4j:zip4j:2.6.1'
-	//noinspection GradleDependency
-	implementation 'commons-io:commons-io:2.5'
-	/*implementation 'gun0912.ted:tedpermission:2.2.3'*/
 
 	/* Analytics libraries */
 	//noinspection GradleDynamicVersion

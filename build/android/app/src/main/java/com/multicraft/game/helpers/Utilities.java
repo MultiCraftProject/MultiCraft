@@ -53,13 +53,14 @@ public class Utilities {
 
     private static boolean isInternetAvailable(String url) {
         try {
-            HttpURLConnection urlc = (HttpURLConnection)
-                    (new URL(url)
-                            .openConnection());
+            HttpURLConnection urlc =
+                    (HttpURLConnection) new URL(url).openConnection();
             urlc.setRequestProperty("Connection", "close");
             urlc.setConnectTimeout(2000);
             urlc.connect();
-            return urlc.getResponseCode() == HttpURLConnection.HTTP_NO_CONTENT || urlc.getResponseCode() == HttpURLConnection.HTTP_OK;
+            int ResponseCode = urlc.getResponseCode();
+            return ResponseCode == HttpURLConnection.HTTP_NO_CONTENT ||
+                    ResponseCode == HttpURLConnection.HTTP_OK;
         } catch (IOException e) {
             return false;
         }
@@ -94,7 +95,9 @@ public class Utilities {
     public static void makeFullScreen(Activity activity) {
         if (isGreaterOrEqualKitkat())
             activity.getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
     public static Drawable getIcon(Activity activity) {
@@ -107,7 +110,8 @@ public class Utilities {
     }
 
     public static void addShortcut(Activity activity) {
-        ActivityManager activityManager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager activityManager =
+                (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
         int size = 0;
         if (activityManager != null)
             size = activityManager.getLauncherLargeIconSize();

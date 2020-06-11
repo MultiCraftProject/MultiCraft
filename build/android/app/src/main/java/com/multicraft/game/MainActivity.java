@@ -113,8 +113,7 @@ public class MainActivity extends AppCompatActivity implements CallBackListener,
     private TextView mLoading;
     private VersionManagerHelper versionManagerHelper = null;
     private PreferencesHelper pf;
-    private Disposable connectionSub;
-    private Disposable versionManagerSub;
+    private Disposable connectionSub, versionManagerSub, cleanSub, copySub;
     private final BroadcastReceiver myReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -130,8 +129,6 @@ public class MainActivity extends AppCompatActivity implements CallBackListener,
             }
         }
     };
-    private Disposable cleanSub;
-    private Disposable copySub;
 
     // helpful utilities
     @Override
@@ -290,7 +287,8 @@ public class MainActivity extends AppCompatActivity implements CallBackListener,
         dialogHelper.setListener(this);
         dialogHelper.setIcon(getIcon(this));
         dialogHelper.setTitle(getString(R.string.available));
-        dialogHelper.setMessage(Html.fromHtml(versionManagerHelper.getMessage(), null, versionManagerHelper.getCustomTagHandler()));
+        dialogHelper.setMessage(Html.fromHtml(
+                versionManagerHelper.getMessage(), null, versionManagerHelper.getCustomTagHandler()));
         dialogHelper.setButtonPositive(getString(R.string.update));
         dialogHelper.setButtonNeutral(getString(R.string.later));
         dialogHelper.showAlert("VersionManager");
@@ -371,11 +369,11 @@ public class MainActivity extends AppCompatActivity implements CallBackListener,
         }
     }
 
-    public void updateViews(int text, int textVisibility, int progressIndetermVisibility, int progressVisibility) {
+    public void updateViews(int text, int textVisib, int progressIndetermVisib, int progressVisib) {
         mLoading.setText(text);
-        mLoading.setVisibility(textVisibility);
-        mProgressBarIndeterminate.setVisibility(progressIndetermVisibility);
-        mProgressBar.setVisibility(progressVisibility);
+        mLoading.setVisibility(textVisib);
+        mProgressBarIndeterminate.setVisibility(progressIndetermVisib);
+        mProgressBar.setVisibility(progressVisib);
     }
 
     public void isShowDialog(boolean flag) {
@@ -453,10 +451,10 @@ public class MainActivity extends AppCompatActivity implements CallBackListener,
     private void restartApp() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         int mPendingIntentId = 1337;
-        PendingIntent mPendingIntent = PendingIntent.getActivity(getApplicationContext(), mPendingIntentId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager mgr = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         if (mgr != null)
-            mgr.set(AlarmManager.RTC, System.currentTimeMillis(), mPendingIntent);
+            mgr.set(AlarmManager.RTC, System.currentTimeMillis(), PendingIntent.getActivity(
+                    getApplicationContext(), mPendingIntentId, intent, PendingIntent.FLAG_CANCEL_CURRENT));
         System.exit(0);
     }
 
