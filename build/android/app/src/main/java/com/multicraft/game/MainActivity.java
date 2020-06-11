@@ -181,11 +181,6 @@ public class MainActivity extends AppCompatActivity implements CallBackListener,
         if (externalDir == null) {
             externalDir = Environment.getExternalStorageDirectory();  // /sdcard
             unzipLocation = externalDir + File.separator + "Android/data/com.multicraft.game" + File.separator;
-            Bugsnag.leaveBreadcrumb("The show begins... externalDir = " + externalDir);
-        }
-        if (externalDir == null) {
-            Bugsnag.leaveBreadcrumb("PIZDEC... The show is canceled. externalDir = null");
-            throw new Exception("WTF");
         }
         // data/data
         appData = getFilesDir() + File.separator;
@@ -194,7 +189,6 @@ public class MainActivity extends AppCompatActivity implements CallBackListener,
         String cachePath = cacheDir + File.separator;
         if (cacheDir == null) {
             cachePath = unzipLocation + "cache" + File.separator;
-            Bugsnag.leaveBreadcrumb("The show begins... cachePath = " + cachePath);
         }
 
         FILES = cachePath + "Files.zip";
