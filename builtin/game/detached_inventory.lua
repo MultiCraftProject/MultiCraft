@@ -17,8 +17,3 @@ function core.create_detached_inventory(name, callbacks, player_name)
 	core.detached_inventories[name] = stuff
 	return core.create_detached_inventory_raw(name, player_name)
 end
-
-function core.remove_detached_inventory(name)
-	core.detached_inventories[name] = nil
-	return core.remove_detached_inventory_raw(name)
-end
