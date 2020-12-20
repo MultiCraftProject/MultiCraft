@@ -126,7 +126,7 @@ class MainGameCallback : public IGameCallback
 public:
 	MainGameCallback(IrrlichtDevice *a_device):
 		disconnect_requested(false),
-		changepassword_requested(false),
+		changepassword_requested(true),
 		changevolume_requested(false),
 		keyconfig_requested(false),
 		shutdown_requested(false),
