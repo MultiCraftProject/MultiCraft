@@ -193,6 +193,7 @@ endif()
 find_package(GMP REQUIRED)
 find_package(Json REQUIRED)
 find_package(Lua REQUIRED)
+add_subdirectory(lib/luautf8)
 
 # Subdirectories
 # Be sure to add all relevant definitions above this
