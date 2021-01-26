@@ -201,14 +201,10 @@ void initializePathsAndroid()
 				"getFilesDir");
 
 	path_user    = path_storage + DIR_DELIM + "Android/data/com.multicraft.game/files";
-//path_user    = path_storage + DIR_DELIM + "Android/data/com.multicraft.huawei/files";
 	path_share   = path_data;
 	path_locale  = path_data + DIR_DELIM + "locale";
 	path_cache   = getAndroidPath(nativeActivity,
 			app_global->activity->clazz, mt_getAbsPath, "getCacheDir");
-#ifdef __aarch64__
-	path_cache = path_user + DIR_DELIM + "cache";
-#endif
 }
 
 void showInputDialog(const std::string &acceptButton, const std::string &hint,
