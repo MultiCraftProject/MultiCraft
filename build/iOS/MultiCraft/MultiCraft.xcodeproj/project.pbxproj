@@ -12,7 +12,6 @@
 		4B0F49CD1E424FC20003953D /* remoteplayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B0F49CC1E424FC20003953D /* remoteplayer.cpp */; };
 		4B0F49CF1E424FDF0003953D /* enriched_string.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B0F49CE1E424FDF0003953D /* enriched_string.cpp */; };
 		4B0F49D11E424FFD0003953D /* joystick_controller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B0F49D01E424FFD0003953D /* joystick_controller.cpp */; };
-		4B0F49D31E42501D0003953D /* static_text.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B0F49D21E42501D0003953D /* static_text.cpp */; };
 		4B35A9B01EEDD15500274961 /* clientenvironment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B35A9AE1EEDD15500274961 /* clientenvironment.cpp */; };
 		4B35A9B31EEDD16C00274961 /* database-files.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B35A9B11EEDD16C00274961 /* database-files.cpp */; };
 		4B35A9B61EEDD18400274961 /* face_position_cache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B35A9B41EEDD18400274961 /* face_position_cache.cpp */; };
@@ -37,6 +36,8 @@
 		4B35A9F71EEE018D00274961 /* scripting_server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B35A9F51EEE018D00274961 /* scripting_server.cpp */; };
 		842A808C2339174C00A89418 /* ads.mm in Sources */ = {isa = PBXBuildFile; fileRef = 842A808B2339174C00A89418 /* ads.mm */; };
 		8465A76522A7D4500095B7CA /* libintl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8465A76422A7D4500095B7CA /* libintl.cpp */; };
+		8473ED8125C055F80053293B /* static_text.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8473ED7F25C055F80053293B /* static_text.cpp */; };
+		8473ED8425C0562C0053293B /* lutf8lib.c in Sources */ = {isa = PBXBuildFile; fileRef = 8473ED8225C0562C0053293B /* lutf8lib.c */; };
 		849C4F86209656D3005EB041 /* ru.lproj in Resources */ = {isa = PBXBuildFile; fileRef = 849C4F85209656D2005EB041 /* ru.lproj */; };
 		84A4380425535BA5002571D4 /* soft_oal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84A4380325535BA5002571D4 /* soft_oal.framework */; };
 		84A4380525535BA5002571D4 /* soft_oal.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 84A4380325535BA5002571D4 /* soft_oal.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -259,7 +260,6 @@
 		4B0F49CC1E424FC20003953D /* remoteplayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = remoteplayer.cpp; path = ../../../../src/remoteplayer.cpp; sourceTree = "<group>"; };
 		4B0F49CE1E424FDF0003953D /* enriched_string.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = enriched_string.cpp; path = ../../../../src/util/enriched_string.cpp; sourceTree = "<group>"; };
 		4B0F49D01E424FFD0003953D /* joystick_controller.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = joystick_controller.cpp; path = ../../../../src/client/joystick_controller.cpp; sourceTree = "<group>"; };
-		4B0F49D21E42501D0003953D /* static_text.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = static_text.cpp; path = ../../../../src/irrlicht_changes/static_text.cpp; sourceTree = "<group>"; };
 		4B35A9AE1EEDD15500274961 /* clientenvironment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = clientenvironment.cpp; path = ../../../../src/clientenvironment.cpp; sourceTree = "<group>"; };
 		4B35A9AF1EEDD15500274961 /* clientenvironment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = clientenvironment.h; path = ../../../../src/clientenvironment.h; sourceTree = "<group>"; };
 		4B35A9B11EEDD16C00274961 /* database-files.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "database-files.cpp"; path = "../../../../src/database-files.cpp"; sourceTree = "<group>"; };
@@ -312,6 +312,10 @@
 		8465A76222A7D4500095B7CA /* libintl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libintl.h; path = ../../../../lib/intl/libintl.h; sourceTree = "<group>"; };
 		8465A76322A7D4500095B7CA /* Util.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Util.hpp; path = ../../../../lib/intl/Util.hpp; sourceTree = "<group>"; };
 		8465A76422A7D4500095B7CA /* libintl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = libintl.cpp; path = ../../../../lib/intl/libintl.cpp; sourceTree = "<group>"; };
+		8473ED7F25C055F80053293B /* static_text.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = static_text.cpp; path = ../../../../src/irrlicht_changes/static_text.cpp; sourceTree = "<group>"; };
+		8473ED8025C055F80053293B /* static_text.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = static_text.h; path = ../../../../src/irrlicht_changes/static_text.h; sourceTree = "<group>"; };
+		8473ED8225C0562C0053293B /* lutf8lib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lutf8lib.c; path = ../../../../lib/luautf8/lutf8lib.c; sourceTree = "<group>"; };
+		8473ED8325C0562C0053293B /* unidata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = unidata.h; path = ../../../../lib/luautf8/unidata.h; sourceTree = "<group>"; };
 		849C4F85209656D2005EB041 /* ru.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ru.lproj; sourceTree = "<group>"; };
 		84A4380325535BA5002571D4 /* soft_oal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = soft_oal.framework; path = ../deps/soft_oal.framework; sourceTree = "<group>"; };
 		84B9C11524A4D82400016BCE /* ConsentAlertViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsentAlertViewController.swift; sourceTree = "<group>"; };
@@ -761,6 +765,24 @@
 			name = intl;
 			sourceTree = "<group>";
 		};
+		8473ED7D25C055AF0053293B /* luautf8 */ = {
+			isa = PBXGroup;
+			children = (
+				8473ED8225C0562C0053293B /* lutf8lib.c */,
+				8473ED8325C0562C0053293B /* unidata.h */,
+			);
+			name = luautf8;
+			sourceTree = "<group>";
+		};
+		8473ED7E25C055DE0053293B /* irrlicht_changes */ = {
+			isa = PBXGroup;
+			children = (
+				8473ED7F25C055F80053293B /* static_text.cpp */,
+				8473ED8025C055F80053293B /* static_text.h */,
+			);
+			name = irrlicht_changes;
+			sourceTree = "<group>";
+		};
 		84CD4A56248782720019B81D /* Main */ = {
 			isa = PBXGroup;
 			children = (
@@ -846,6 +868,17 @@
 		F8E6C4F61DCA3EAF00F64426 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				F8E6C6641DCA3F9F00F64426 /* cguittfont */,
+				F8E6C6691DCA3FE900F64426 /* client */,
+				4B35A9D61EEDFE3200274961 /* gmp */,
+				8465A76022A7D4500095B7CA /* intl */,
+				8473ED7E25C055DE0053293B /* irrlicht_changes */,
+				F8E6C6751DCA405F00F64426 /* json */,
+				F8E6C6D21DCA412300F64426 /* network */,
+				F8E6C6E41DCA415800F64426 /* script */,
+				F8E6C7591DCA421700F64426 /* threading */,
+				F8E6C7961DCA426900F64426 /* util */,
+				8473ED7D25C055AF0053293B /* luautf8 */,
 				F8E6C4F71DCA3F9900F64426 /* activeobject.h */,
 				F8E6C4F81DCA3F9900F64426 /* ban.cpp */,
 				F8E6C4F91DCA3F9900F64426 /* ban.h */,
@@ -853,9 +886,7 @@
 				F8E6C4FC1DCA3F9900F64426 /* camera.h */,
 				F8E6C4FD1DCA3F9900F64426 /* cavegen.cpp */,
 				F8E6C4FE1DCA3F9900F64426 /* cavegen.h */,
-				F8E6C6641DCA3F9F00F64426 /* cguittfont */,
 				F8E6C4FF1DCA3F9900F64426 /* chat_interface.h */,
-				F8E6C6691DCA3FE900F64426 /* client */,
 				F8E6C5001DCA3F9900F64426 /* chat.cpp */,
 				F8E6C5011DCA3F9900F64426 /* chat.h */,
 				F8E6C5021DCA3F9900F64426 /* client.cpp */,
@@ -930,7 +961,6 @@
 				F8E6C5441DCA3F9900F64426 /* game.h */,
 				F8E6C5451DCA3F9900F64426 /* gamedef.h */,
 				F8E6C5461DCA3F9900F64426 /* gameparams.h */,
-				4B35A9D61EEDFE3200274961 /* gmp */,
 				F8E6C5471DCA3F9900F64426 /* genericobject.cpp */,
 				F8E6C5481DCA3F9900F64426 /* genericobject.h */,
 				F8E6C5491DCA3F9900F64426 /* gettext.cpp */,
@@ -979,7 +1009,6 @@
 				4B35A9B81EEDD1AC00274961 /* itemstackmetadata.h */,
 				F8E6C5731DCA3F9900F64426 /* itemgroup.h */,
 				4B0F49D01E424FFD0003953D /* joystick_controller.cpp */,
-				F8E6C6751DCA405F00F64426 /* json */,
 				F8E6C5741DCA3F9900F64426 /* keycode.cpp */,
 				F8E6C5751DCA3F9900F64426 /* keycode.h */,
 				F8E6C5761DCA3F9900F64426 /* light.cpp */,
@@ -1035,7 +1064,6 @@
 				F8E6C5A81DCA3F9900F64426 /* mods.h */,
 				F8E6C5A91DCA3F9900F64426 /* nameidmapping.cpp */,
 				F8E6C5AA1DCA3F9900F64426 /* nameidmapping.h */,
-				F8E6C6D21DCA412300F64426 /* network */,
 				F8E6C5AB1DCA3F9900F64426 /* nodedef.cpp */,
 				F8E6C5AC1DCA3F9900F64426 /* nodedef.h */,
 				F8E6C5AD1DCA3F9900F64426 /* nodemetadata.cpp */,
@@ -1069,7 +1097,6 @@
 				4B0F49CC1E424FC20003953D /* remoteplayer.cpp */,
 				F8E6C5C61DCA3F9900F64426 /* rollback_interface.cpp */,
 				F8E6C5C71DCA3F9900F64426 /* rollback_interface.h */,
-				F8E6C6E41DCA415800F64426 /* script */,
 				F8E6C5C91DCA3F9900F64426 /* rollback.h */,
 				F8E6C5CA1DCA3F9900F64426 /* serialization.cpp */,
 				F8E6C5CB1DCA3F9900F64426 /* serialization.h */,
@@ -1095,12 +1122,10 @@
 				F8E6C5DD1DCA3F9900F64426 /* sound.h */,
 				F8E6C5DE1DCA3F9900F64426 /* staticobject.cpp */,
 				F8E6C5DF1DCA3F9900F64426 /* staticobject.h */,
-				4B0F49D21E42501D0003953D /* static_text.cpp */,
 				F8E6C5E01DCA3F9900F64426 /* subgame.cpp */,
 				F8E6C5E11DCA3F9900F64426 /* subgame.h */,
 				F8E6C5E21DCA3F9900F64426 /* terminal_chat_console.cpp */,
 				F8E6C5E31DCA3F9900F64426 /* terminal_chat_console.h */,
-				F8E6C7591DCA421700F64426 /* threading */,
 				F8E6C5E41DCA3F9900F64426 /* threads.h */,
 				4B35A9C61EEDD22500274961 /* tileanimation.cpp */,
 				4B35A9C71EEDD22500274961 /* tileanimation.h */,
@@ -1111,7 +1136,6 @@
 				F8E6C5E91DCA3F9900F64426 /* treegen.cpp */,
 				F8E6C5EA1DCA3F9900F64426 /* treegen.h */,
 				F8E6C5EB1DCA3F9900F64426 /* version.cpp */,
-				F8E6C7961DCA426900F64426 /* util */,
 				F8E6C5EC1DCA3F9900F64426 /* version.h */,
 				F8E6C5ED1DCA3F9900F64426 /* voxel.cpp */,
 				F8E6C5EE1DCA3F9900F64426 /* voxel.h */,
@@ -1119,7 +1143,6 @@
 				F8E6C5F01DCA3F9900F64426 /* voxelalgorithms.h */,
 				F8E6C5F11DCA3F9900F64426 /* wieldmesh.cpp */,
 				F8E6C5F21DCA3F9900F64426 /* wieldmesh.h */,
-				8465A76022A7D4500095B7CA /* intl */,
 			);
 			name = src;
 			sourceTree = "<group>";
@@ -1568,6 +1591,7 @@
 				F8E6C7131DCA41EF00F64426 /* s_async.cpp in Sources */,
 				4B35A9BC1EEDD1C900274961 /* mesh_generator_thread.cpp in Sources */,
 				F8E6C7471DCA420A00F64426 /* l_base.cpp in Sources */,
+				8473ED8425C0562C0053293B /* lutf8lib.c in Sources */,
 				F8E6C6E01DCA413A00F64426 /* connection.cpp in Sources */,
 				F8E6C6701DCA403100F64426 /* tile.cpp in Sources */,
 				F8E6C7171DCA41EF00F64426 /* s_inventory.cpp in Sources */,
@@ -1700,7 +1724,6 @@
 				84CD4A6C2487A0180019B81D /* ZipManager.swift in Sources */,
 				F8E6C6051DCA3F9900F64426 /* craftdef.cpp in Sources */,
 				4B0F49CF1E424FDF0003953D /* enriched_string.cpp in Sources */,
-				4B0F49D31E42501D0003953D /* static_text.cpp in Sources */,
 				F8E6C6411DCA3F9900F64426 /* nodedef.cpp in Sources */,
 				F8E6C6F81DCA41DB00F64426 /* c_internal.cpp in Sources */,
 				F8E6C60E1DCA3F9900F64426 /* dungeongen.cpp in Sources */,
@@ -1747,6 +1770,7 @@
 				F8E6C7641DCA423C00F64426 /* event.cpp in Sources */,
 				4B35A9E51EEE00F900274961 /* l_localplayer.cpp in Sources */,
 				F8E6C6501DCA3F9900F64426 /* serialization.cpp in Sources */,
+				8473ED8125C055F80053293B /* static_text.cpp in Sources */,
 				F8E6C6281DCA3F9900F64426 /* light.cpp in Sources */,
 				F8E6C60A1DCA3F9900F64426 /* database.cpp in Sources */,
 				F8E6C6F91DCA41DB00F64426 /* c_types.cpp in Sources */,
