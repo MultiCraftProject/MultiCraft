@@ -201,6 +201,7 @@
 		8458617E24B1C3BC0040BA4F /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = 8458617A24B1C3BA0040BA4F /* fonts */; };
 		8458617F24B1C3BC0040BA4F /* builtin in Resources */ = {isa = PBXBuildFile; fileRef = 8458617B24B1C3BB0040BA4F /* builtin */; };
 		8458618024B1C3BC0040BA4F /* textures in Resources */ = {isa = PBXBuildFile; fileRef = 8458617C24B1C3BB0040BA4F /* textures */; };
+		8473ED6025C054670053293B /* lutf8lib.c in Sources */ = {isa = PBXBuildFile; fileRef = 8473ED5E25C054670053293B /* lutf8lib.c */; };
 		84A1F9B0252E616B00000717 /* event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1F9A8252E616A00000717 /* event.cpp */; };
 		84A1F9B1252E616B00000717 /* mutex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1F9AA252E616A00000717 /* mutex.cpp */; };
 		84A1F9B2252E616B00000717 /* semaphore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1F9AC252E616B00000717 /* semaphore.cpp */; };
@@ -681,6 +682,8 @@
 		8458617A24B1C3BA0040BA4F /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = fonts; path = ../../../../fonts; sourceTree = "<group>"; };
 		8458617B24B1C3BB0040BA4F /* builtin */ = {isa = PBXFileReference; lastKnownFileType = folder; name = builtin; path = ../../../../builtin; sourceTree = "<group>"; };
 		8458617C24B1C3BB0040BA4F /* textures */ = {isa = PBXFileReference; lastKnownFileType = folder; name = textures; path = ../../../../textures; sourceTree = "<group>"; };
+		8473ED5E25C054670053293B /* lutf8lib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lutf8lib.c; path = ../../../../lib/luautf8/lutf8lib.c; sourceTree = "<group>"; };
+		8473ED5F25C054670053293B /* unidata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = unidata.h; path = ../../../../lib/luautf8/unidata.h; sourceTree = "<group>"; };
 		84A1F9A6252E616A00000717 /* thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = thread.h; path = ../../../../src/threading/thread.h; sourceTree = "<group>"; };
 		84A1F9A7252E616A00000717 /* mutex_auto_lock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mutex_auto_lock.h; path = ../../../../src/threading/mutex_auto_lock.h; sourceTree = "<group>"; };
 		84A1F9A8252E616A00000717 /* event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = event.cpp; path = ../../../../src/threading/event.cpp; sourceTree = "<group>"; };
@@ -890,6 +893,7 @@
 				84A1F9A5252E615B00000717 /* threading */,
 				8458602F24B13A020040BA4F /* util */,
 				8458610C24B13C1D0040BA4F /* lua */,
+				8473ED5825C053D00053293B /* luautf8 */,
 				84585D0624B1391B0040BA4F /* activeobject.h */,
 				84585D8E24B139230040BA4F /* ban.cpp */,
 				84585DA924B139240040BA4F /* ban.h */,
@@ -1352,6 +1356,15 @@
 			name = lua;
 			sourceTree = "<group>";
 		};
+		8473ED5825C053D00053293B /* luautf8 */ = {
+			isa = PBXGroup;
+			children = (
+				8473ED5E25C054670053293B /* lutf8lib.c */,
+				8473ED5F25C054670053293B /* unidata.h */,
+			);
+			name = luautf8;
+			sourceTree = "<group>";
+		};
 		84A1F9A5252E615B00000717 /* threading */ = {
 			isa = PBXGroup;
 			children = (
@@ -1614,6 +1627,7 @@
 				84585E7A24B139290040BA4F /* tool.cpp in Sources */,
 				84585E3124B139290040BA4F /* light.cpp in Sources */,
 				84A1F9B2252E616B00000717 /* semaphore.cpp in Sources */,
+				8473ED6025C054670053293B /* lutf8lib.c in Sources */,
 				8458605C24B13A650040BA4F /* directiontables.cpp in Sources */,
 				84585E4424B139290040BA4F /* serverenvironment.cpp in Sources */,
 				84585E2B24B139290040BA4F /* mods.cpp in Sources */,
