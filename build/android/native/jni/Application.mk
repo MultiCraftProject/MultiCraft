@@ -22,7 +22,7 @@ endif
 APP_CPPFLAGS += -fexceptions #-Werror=shorten-64-to-32
 
 # Silence Irrlicht warnings. Comment out with real debugging!
-APP_CPPFLAGS += -Wno-deprecated-declarations -Wno-inconsistent-missing-override
+APP_CPPFLAGS += -Wno-deprecated-declarations -Wno-inconsistent-missing-override -Wno-implicit-int-float-conversion
 
 APP_CFLAGS   := $(APP_CPPFLAGS)
 APP_CXXFLAGS := $(APP_CPPFLAGS) -frtti -std=gnu++17
@@ -32,5 +32,3 @@ APP_LDFLAGS  := -Wl,--gc-sections,--icf=all
 else
 APP_LDFLAGS  :=
 endif
-
-APP_LDFLAGS  += -fuse-ld=lld

@@ -1,7 +1,7 @@
 /*
 MultiCraft
-Copyright (C) 2014-2020 MoNTE48, Maksim Gamarnik <MoNTE48@mail.ua>
-Copyright (C) 2014-2020 ubulem,  Bektur Mambetov <berkut87@gmail.com>
+Copyright (C) 2014-2021 MoNTE48, Maksim Gamarnik <MoNTE48@mail.ua>
+Copyright (C) 2014-2021 ubulem,  Bektur Mambetov <berkut87@gmail.com>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -18,8 +18,26 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-package com.multicraft.game.callbacks;
+package com.multicraft.game.helpers
 
-public interface CallBackListener {
-	void onEvent(boolean isContinue);
+import android.os.Build
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.O
+
+object ApiLevelHelper {
+	private fun isGreaterOrEqual(versionCode: Int): Boolean {
+		return SDK_INT >= versionCode
+	}
+
+	@JvmStatic
+	val isKitKat: Boolean
+		get() = isGreaterOrEqual(KITKAT)
+
+	val isMarshmallow: Boolean
+		get() = isGreaterOrEqual(Build.VERSION_CODES.M)
+
+	@JvmStatic
+	val isOreo: Boolean
+		get() = isGreaterOrEqual(O)
 }
